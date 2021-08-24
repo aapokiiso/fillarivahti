@@ -1,6 +1,6 @@
 {
   "name": "@aapokiiso/fillarivahti-recorder",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Records city bike station capacity statistics for Fillarivahti.",
   "author": "Aapo Kiiso <aapo@kii.so>",
   "license": "MIT",
