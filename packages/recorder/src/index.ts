@@ -45,7 +45,7 @@ cron.schedule('*/5 * * * *', async function () {
     logger.info('Fillarivahti recorder is run');
 
     try {
-        const capacities = await graphqlCapacityProvider.getCapacities(['062']);
+        const capacities = await graphqlCapacityProvider.getCapacities(['062', '162']);
 
         await Promise.all(capacities.map(capacity => ormCapacityRepository.create(capacity)));
 
