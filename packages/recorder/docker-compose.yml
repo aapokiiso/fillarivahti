@@ -1,0 +1,18 @@
+version: '3'
+services:
+  recorder:
+    image: node:16
+    env_file: .env
+    command: npm run start
+    working_dir: /usr/app
+    volumes:
+      - .:/usr/app
+    networks:
+      - default
+  mariadb:
+    image: mariadb:10.3
+    env_file: .mariadb.env
+    networks:
+      - default
+networks:
+  default:
