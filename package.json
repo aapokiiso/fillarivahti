@@ -1,6 +1,5 @@
 {
   "name": "root",
-  "private": true,
   "scripts": {
     "publish": "lerna run build && lerna publish"
   },
