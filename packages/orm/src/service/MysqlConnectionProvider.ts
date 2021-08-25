@@ -3,7 +3,7 @@ import ConnectionProvider from '../api/ConnectionProvider';
 import path from 'path';
 import fs from 'fs';
 
-export default class DefaultConnectionProvider implements ConnectionProvider {
+export default class MysqlConnectionProvider implements ConnectionProvider {
     dbName: string;
     dbUser: string;
     dbPassword: string|undefined;
@@ -50,7 +50,7 @@ export default class DefaultConnectionProvider implements ConnectionProvider {
             {
                 host: this.dbHost,
                 port: this.dbPort,
-                dialect: 'mariadb',
+                dialect: 'mysql',
                 // eslint-disable-next-line no-console
                 logging: this.dbLogging ? console.log : false,
                 dialectOptions: {

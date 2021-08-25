@@ -7,8 +7,7 @@
   "main": "dist/index",
   "types": "dist/index",
   "files": [
-    "dist",
-    "docker-compose.yml"
+    "dist"
   ],
   "publishConfig": {
     "access": "public"

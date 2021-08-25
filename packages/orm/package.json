@@ -18,7 +18,7 @@
     "lint:fix": "eslint --fix src"
   },
   "dependencies": {
-    "mariadb": "^2.5.4",
+    "mysql2": "^2.3.0",
     "sequelize": "^6.6.5"
   },
   "devDependencies": {

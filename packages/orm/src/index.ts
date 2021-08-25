@@ -10,8 +10,8 @@ export {
  * Services
  */
 
-import DefaultConnectionProvider from './service/DefaultConnectionProvider';
+import MysqlConnectionProvider from './service/MysqlConnectionProvider';
 
 export {
-    DefaultConnectionProvider,
+    MysqlConnectionProvider,
 };
