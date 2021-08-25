@@ -2,9 +2,7 @@ FROM node:16
 
 WORKDIR /usr/app
 
-COPY . .
+COPY node_modules node_modules
+COPY dist dist
 
-RUN npm ci
-RUN npm run build
-
-CMD [ "npm", "run", "start" ]
+CMD [ "node", "dist/index.js" ]

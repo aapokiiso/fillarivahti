@@ -7,7 +7,10 @@
   "main": "dist/index",
   "types": "dist/index",
   "files": [
-    "dist"
+    "dist",
+    "package-lock.json",
+    "Dockerfile",
+    "docker-compose.yml"
   ],
   "publishConfig": {
     "access": "public"
