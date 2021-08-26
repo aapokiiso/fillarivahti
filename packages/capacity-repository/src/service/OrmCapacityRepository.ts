@@ -1,7 +1,7 @@
 import CapacityRepository from '../api/CapacityRepository';
 import Capacity from '../api/data/Capacity';
 import { ConnectionProvider as OrmConnectionProvider } from '@aapokiiso/fillarivahti-orm';
-import { Op, fn, col, literal, where } from 'sequelize';
+import { Op, fn, col, literal, where, Model } from 'sequelize';
 import { utcToZonedTime } from 'date-fns-tz';
 
 export default class OrmCapacityRepository implements CapacityRepository {
@@ -23,7 +23,7 @@ export default class OrmCapacityRepository implements CapacityRepository {
         // eslint-disable-next-line no-magic-numbers
         end.setHours(23, 59, 59, 999);
 
-        const result: unknown = await connection.models.Capacity.findAll({
+        const result = await connection.models.Capacity.findAll({
             attributes: [
                 'stationId',
                 'timestamp',
@@ -43,7 +43,7 @@ export default class OrmCapacityRepository implements CapacityRepository {
             ],
         });
 
-        const capacities = result as Capacity[];
+        const capacities = result.map((model: Model) => model.get({plain: true}));
 
         return capacities.reduce(
             (acc: Record<string, Capacity[]>, capacity: Capacity) => {
@@ -64,7 +64,7 @@ export default class OrmCapacityRepository implements CapacityRepository {
 
         const now = utcToZonedTime(new Date(), 'Europe/Helsinki');
 
-        const result: unknown = await connection.models.Capacity.findAll({
+        const result = await connection.models.Capacity.findAll({
             attributes: [
                 'stationId',
                 [fn('hour', col('timestamp')), 'hour'],
@@ -78,14 +78,15 @@ export default class OrmCapacityRepository implements CapacityRepository {
                             [Op.in]: stationIds,
                         },
                     },
-                    where(fn('dayofweek', col('timestamp')), now.getDay().toString()),
+                    // MySQL day of week is 1-indexed, while JS day of week is 0-indexed.
+                    where(fn('dayofweek', col('timestamp')), (now.getDay() + 1).toString()),
                 ],
             },
             group: [
                 'stationId',
                 fn('hour', col('timestamp')),
-                // eslint-disable-next-line no-warning-comments
-                literal('MINUTE(timestamp) DIV 5') as unknown as string, // TODO: why literal not accepted?
+                // Literal is not accepted to group clause in typings.
+                literal('MINUTE(timestamp) DIV 5') as unknown as string,
             ],
             order: [
                 [fn('hour', col('timestamp')), 'ASC'],
@@ -100,7 +101,7 @@ export default class OrmCapacityRepository implements CapacityRepository {
             capacity: number
         };
 
-        const avgCapacities = result as AverageCapacity[];
+        const avgCapacities = result.map((model: Model) => model.get({plain: true}));
 
         return avgCapacities.reduce(
             (acc: Record<string, Capacity[]>, avgCapacity: AverageCapacity) => {
@@ -108,7 +109,7 @@ export default class OrmCapacityRepository implements CapacityRepository {
                     acc[avgCapacity.stationId] = [];
                 }
 
-                const timestamp = utcToZonedTime(new Date(), 'Europe/Helsinki');
+                const timestamp = new Date();
                 timestamp.setHours(avgCapacity.hour, avgCapacity.minute, 0, 0);
 
                 const capacity: Capacity = {
