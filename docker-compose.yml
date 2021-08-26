@@ -1,0 +1,16 @@
+# Prototyping services for development
+version: '3'
+services:
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: fillarivahti
+      MYSQL_USER: fillarivahti
+      MYSQL_PASSWORD: fillarivahti
+    networks:
+      - default
+    ports:
+      - 3306
+networks:
+  default:

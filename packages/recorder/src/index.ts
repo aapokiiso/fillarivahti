@@ -3,7 +3,6 @@ import DefaultGraphqlConnectionProvider from './service/DefaultGraphqlConnection
 import { MysqlConnectionProvider } from '@aapokiiso/fillarivahti-orm';
 import { OrmCapacityRepository } from '@aapokiiso/fillarivahti-capacity-repository';
 import * as winston from 'winston';
-
 import * as cron from 'node-cron';
 
 if (!process.env.GRAPHQL_ENDPOINT) {
@@ -14,7 +13,7 @@ const graphqlConnectionProvider = new DefaultGraphqlConnectionProvider(
     process.env.GRAPHQL_ENDPOINT,
 );
 
-const graphqlCapacityProvider = new GraphqlCapacityProvider(
+const capacityProvider = new GraphqlCapacityProvider(
     graphqlConnectionProvider,
 );
 
@@ -36,33 +35,32 @@ const ormConnectionProvider = new MysqlConnectionProvider(
     process.env.DB_LOGGING === '1',
 );
 
-const ormCapacityRepository = new OrmCapacityRepository(
+const capacityRepository = new OrmCapacityRepository(
     ormConnectionProvider,
 );
 
 const logger = winston.createLogger({
-    format: winston.format.combine(
-        winston.format.colorize({ all: true }),
-        winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-        winston.format.printf(info => `[${info.timestamp}] ${info.level}: ${info.message}`),
-    ),
+    format: winston.format.json(),
     transports: [
         new winston.transports.Console(),
     ],
 });
 
-logger.info('Starting Fillarivahti recorder');
+logger.info('Starting Fillarivahti recorder.');
 
 cron.schedule('*/5 * * * *', async function () {
-    logger.info('Fillarivahti recorder is run');
+    logger.info('Fillarivahti recorder is run.');
 
     try {
-        const capacities = await graphqlCapacityProvider.getCapacities(['062', '162']);
+        const capacities = await capacityProvider.getCapacities(['062', '162']);
 
-        await Promise.all(capacities.map(capacity => ormCapacityRepository.create(capacity)));
+        await Promise.all(capacities.map(capacity => capacityRepository.create(capacity)));
 
-        logger.info('Fillarivahti recorder is completed');
+        logger.info('Fillarivahti recorder is completed.');
     } catch (error) {
-        logger.error('Failed to record bike station capacities. Reason:', error);
+        logger.error('Failed to record bike station capacities.', {
+            error: error.message,
+            stack: error.stack,
+        });
     }
 });
