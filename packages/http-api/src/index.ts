@@ -1,6 +1,6 @@
 import express from 'express';
 import { MysqlConnectionProvider } from '@aapokiiso/fillarivahti-orm';
-import { OrmCapacityRepository, EnvConfiguration } from '@aapokiiso/fillarivahti-capacity-repository';
+import { OrmCapacityRepository, EnvConfiguration, DefaultAggregateCapacityMapper } from '@aapokiiso/fillarivahti-capacity-repository';
 import DefaultStationIdParser from './service/DefaultStationIdParser';
 import { StatusCodes } from 'http-status-codes';
 import * as winston from 'winston';
@@ -25,9 +25,14 @@ const connectionProvider = new MysqlConnectionProvider(
 
 const capacityRepositoryConfig = new EnvConfiguration();
 
+const capacityRepositoryAggregateCapacityMapper = new DefaultAggregateCapacityMapper(
+    capacityRepositoryConfig,
+);
+
 const capacityRepository = new OrmCapacityRepository(
     connectionProvider,
     capacityRepositoryConfig,
+    capacityRepositoryAggregateCapacityMapper,
 );
 
 const stationIdParser = new DefaultStationIdParser();

@@ -1,9 +1,10 @@
 import CapacityRepository from '../api/CapacityRepository';
 import Configuration from '../api/Configuration';
 import Capacity from '../api/data/Capacity';
+import AggregateCapacityMapper from '../api/AggregateCapacityMapper';
 import { ConnectionProvider as OrmConnectionProvider } from '@aapokiiso/fillarivahti-orm';
-import { Op, fn, col, literal, where, Model } from 'sequelize';
-import { utcToZonedTime } from 'date-fns-tz';
+import { Op, fn, col, literal, Model } from 'sequelize';
+import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
 
 type AggregateCapacity = {
     stationId: string,
@@ -15,13 +16,16 @@ type AggregateCapacity = {
 export default class OrmCapacityRepository implements CapacityRepository {
     ormConnectionProvider: OrmConnectionProvider;
     configuration: Configuration;
+    aggregateCapacityMapper: AggregateCapacityMapper;
 
     constructor(
         ormConnectionProvider: OrmConnectionProvider,
         configuration: Configuration,
+        aggregateCapacityMapper: AggregateCapacityMapper,
     ) {
         this.ormConnectionProvider = ormConnectionProvider;
         this.configuration = configuration;
+        this.aggregateCapacityMapper = aggregateCapacityMapper;
     }
 
     async getToday(stationIds: string[]): Promise<Record<string, Capacity[]>> {
@@ -30,12 +34,14 @@ export default class OrmCapacityRepository implements CapacityRepository {
         const timeZone = this.configuration.getTimeZone();
         const granularityInMinutes = this.configuration.getGranularityInMinutes();
 
-        const start = utcToZonedTime(new Date(), timeZone);
-        start.setHours(0, 0, 0, 0);
+        const midnightZoned = utcToZonedTime(new Date(), timeZone);
+        midnightZoned.setHours(0, 0, 0, 0);
+        const midnight = zonedTimeToUtc(midnightZoned, timeZone);
 
-        const end = utcToZonedTime(new Date(), timeZone);
+        const dayEndZoned = utcToZonedTime(new Date(), timeZone);
         // eslint-disable-next-line no-magic-numbers
-        end.setHours(23, 59, 59, 999);
+        dayEndZoned.setHours(23, 59, 59, 999);
+        const dayEnd = zonedTimeToUtc(dayEndZoned, timeZone);
 
         const result = await connection.models.Capacity.findAll({
             attributes: [
@@ -49,8 +55,8 @@ export default class OrmCapacityRepository implements CapacityRepository {
                     [Op.in]: stationIds,
                 },
                 timestamp: {
-                    [Op.gte]: start,
-                    [Op.lte]: end,
+                    [Op.gte]: midnight,
+                    [Op.lte]: dayEnd,
                 },
             },
             group: [
@@ -73,16 +79,9 @@ export default class OrmCapacityRepository implements CapacityRepository {
                     acc[aggCapacity.stationId] = [];
                 }
 
-                const timestamp = new Date();
-                timestamp.setUTCHours(aggCapacity.hour, aggCapacity.minute * granularityInMinutes, 0, 0);
-
-                const capacity: Capacity = {
-                    stationId: aggCapacity.stationId,
-                    timestamp,
-                    capacity: aggCapacity.capacity,
-                };
-
-                acc[capacity.stationId].push(capacity);
+                acc[aggCapacity.stationId].push(
+                    this.aggregateCapacityMapper.map(aggCapacity),
+                );
 
                 return acc;
             },
@@ -112,8 +111,8 @@ export default class OrmCapacityRepository implements CapacityRepository {
                             [Op.in]: stationIds,
                         },
                     },
-                    // MySQL day of week is 1-indexed, while JS day of week is 0-indexed.
-                    where(fn('dayofweek', col('timestamp')), (now.getDay() + 1).toString()),
+                    // MySQL DAYOFWEEK is 1-indexed, while JS day of week is 0-indexed.
+                    literal(`DAYOFWEEK(CONVERT_TZ(timestamp, "UTC", "${timeZone}")) = ${(now.getDay() + 1)}`),
                 ],
             },
             group: [
@@ -136,16 +135,9 @@ export default class OrmCapacityRepository implements CapacityRepository {
                     acc[aggCapacity.stationId] = [];
                 }
 
-                const timestamp = new Date();
-                timestamp.setUTCHours(aggCapacity.hour, aggCapacity.minute * granularityInMinutes, 0, 0);
-
-                const capacity: Capacity = {
-                    stationId: aggCapacity.stationId,
-                    timestamp,
-                    capacity: aggCapacity.capacity,
-                };
-
-                acc[capacity.stationId].push(capacity);
+                acc[aggCapacity.stationId].push(
+                    this.aggregateCapacityMapper.map(aggCapacity),
+                );
 
                 return acc;
             },

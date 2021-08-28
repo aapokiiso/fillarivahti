@@ -1,7 +1,7 @@
 import GraphqlCapacityProvider from './service/GraphqlCapacityProvider';
 import DefaultGraphqlConnectionProvider from './service/DefaultGraphqlConnectionProvider';
 import { MysqlConnectionProvider } from '@aapokiiso/fillarivahti-orm';
-import { OrmCapacityRepository, EnvConfiguration } from '@aapokiiso/fillarivahti-capacity-repository';
+import { OrmCapacityRepository, EnvConfiguration, DefaultAggregateCapacityMapper } from '@aapokiiso/fillarivahti-capacity-repository';
 import * as winston from 'winston';
 import * as cron from 'node-cron';
 
@@ -37,9 +37,14 @@ const ormConnectionProvider = new MysqlConnectionProvider(
 
 const capacityRepositoryConfig = new EnvConfiguration();
 
+const capacityRepositoryAggregateCapacityMapper = new DefaultAggregateCapacityMapper(
+    capacityRepositoryConfig,
+);
+
 const capacityRepository = new OrmCapacityRepository(
     ormConnectionProvider,
     capacityRepositoryConfig,
+    capacityRepositoryAggregateCapacityMapper,
 );
 
 const logger = winston.createLogger({

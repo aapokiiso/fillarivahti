@@ -5,6 +5,8 @@ interface Configuration
 {
     /**
      * Timezone capacity records are reported in.
+     *
+     * @returns {string}
      */
     getTimeZone(): string;
 
@@ -12,6 +14,8 @@ interface Configuration
      * Granularity in minutes at which to report capacity records.
      * For example a granularity of 60 minutes means capacity records are
      * averaged over 1-hour intervals.
+     *
+     * @returns {number}
      */
     getGranularityInMinutes(): number;
 }
