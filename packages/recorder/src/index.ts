@@ -1,7 +1,7 @@
 import GraphqlCapacityProvider from './service/GraphqlCapacityProvider';
 import DefaultGraphqlConnectionProvider from './service/DefaultGraphqlConnectionProvider';
 import { MysqlConnectionProvider } from '@aapokiiso/fillarivahti-orm';
-import { OrmCapacityRepository } from '@aapokiiso/fillarivahti-capacity-repository';
+import { OrmCapacityRepository, EnvConfiguration } from '@aapokiiso/fillarivahti-capacity-repository';
 import * as winston from 'winston';
 import * as cron from 'node-cron';
 
@@ -35,8 +35,11 @@ const ormConnectionProvider = new MysqlConnectionProvider(
     process.env.DB_LOGGING === '1',
 );
 
+const capacityRepositoryConfig = new EnvConfiguration();
+
 const capacityRepository = new OrmCapacityRepository(
     ormConnectionProvider,
+    capacityRepositoryConfig,
 );
 
 const logger = winston.createLogger({
@@ -52,7 +55,7 @@ cron.schedule('*/5 * * * *', async function () {
     logger.info('Fillarivahti recorder is run.');
 
     try {
-        const capacities = await capacityProvider.getCapacities(['062', '162']);
+        const capacities = await capacityProvider.getCapacities();
 
         await Promise.all(capacities.map(capacity => capacityRepository.create(capacity)));
 

@@ -1,38 +1,48 @@
 import CapacityRepository from '../api/CapacityRepository';
+import Configuration from '../api/Configuration';
 import Capacity from '../api/data/Capacity';
 import { ConnectionProvider as OrmConnectionProvider } from '@aapokiiso/fillarivahti-orm';
 import { Op, fn, col, literal, where, Model } from 'sequelize';
 import { utcToZonedTime } from 'date-fns-tz';
 
-// eslint-disable-next-line no-warning-comments
-// TODO: move these to config
-const timezone = 'Europe/Helsinki';
-const granularityMinutes = 5;
+type AggregateCapacity = {
+    stationId: string,
+    hour: number,
+    minute: number,
+    capacity: number
+};
 
 export default class OrmCapacityRepository implements CapacityRepository {
     ormConnectionProvider: OrmConnectionProvider;
+    configuration: Configuration;
 
     constructor(
         ormConnectionProvider: OrmConnectionProvider,
+        configuration: Configuration,
     ) {
         this.ormConnectionProvider = ormConnectionProvider;
+        this.configuration = configuration;
     }
 
     async getToday(stationIds: string[]): Promise<Record<string, Capacity[]>> {
         const connection = await this.ormConnectionProvider.getConnection();
 
-        const start = utcToZonedTime(new Date(), timezone);
+        const timeZone = this.configuration.getTimeZone();
+        const granularityInMinutes = this.configuration.getGranularityInMinutes();
+
+        const start = utcToZonedTime(new Date(), timeZone);
         start.setHours(0, 0, 0, 0);
 
-        const end = utcToZonedTime(new Date(), timezone);
+        const end = utcToZonedTime(new Date(), timeZone);
         // eslint-disable-next-line no-magic-numbers
         end.setHours(23, 59, 59, 999);
 
         const result = await connection.models.Capacity.findAll({
             attributes: [
                 'stationId',
-                'timestamp',
-                'capacity',
+                [fn('hour', col('timestamp')), 'hour'],
+                [literal(`MINUTE(timestamp) DIV ${granularityInMinutes}`), 'minute'],
+                [fn('avg', col('capacity')), 'capacity'],
             ],
             where: {
                 stationId: {
@@ -43,18 +53,34 @@ export default class OrmCapacityRepository implements CapacityRepository {
                     [Op.lte]: end,
                 },
             },
+            group: [
+                'stationId',
+                fn('hour', col('timestamp')),
+                // Literal is not accepted to GROUP clause in Sequelize typings.
+                literal(`MINUTE(timestamp) DIV ${granularityInMinutes}`) as unknown as string,
+            ],
             order: [
-                ['timestamp', 'ASC'],
+                [fn('hour', col('timestamp')), 'ASC'],
+                [literal(`MINUTE(timestamp) DIV ${granularityInMinutes}`), 'ASC'],
             ],
         });
 
-        const capacities = result.map((model: Model) => model.get({ plain: true }));
+        const aggCapacities = result.map((model: Model) => model.get({ plain: true }));
 
-        return capacities.reduce(
-            (acc: Record<string, Capacity[]>, capacity: Capacity) => {
-                if (!acc[capacity.stationId]) {
-                    acc[capacity.stationId] = [];
+        return aggCapacities.reduce(
+            (acc: Record<string, Capacity[]>, aggCapacity: AggregateCapacity) => {
+                if (!acc[aggCapacity.stationId]) {
+                    acc[aggCapacity.stationId] = [];
                 }
+
+                const timestamp = new Date();
+                timestamp.setUTCHours(aggCapacity.hour, aggCapacity.minute * granularityInMinutes, 0, 0);
+
+                const capacity: Capacity = {
+                    stationId: aggCapacity.stationId,
+                    timestamp,
+                    capacity: aggCapacity.capacity,
+                };
 
                 acc[capacity.stationId].push(capacity);
 
@@ -67,13 +93,16 @@ export default class OrmCapacityRepository implements CapacityRepository {
     async getWeekdayAverage(stationIds: string[]): Promise<Record<string, Capacity[]>> {
         const connection = await this.ormConnectionProvider.getConnection();
 
-        const now = utcToZonedTime(new Date(), timezone);
+        const timeZone = this.configuration.getTimeZone();
+        const granularityInMinutes = this.configuration.getGranularityInMinutes();
+
+        const now = utcToZonedTime(new Date(), timeZone);
 
         const result = await connection.models.Capacity.findAll({
             attributes: [
                 'stationId',
                 [fn('hour', col('timestamp')), 'hour'],
-                [literal(`MINUTE(timestamp) DIV ${granularityMinutes}`), 'minute'],
+                [literal(`MINUTE(timestamp) DIV ${granularityInMinutes}`), 'minute'],
                 [fn('avg', col('capacity')), 'capacity'],
             ],
             where: {
@@ -91,39 +120,32 @@ export default class OrmCapacityRepository implements CapacityRepository {
                 'stationId',
                 fn('hour', col('timestamp')),
                 // Literal is not accepted to GROUP clause in Sequelize typings.
-                literal(`MINUTE(timestamp) DIV ${granularityMinutes}`) as unknown as string,
+                literal(`MINUTE(timestamp) DIV ${granularityInMinutes}`) as unknown as string,
             ],
             order: [
                 [fn('hour', col('timestamp')), 'ASC'],
-                [literal(`MINUTE(timestamp) DIV ${granularityMinutes}`), 'ASC'],
+                [literal(`MINUTE(timestamp) DIV ${granularityInMinutes}`), 'ASC'],
             ],
         });
 
-        type AverageCapacity = {
-            stationId: string,
-            hour: number,
-            minute: number,
-            capacity: number
-        };
+        const aggCapacities = result.map((model: Model) => model.get({ plain: true }));
 
-        const avgCapacities = result.map((model: Model) => model.get({ plain: true }));
-
-        return avgCapacities.reduce(
-            (acc: Record<string, Capacity[]>, avgCapacity: AverageCapacity) => {
-                if (!acc[avgCapacity.stationId]) {
-                    acc[avgCapacity.stationId] = [];
+        return aggCapacities.reduce(
+            (acc: Record<string, Capacity[]>, aggCapacity: AggregateCapacity) => {
+                if (!acc[aggCapacity.stationId]) {
+                    acc[aggCapacity.stationId] = [];
                 }
 
                 const timestamp = new Date();
-                timestamp.setUTCHours(avgCapacity.hour, avgCapacity.minute * granularityMinutes, 0, 0);
+                timestamp.setUTCHours(aggCapacity.hour, aggCapacity.minute * granularityInMinutes, 0, 0);
 
                 const capacity: Capacity = {
-                    stationId: avgCapacity.stationId,
+                    stationId: aggCapacity.stationId,
                     timestamp,
-                    capacity: avgCapacity.capacity,
+                    capacity: aggCapacity.capacity,
                 };
 
-                acc[avgCapacity.stationId].push(capacity);
+                acc[capacity.stationId].push(capacity);
 
                 return acc;
             },

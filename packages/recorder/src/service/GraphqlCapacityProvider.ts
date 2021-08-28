@@ -11,16 +11,18 @@ export default class GraphqlCapacityProvider implements CapacityProvider {
         this.graphqlConnectionProvider = graphqlConnectionProvider;
     }
 
-    async getCapacities(stationIds: string[]): Promise<Capacity[]> {
+    async getCapacities(stationIds?: string[]): Promise<Capacity[]> {
         const connection = this.graphqlConnectionProvider.getConnection();
 
         try {
-            const idsStr = stationIds.map(id => `"${id}"`).join(',');
+            const filter = stationIds
+                ? `(ids: [${stationIds.map(id => `"${id}"`).join(',')}])`
+                : '';
 
             const { data } = await connection.request({
                 data: {
                     query: `{
-                        bikeRentalStations(ids: [${idsStr}]) {
+                        bikeRentalStations${filter} {
                             stationId
                             bikesAvailable
                             capacity
