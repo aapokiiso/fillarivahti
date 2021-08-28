@@ -46,8 +46,8 @@ export default class OrmCapacityRepository implements CapacityRepository {
         const result = await connection.models.Capacity.findAll({
             attributes: [
                 'stationId',
-                [fn('hour', col('timestamp')), 'hour'],
-                [literal(`MINUTE(timestamp) DIV ${granularityInMinutes}`), 'minute'],
+                [literal(`HOUR(CONVERT_TZ(timestamp, "UTC", "${timeZone}"))`), 'hour'],
+                [literal(`MINUTE(CONVERT_TZ(timestamp, "UTC", "${timeZone}")) DIV ${granularityInMinutes}`), 'minute'],
                 [fn('avg', col('capacity')), 'capacity'],
             ],
             where: {
@@ -61,13 +61,13 @@ export default class OrmCapacityRepository implements CapacityRepository {
             },
             group: [
                 'stationId',
-                fn('hour', col('timestamp')),
-                // Literal is not accepted to GROUP clause in Sequelize typings.
-                literal(`MINUTE(timestamp) DIV ${granularityInMinutes}`) as unknown as string,
+                // Literals are not accepted to GROUP clause in Sequelize typings.
+                literal(`HOUR(CONVERT_TZ(timestamp, "UTC", "${timeZone}"))`) as unknown as string,
+                literal(`MINUTE(CONVERT_TZ(timestamp, "UTC", "${timeZone}")) DIV ${granularityInMinutes}`) as unknown as string,
             ],
             order: [
-                [fn('hour', col('timestamp')), 'ASC'],
-                [literal(`MINUTE(timestamp) DIV ${granularityInMinutes}`), 'ASC'],
+                [literal(`HOUR(CONVERT_TZ(timestamp, "UTC", "${timeZone}"))`), 'ASC'],
+                [literal(`MINUTE(CONVERT_TZ(timestamp, "UTC", "${timeZone}")) DIV ${granularityInMinutes}`), 'ASC'],
             ],
         });
 
@@ -100,8 +100,8 @@ export default class OrmCapacityRepository implements CapacityRepository {
         const result = await connection.models.Capacity.findAll({
             attributes: [
                 'stationId',
-                [fn('hour', col('timestamp')), 'hour'],
-                [literal(`MINUTE(timestamp) DIV ${granularityInMinutes}`), 'minute'],
+                [literal(`HOUR(CONVERT_TZ(timestamp, "UTC", "${timeZone}"))`), 'hour'],
+                [literal(`MINUTE(CONVERT_TZ(timestamp, "UTC", "${timeZone}")) DIV ${granularityInMinutes}`), 'minute'],
                 [fn('avg', col('capacity')), 'capacity'],
             ],
             where: {
@@ -117,13 +117,13 @@ export default class OrmCapacityRepository implements CapacityRepository {
             },
             group: [
                 'stationId',
-                fn('hour', col('timestamp')),
-                // Literal is not accepted to GROUP clause in Sequelize typings.
-                literal(`MINUTE(timestamp) DIV ${granularityInMinutes}`) as unknown as string,
+                // Literals are not accepted to GROUP clause in Sequelize typings.
+                literal(`HOUR(CONVERT_TZ(timestamp, "UTC", "${timeZone}"))`) as unknown as string,
+                literal(`MINUTE(CONVERT_TZ(timestamp, "UTC", "${timeZone}")) DIV ${granularityInMinutes}`) as unknown as string,
             ],
             order: [
-                [fn('hour', col('timestamp')), 'ASC'],
-                [literal(`MINUTE(timestamp) DIV ${granularityInMinutes}`), 'ASC'],
+                [literal(`HOUR(CONVERT_TZ(timestamp, "UTC", "${timeZone}"))`), 'ASC'],
+                [literal(`MINUTE(CONVERT_TZ(timestamp, "UTC", "${timeZone}")) DIV ${granularityInMinutes}`), 'ASC'],
             ],
         });
 

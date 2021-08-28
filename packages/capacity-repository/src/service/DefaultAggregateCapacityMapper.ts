@@ -1,4 +1,4 @@
-import { getTimezoneOffset, utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
+import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
 import AggregateCapacityMapper from '../api/AggregateCapacityMapper';
 import AggregateCapacity from '../api/data/AggregateCapacity';
 import Capacity from '../api/data/Capacity';
@@ -21,17 +21,17 @@ export default class DefaultAggregateCapacityMapper implements AggregateCapacity
 
         const midnightZoned = utcToZonedTime(new Date(), timeZone);
         midnightZoned.setHours(0, 0, 0, 0);
-        const midnight = zonedTimeToUtc(midnightZoned, timeZone);
 
         const millisInSecond = 1000;
         const secondsInMinute = 60;
         const minutesInHour = 60;
 
-        const timestamp = new Date(
-            midnight.getTime()
-            + millisInSecond * (hour * minutesInHour * secondsInMinute + minute * granularityInMinutes * secondsInMinute)
-            + getTimezoneOffset(timeZone),
+        const timestampZoned = new Date(
+            midnightZoned.getTime()
+            + millisInSecond * (hour * minutesInHour * secondsInMinute + minute * granularityInMinutes * secondsInMinute),
         );
+
+        const timestamp = zonedTimeToUtc(timestampZoned, timeZone);
 
         return {
             stationId,
