@@ -2,34 +2,17 @@ import { Sequelize } from 'sequelize';
 import ConnectionProvider from '../api/ConnectionProvider';
 import path from 'path';
 import fs from 'fs';
+import Configuration from '../api/Configuration';
 
 export default class MysqlConnectionProvider implements ConnectionProvider {
-    dbName: string;
-    dbUser: string;
-    dbPassword: string|undefined;
-    dbHost: string|undefined;
-    dbPort: number|undefined;
-    dbSocketPath: string|undefined;
-    dbLogging: boolean;
+    configuration: Configuration;
 
     connection: Sequelize|null = null;
 
     constructor(
-        dbName: string,
-        dbUser: string,
-        dbPassword: string|undefined,
-        dbHost: string|undefined,
-        dbPort: number|undefined,
-        dbSocketPath: string|undefined,
-        dbLogging: boolean,
+        configuration: Configuration,
     ) {
-        this.dbName = dbName;
-        this.dbUser = dbUser;
-        this.dbPassword = dbPassword;
-        this.dbHost = dbHost;
-        this.dbPort = dbPort;
-        this.dbSocketPath = dbSocketPath;
-        this.dbLogging = dbLogging;
+        this.configuration = configuration;
     }
 
     async getConnection(): Promise<Sequelize> {
@@ -43,19 +26,26 @@ export default class MysqlConnectionProvider implements ConnectionProvider {
     }
 
     private createConnection() {
+        const database = this.configuration.getDatabase();
+        if (!database) {
+            throw new Error('Database name is missing in configuration.');
+        }
+
+        const username = this.configuration.getUsername();
+        if (!username) {
+            throw new Error('Username is missing in configuration.');
+        }
+
         return new Sequelize(
-            this.dbName,
-            this.dbUser,
-            this.dbPassword,
+            database,
+            username,
+            this.configuration.getPassword(),
             {
-                host: this.dbHost,
-                port: this.dbPort,
+                host: this.configuration.getHost(),
+                port: this.configuration.getPort(),
                 dialect: 'mysql',
                 // eslint-disable-next-line no-console
-                logging: this.dbLogging ? console.log : false,
-                dialectOptions: {
-                    socketPath: this.dbSocketPath,
-                },
+                logging: this.configuration.isLoggingEnabled() ? console.log : false,
             },
         );
     }

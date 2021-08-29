@@ -1,37 +1,25 @@
 import express from 'express';
-import { MysqlConnectionProvider } from '@aapokiiso/fillarivahti-orm';
-import { OrmCapacityRepository, EnvConfiguration, DefaultAggregateCapacityMapper } from '@aapokiiso/fillarivahti-capacity-repository';
+import { MysqlConnectionProvider, EnvConfiguration as OrmConfiguration } from '@aapokiiso/fillarivahti-orm';
+import { OrmCapacityProvider, EnvConfiguration as CapacityRepositoryConfiguration, DefaultAggregateCapacityMapper } from '@aapokiiso/fillarivahti-capacity-repository';
 import DefaultStationIdParser from './service/DefaultStationIdParser';
 import { StatusCodes } from 'http-status-codes';
 import * as winston from 'winston';
 
-if (!process.env.DB_NAME) {
-    throw new Error('Database name is missing.');
-}
-
-if (!process.env.DB_USER) {
-    throw new Error('Database user is missing.');
-}
+const ormConfiguration = new OrmConfiguration();
 
 const connectionProvider = new MysqlConnectionProvider(
-    process.env.DB_NAME,
-    process.env.DB_USER,
-    process.env.DB_PASSWORD,
-    process.env.DB_HOST,
-    typeof process.env.DB_PORT !== 'undefined' ? Number(process.env.DB_PORT) : undefined,
-    process.env.DB_SOCKET_PATH,
-    process.env.DB_LOGGING === '1',
+    ormConfiguration,
 );
 
-const capacityRepositoryConfig = new EnvConfiguration();
+const capacityRepositoryConfiguration = new CapacityRepositoryConfiguration();
 
 const capacityRepositoryAggregateCapacityMapper = new DefaultAggregateCapacityMapper(
-    capacityRepositoryConfig,
+    capacityRepositoryConfiguration,
 );
 
-const capacityRepository = new OrmCapacityRepository(
+const capacityProvider = new OrmCapacityProvider(
     connectionProvider,
-    capacityRepositoryConfig,
+    capacityRepositoryConfiguration,
     capacityRepositoryAggregateCapacityMapper,
 );
 
@@ -56,7 +44,7 @@ app.get('/today', async (req, res) => {
     }
 
     try {
-        const capacities = await capacityRepository.getToday(stationIds);
+        const capacities = await capacityProvider.getToday(stationIds);
 
         return res.status(StatusCodes.OK).json(capacities);
     } catch (error) {
@@ -78,7 +66,7 @@ app.get('/weekday-average', async (req, res) => {
     }
 
     try {
-        const capacities = await capacityRepository.getWeekdayAverage(stationIds);
+        const capacities = await capacityProvider.getWeekdayAverage(stationIds);
 
         return res.status(StatusCodes.OK).json(capacities);
     } catch (error) {

@@ -4,6 +4,10 @@
   "description": "Records city bike station capacity statistics for Fillarivahti.",
   "author": "Aapo Kiiso <aapo@kii.so>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aapokiiso/fillarivahti.git"
+  },
   "main": "dist/index",
   "types": "dist/index",
   "files": [
@@ -13,7 +17,7 @@
     "access": "public"
   },
   "scripts": {
-    "clean": "rm -r dist",
+    "clean": "rm -rf dist",
     "build": "npm run clean && tsc",
     "lint": "eslint src",
     "lint:fix": "eslint --fix src",
@@ -21,8 +25,8 @@
   },
   "dependencies": {
     "@aapokiiso/fillarivahti-capacity-repository": "^1.4.1",
+    "@aapokiiso/fillarivahti-hsl-graphql": "^1.4.1",
     "@aapokiiso/fillarivahti-orm": "^1.2.1",
-    "axios": "^0.21.1",
     "node-cron": "^3.0.0",
     "winston": "^3.3.3"
   },

@@ -1,5 +1,3 @@
-// Interfaces
-
 import ConnectionProvider from './api/ConnectionProvider';
 import Configuration from './api/Configuration';
 
@@ -8,14 +6,10 @@ export {
     Configuration,
 };
 
-/**
- * Services
- */
-
-import MysqlConnectionProvider from './service/MysqlConnectionProvider';
+import DefaultConnectionProvider from './service/DefaultConnectionProvider';
 import EnvConfiguration from './service/EnvConfiguration';
 
 export {
-    MysqlConnectionProvider,
+    DefaultConnectionProvider,
     EnvConfiguration,
 };

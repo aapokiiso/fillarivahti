@@ -1,8 +1,8 @@
 import { AxiosInstance } from 'axios';
 
-interface GraphqlConnectionProvider
+interface ConnectionProvider
 {
     getConnection(): AxiosInstance;
 }
 
-export default GraphqlConnectionProvider;
+export default ConnectionProvider;

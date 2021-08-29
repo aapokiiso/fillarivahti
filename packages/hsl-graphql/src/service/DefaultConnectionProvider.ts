@@ -1,21 +1,22 @@
 import axios from 'axios';
 import { AxiosInstance } from 'axios';
-import GraphqlConnectionProvider from '../api/GraphqlConnectionProvider';
+import Configuration from '../api/Configuration';
+import ConnectionProvider from '../api/ConnectionProvider';
 
-export default class DefaultGraphqlConnectionProvider implements GraphqlConnectionProvider {
-    endpointUri: string;
+export default class DefaultConnectionProvider implements ConnectionProvider {
+    configuration: Configuration;
     connection: AxiosInstance|null = null;
 
     constructor(
-        endpointUri: string,
+        configuration: Configuration,
     ) {
-        this.endpointUri = endpointUri;
+        this.configuration = configuration;
     }
 
     getConnection(): AxiosInstance {
         if (this.connection === null) {
             this.connection = axios.create({
-                baseURL: this.endpointUri,
+                baseURL: this.configuration.getGraphqlEndpointUri(),
                 method: 'POST',
                 responseType: 'json',
                 headers: {

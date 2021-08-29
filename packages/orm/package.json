@@ -4,8 +4,12 @@
   "description": "ORM models for Fillarivahti.",
   "author": "Aapo Kiiso <aapo@kii.so>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aapokiiso/fillarivahti.git"
+  },
   "main": "dist/index",
-  "types": "dist/index.d",
+  "types": "dist/index",
   "files": [
     "dist"
   ],
@@ -13,7 +17,7 @@
     "access": "public"
   },
   "scripts": {
-    "clean": "rm -r dist",
+    "clean": "rm -rf dist",
     "build": "npm run clean && tsc",
     "lint": "eslint src",
     "lint:fix": "eslint --fix src"
