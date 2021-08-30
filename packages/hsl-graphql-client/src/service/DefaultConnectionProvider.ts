@@ -19,9 +19,6 @@ export default class DefaultConnectionProvider implements ConnectionProvider {
                 baseURL: this.configuration.getGraphqlEndpointUri(),
                 method: 'POST',
                 responseType: 'json',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
             });
         }
 

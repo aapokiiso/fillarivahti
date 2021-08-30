@@ -1,4 +1,4 @@
-import client from '~/plugins/http-api-client';
+import { NuxtAxiosInstance } from '@nuxtjs/axios';
 
 export type Capacity = {
     stationId: string,
@@ -33,30 +33,30 @@ const mapCapacityResponse = (data: Record<string, ResponseCapacity[]>): Record<s
         return acc;
     }, {});
 
-export const fetchTodayForStations = async (stationIds: string[]): Promise<Record<string, Capacity[]>> => {
-    const { data } = await client.get('/today', {
+export const fetchTodayForStations = async (capacityClient: NuxtAxiosInstance, stationIds: string[]): Promise<Record<string, Capacity[]>> => {
+    const { data } = await capacityClient.get('/today', {
         params: mapStationIds(stationIds),
     });
 
     return mapCapacityResponse(data);
 };
 
-export const fetchTodayForStation = async (stationId: string): Promise<Capacity[]> => {
-    const capacities = await fetchTodayForStations([stationId]);
+export const fetchTodayForStation = async (capacityClient: NuxtAxiosInstance, stationId: string): Promise<Capacity[]> => {
+    const capacities = await fetchTodayForStations(capacityClient, [stationId]);
 
     return capacities[stationId] || [];
 };
 
-export const fetchWeekdayAverageForStations = async (stationIds: string[]): Promise<Record<string, Capacity[]>> => {
-    const { data } = await client.get('/weekday-average', {
+export const fetchWeekdayAverageForStations = async (capacityClient: NuxtAxiosInstance, stationIds: string[]): Promise<Record<string, Capacity[]>> => {
+    const { data } = await capacityClient.get('/weekday-average', {
         params: mapStationIds(stationIds),
     });
 
     return mapCapacityResponse(data);
 };
 
-export const fetchWeekdayAverageForStation = async (stationId: string): Promise<Capacity[]> => {
-    const capacities = await fetchWeekdayAverageForStations([stationId]);
+export const fetchWeekdayAverageForStation = async (capacityClient: NuxtAxiosInstance, stationId: string): Promise<Capacity[]> => {
+    const capacities = await fetchWeekdayAverageForStations(capacityClient, [stationId]);
 
     return capacities[stationId] || [];
 };

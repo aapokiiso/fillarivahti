@@ -29,9 +29,11 @@ export default defineComponent({
         };
     },
     async fetch () {
+        const context = this.$nuxt.context;
+
         // eslint-disable-next-line no-warning-comments
         // TODO: Implement proper station search
-        this.stations = await fetchStations(['062', '162']);
+        this.stations = await fetchStations(context.$hslGraphqlClient, ['062', '162']);
     },
 });
 </script>

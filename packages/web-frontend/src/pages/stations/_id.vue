@@ -35,12 +35,13 @@ export default defineComponent({
         };
     },
     async fetch () {
-        const stationId = this.$nuxt.context.params.id;
+        const context = this.$nuxt.context;
+        const stationId = context.params.id;
 
         const [station, todayCapacities, weekdayAverageCapacities] = await Promise.all([
-            fetchStation(stationId),
-            fetchTodayForStation(stationId),
-            fetchWeekdayAverageForStation(stationId),
+            fetchStation(context.$hslGraphqlClient, stationId),
+            fetchTodayForStation(context.$capacityClient, stationId),
+            fetchWeekdayAverageForStation(context.$capacityClient, stationId),
         ]);
 
         this.station = station;

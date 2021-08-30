@@ -1,17 +1,17 @@
-import client from '~/plugins/hsl-graphql-client';
+import { NuxtAxiosInstance } from "@nuxtjs/axios";
 
 export type BikeStation = {
     stationId: string,
     name: string
 };
 
-export const fetchStations = async (stationIds?: string[]): Promise<BikeStation[]> => {
+export const fetchStations = async (hslGraphqlClient: NuxtAxiosInstance, stationIds?: string[]): Promise<BikeStation[]> => {
     try {
         const filter = stationIds
             ? `(ids: [${stationIds.map(id => `"${id}"`).join(',')}])`
             : '';
 
-        const { data } = await client.request({
+        const { data } = await hslGraphqlClient.request({
             data: {
                 query: `{
                     bikeRentalStations${filter} {
@@ -33,8 +33,8 @@ export const fetchStations = async (stationIds?: string[]): Promise<BikeStation[
     }
 };
 
-export const fetchStation = async (stationId: string): Promise<BikeStation|undefined> => {
-    const [station] = await fetchStations([stationId]);
+export const fetchStation = async (hslGraphqlClient: NuxtAxiosInstance, stationId: string): Promise<BikeStation|undefined> => {
+    const [station] = await fetchStations(hslGraphqlClient, [stationId]);
 
     return station;
 };

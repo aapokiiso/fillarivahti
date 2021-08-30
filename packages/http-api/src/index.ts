@@ -4,6 +4,7 @@ import { OrmCapacityProvider, EnvConfiguration as CapacityRepositoryConfiguratio
 import DefaultStationIdParser from './service/DefaultStationIdParser';
 import { StatusCodes } from 'http-status-codes';
 import * as winston from 'winston';
+import cors from 'cors';
 
 const ormConfiguration = new OrmConfiguration();
 
@@ -35,6 +36,8 @@ const logger = winston.createLogger({
 logger.info('Starting Fillarivahti HTTP API');
 
 const app = express();
+
+app.use(cors());
 
 app.get('/today', async (req, res) => {
     const stationIds = stationIdParser.parse(req.query);
