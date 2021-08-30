@@ -29,7 +29,7 @@ export default defineComponent({
         };
     },
     async fetch () {
-        const context = this.$nuxt.context;
+        const { context } = this.$nuxt;
 
         // eslint-disable-next-line no-warning-comments
         // TODO: Implement proper station search

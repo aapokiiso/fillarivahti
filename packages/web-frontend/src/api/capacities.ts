@@ -13,7 +13,7 @@ type ResponseCapacity = {
 };
 
 const mapStationIds = (stationIds: string[]): URLSearchParams => new URLSearchParams(
-    stationIds.map((stationId: string) => ['stationId[]', stationId]),
+    stationIds.map((stationId: string) => ['stationIds[]', stationId]),
 );
 
 const mapCapacityResponse = (data: Record<string, ResponseCapacity[]>): Record<string, Capacity[]> => Object.keys(data)

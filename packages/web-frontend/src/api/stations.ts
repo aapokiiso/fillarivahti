@@ -1,4 +1,4 @@
-import { NuxtAxiosInstance } from "@nuxtjs/axios";
+import { NuxtAxiosInstance } from '@nuxtjs/axios';
 
 export type BikeStation = {
     stationId: string,

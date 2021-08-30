@@ -1,5 +1,5 @@
 import { NuxtAxiosInstance } from '@nuxtjs/axios';
-import {Plugin} from '@nuxt/types';
+import { Plugin } from '@nuxt/types';
 
 declare module '@nuxt/types' {
     interface Context {
@@ -8,7 +8,7 @@ declare module '@nuxt/types' {
     }
 }
 
-const axiosPlugin: Plugin = (context) => {
+const axiosPlugin: Plugin = context => {
     context.$hslGraphqlClient = context.$axios.create({
         baseURL: process.env.hslGraphqlEndpointUrl,
         method: 'POST',
@@ -18,6 +18,6 @@ const axiosPlugin: Plugin = (context) => {
     context.$capacityClient = context.$axios.create({
         baseURL: process.env.capacityEndpointUrl,
     });
-}
+};
 
 export default axiosPlugin;

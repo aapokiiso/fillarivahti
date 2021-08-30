@@ -35,7 +35,7 @@ export default defineComponent({
         };
     },
     async fetch () {
-        const context = this.$nuxt.context;
+        const { context } = this.$nuxt;
         const stationId = context.params.id;
 
         const [station, todayCapacities, weekdayAverageCapacities] = await Promise.all([
