@@ -1,5 +1,5 @@
 import GraphqlCapacityProvider from './service/GraphqlCapacityProvider';
-import { DefaultConnectionProvider, EnvConfiguration as GraphqlConfiguration } from '@aapokiiso/fillarivahti-hsl-graphql';
+import { DefaultConnectionProvider, EnvConfiguration as GraphqlConfiguration } from '@aapokiiso/fillarivahti-hsl-graphql-client';
 import { MysqlConnectionProvider, EnvConfiguration as OrmConfiguration } from '@aapokiiso/fillarivahti-orm';
 import { OrmCapacityRepository } from '@aapokiiso/fillarivahti-capacity-repository';
 import * as winston from 'winston';

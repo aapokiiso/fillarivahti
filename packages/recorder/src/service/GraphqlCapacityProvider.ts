@@ -1,5 +1,5 @@
 import CapacityProvider from '../api/CapacityProvider';
-import { ConnectionProvider } from '@aapokiiso/fillarivahti-hsl-graphql';
+import { ConnectionProvider } from '@aapokiiso/fillarivahti-hsl-graphql-client';
 import { Capacity } from '@aapokiiso/fillarivahti-capacity-repository';
 
 export default class GraphqlCapacityProvider implements CapacityProvider {

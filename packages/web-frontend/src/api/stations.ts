@@ -1,10 +1,4 @@
-import { DefaultConnectionProvider, EnvConfiguration } from '@aapokiiso/fillarivahti-hsl-graphql';
-
-const configuration = new EnvConfiguration();
-
-const connectionProvider = new DefaultConnectionProvider(
-    configuration,
-);
+import client from '~/plugins/hsl-graphql-client';
 
 export type BikeStation = {
     stationId: string,
@@ -17,7 +11,7 @@ export const fetchStations = async (stationIds?: string[]): Promise<BikeStation[
             ? `(ids: [${stationIds.map(id => `"${id}"`).join(',')}])`
             : '';
 
-        const { data } = await connectionProvider.getConnection().request({
+        const { data } = await client.request({
             data: {
                 query: `{
                     bikeRentalStations${filter} {
@@ -37,4 +31,10 @@ export const fetchStations = async (stationIds?: string[]): Promise<BikeStation[
 
         throw new Error('Failed to request stations from HSL GraphQL API.');
     }
+};
+
+export const fetchStation = async (stationId: string): Promise<BikeStation|undefined> => {
+    const [station] = await fetchStations([stationId]);
+
+    return station;
 };

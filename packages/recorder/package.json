@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@aapokiiso/fillarivahti-capacity-repository": "^1.4.1",
-    "@aapokiiso/fillarivahti-hsl-graphql": "^1.4.1",
+    "@aapokiiso/fillarivahti-hsl-graphql-client": "^1.4.1",
     "@aapokiiso/fillarivahti-orm": "^1.2.1",
     "node-cron": "^3.0.0",
     "winston": "^3.3.3"
