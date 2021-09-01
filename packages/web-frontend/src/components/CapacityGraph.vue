@@ -17,7 +17,15 @@ export default {
             type: Number,
             default: 5,
         },
-        lineWidth: {
+        todayColor: {
+            type: String,
+            default: '#FBB701',
+        },
+        weekdayAverageColor: {
+            type: String,
+            default: '#F4F4F5',
+        },
+        lineThickness: {
             type: Number,
             default: 4,
         },
@@ -39,19 +47,17 @@ export default {
                         label: 'Capacity today',
                         data: this.todayCapacities.map(this.mapCapacity),
                         backgroundColor: 'transparent',
-                        borderColor: '#FBB701',
-                        borderWidth: this.lineWidth,
-                        pointRadius: 0,
+                        borderColor: this.todayColor,
+                        borderWidth: this.lineThickness,
                     },
                     {
                         label: 'Average capacity for weekday',
                         data: this.weekdayAverageCapacities.map(
                             this.mapCapacity,
                         ),
-                        backgroundColor: '#F4F4F5',
+                        backgroundColor: this.weekdayAverageColor,
                         borderColor: 'transparent',
                         borderWidth: 0,
-                        pointRadius: 0,
                     },
                 ],
             },
@@ -62,6 +68,15 @@ export default {
                 },
                 tooltips: {
                     enabled: false,
+                },
+                elements: {
+                    point: {
+                        radius: 0,
+                        borderWidth: 0,
+                        hitRadius: 0,
+                        hoverRadius: 0,
+                        hoverBorderWidth: 0,
+                    },
                 },
                 scales: {
                     xAxes: [
@@ -98,9 +113,9 @@ export default {
                             scaleID: 'y-axis-0',
                             drawTime: 'beforeDatasetsDraw',
                             borderColor: '#F4F4F5',
-                            borderWidth: this.lineWidth,
+                            borderWidth: this.lineThickness,
                             borderDash: [
-                                this.lineWidth
+                                this.lineThickness
                                     * this.fullCapacityAnnotationBorderDashScale,
                             ],
                         },
