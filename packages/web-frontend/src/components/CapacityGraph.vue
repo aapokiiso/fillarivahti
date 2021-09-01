@@ -29,6 +29,10 @@ export default {
             type: Number,
             default: 4,
         },
+        fullCapacityValue: {
+            type: Number,
+            default: 100,
+        },
         fullCapacityAnnotationBorderDashScale: {
             type: Number,
             default: 2,
@@ -41,7 +45,7 @@ export default {
     mounted () {
         this.renderChart(
             {
-                labels: this.getLabels(),
+                labels: this.getTimeLabels(),
                 datasets: [
                     {
                         label: 'Capacity today',
@@ -52,9 +56,7 @@ export default {
                     },
                     {
                         label: 'Average capacity for weekday',
-                        data: this.weekdayAverageCapacities.map(
-                            this.mapCapacity,
-                        ),
+                        data: this.weekdayAverageCapacities.map(this.mapCapacity),
                         backgroundColor: this.weekdayAverageColor,
                         borderColor: 'transparent',
                         borderWidth: 0,
@@ -95,10 +97,7 @@ export default {
                             },
                             ticks: {
                                 beginAtZero: true,
-                                suggestedMax:
-                                    this.getFullCapacityScale()
-                                    + this.getFullCapacityScale()
-                                        * this.topPaddingScale,
+                                suggestedMax: this.fullCapacityValue + this.fullCapacityValue * this.topPaddingScale,
                             },
                         },
                     ],
@@ -109,14 +108,13 @@ export default {
                             id: 'full-capacity',
                             type: 'line',
                             mode: 'horizontal',
-                            value: this.getFullCapacityScale(),
+                            value: this.fullCapacityValue,
                             scaleID: 'y-axis-0',
                             drawTime: 'beforeDatasetsDraw',
-                            borderColor: '#F4F4F5',
+                            borderColor: this.weekdayAverageColor,
                             borderWidth: this.lineThickness,
                             borderDash: [
-                                this.lineThickness
-                                    * this.fullCapacityAnnotationBorderDashScale,
+                                this.lineThickness * this.fullCapacityAnnotationBorderDashScale,
                             ],
                         },
                     ],
@@ -125,11 +123,28 @@ export default {
         );
     },
     methods: {
-        getLabels () {
+        /**
+         * Pads time unit to 24-hour format.
+         * For example 0 -> "00".
+         *
+         * @param {Number} timeUnit
+         * @returns {String}
+         */
+        padTimeUnit (timeUnit) {
+            const paddedLength = 2;
+
+            return timeUnit.toString().padStart(paddedLength, '0');
+        },
+        /**
+         * Provides "hh:mm" labels for the graph, to be used as the x-axis
+         * values.
+         *
+         * @returns {String[]}
+         */
+        getTimeLabels () {
             const hoursInDay = 24;
             const minutesInHour = 60;
-            const datapointsCount
-                = (hoursInDay * minutesInHour) / this.granularityInMinutes;
+            const datapointsCount = (hoursInDay * minutesInHour) / this.granularityInMinutes;
 
             const labels = [];
             for (let i = 0; i < datapointsCount; i++) {
@@ -146,16 +161,12 @@ export default {
 
             return labels;
         },
-        padTimeUnit (timeUnit) {
-            const paddedLength = 2;
-
-            return timeUnit.toString().padStart(paddedLength, '0');
-        },
-        getFullCapacityScale () {
-            const percentMultiplier = 100;
-
-            return percentMultiplier;
-        },
+        /**
+         * Maps a capacity record to a graph point.
+         *
+         * @param {Capacity} capacityRecord
+         * @returns {Point}
+         */
         mapCapacity (capacityRecord) {
             const { timestamp, capacity } = capacityRecord;
 
@@ -167,7 +178,7 @@ export default {
 
             return {
                 x: `${hourLabel}:${minuteLabel}`,
-                y: Math.round(capacity * this.getFullCapacityScale()),
+                y: Math.round(capacity * this.fullCapacityValue),
             };
         },
     },
