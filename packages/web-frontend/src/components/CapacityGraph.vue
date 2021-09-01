@@ -1,6 +1,7 @@
 <script>
 import { Line } from 'vue-chartjs';
 import annotationPlugin from 'chartjs-plugin-annotation';
+import gaussianSmoothen from '~/helpers/gaussian-smoothen';
 
 export default {
     extends: Line,
@@ -37,6 +38,10 @@ export default {
             type: Number,
             default: 2,
         },
+        fullCapacityAnnotationColor: {
+            type: String,
+            default: '#DDDDDD',
+        },
         topPaddingScale: {
             type: Number,
             default: 0.1,
@@ -49,14 +54,14 @@ export default {
                 datasets: [
                     {
                         label: 'Capacity today',
-                        data: this.todayCapacities.map(this.mapCapacity),
+                        data: this.smoothenCapacityRecords(this.todayCapacities).map(this.mapCapacity),
                         backgroundColor: 'transparent',
                         borderColor: this.todayColor,
                         borderWidth: this.lineThickness,
                     },
                     {
                         label: 'Average capacity for weekday',
-                        data: this.weekdayAverageCapacities.map(this.mapCapacity),
+                        data: this.smoothenCapacityRecords(this.weekdayAverageCapacities).map(this.mapCapacity),
                         backgroundColor: this.weekdayAverageColor,
                         borderColor: 'transparent',
                         borderWidth: 0,
@@ -111,7 +116,7 @@ export default {
                             value: this.fullCapacityValue,
                             scaleID: 'y-axis-0',
                             drawTime: 'beforeDatasetsDraw',
-                            borderColor: this.weekdayAverageColor,
+                            borderColor: this.fullCapacityAnnotationColor,
                             borderWidth: this.lineThickness,
                             borderDash: [
                                 this.lineThickness * this.fullCapacityAnnotationBorderDashScale,
@@ -160,6 +165,16 @@ export default {
             }
 
             return labels;
+        },
+        smoothenCapacityRecords (capacityRecords) {
+            const smoothenedCapacities = gaussianSmoothen(
+                capacityRecords.map(({ capacity }) => capacity),
+            );
+
+            return smoothenedCapacities.map((capacity, idx) => ({
+                ...capacityRecords[idx],
+                capacity,
+            }), []);
         },
         /**
          * Maps a capacity record to a graph point.

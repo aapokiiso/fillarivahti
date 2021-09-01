@@ -22,15 +22,19 @@
     "generate": "nuxt generate",
     "start": "nuxt start",
     "lint": "eslint --ext .ts,.js,.vue src",
-    "lint:fix": "npm run lint -- --fix"
+    "lint:fix": "npm run lint -- --fix",
+    "test": "jest"
   },
   "devDependencies": {
     "@lamiaoy/eslint-config": "^3.0.0",
     "@nuxt/types": "^2.15.8",
     "@nuxt/typescript-build": "^2.1.0",
     "@nuxtjs/eslint-config-typescript": "^6.0.1",
+    "@types/jest": "^27.0.1",
     "@types/node": "^16.7.1",
-    "eslint": "^7.32.0"
+    "eslint": "^7.32.0",
+    "jest": "^27.1.0",
+    "ts-jest": "^27.0.5"
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.13.6",
