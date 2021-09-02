@@ -5,6 +5,8 @@ declare module '@nuxt/types' {
     interface Context {
         $hslGraphqlClient: NuxtAxiosInstance,
         $capacityClient: NuxtAxiosInstance,
+        $addressSearchClient: NuxtAxiosInstance,
+        $locationSearchClient: NuxtAxiosInstance,
     }
 }
 
@@ -17,6 +19,14 @@ const axiosPlugin: Plugin = context => {
 
     context.$capacityClient = context.$axios.create({
         baseURL: process.env.capacityEndpointUrl,
+    });
+
+    context.$addressSearchClient = context.$axios.create({
+        baseURL: process.env.addressSearchEndpointUrl,
+    });
+
+    context.$locationSearchClient = context.$axios.create({
+        baseURL: process.env.locationSearchEndpointUrl,
     });
 };
 

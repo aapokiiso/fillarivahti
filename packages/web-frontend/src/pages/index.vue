@@ -38,7 +38,7 @@ import {
     fetchTodayForStations,
     fetchWeekdayAverageForStations,
 } from '~/api/capacities';
-import { BikeStation, fetchStations } from '~/api/stations';
+import { BikeStation, fetchStationsByIds } from '~/api/stations';
 
 export default defineComponent({
     data () {
@@ -58,7 +58,7 @@ export default defineComponent({
 
         const [stations, todayCapacities, weekdayAverageCapacities]
             = await Promise.all([
-                fetchStations(context.$hslGraphqlClient, demoStationIds),
+                fetchStationsByIds(context.$hslGraphqlClient, demoStationIds),
                 fetchTodayForStations(context.$capacityClient, demoStationIds),
                 fetchWeekdayAverageForStations(
                     context.$capacityClient,
