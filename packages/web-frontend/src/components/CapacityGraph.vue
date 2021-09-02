@@ -40,11 +40,26 @@ export default {
         },
         fullCapacityAnnotationColor: {
             type: String,
-            default: '#DDDDDD',
+            default: '#333',
         },
         topPaddingScale: {
             type: Number,
             default: 0.1,
+        },
+        aspectRatio: {
+            type: Number,
+            // eslint-disable-next-line no-magic-numbers
+            default: 16 / 9,
+        },
+        // Unsetting width and height for the Line component is required for
+        // aspect ratio to work.
+        width: {
+            default: null,
+            type: Number,
+        },
+        height: {
+            default: null,
+            type: Number,
         },
     },
     mounted () {
@@ -54,14 +69,18 @@ export default {
                 datasets: [
                     {
                         label: 'Capacity today',
-                        data: this.smoothenCapacityRecords(this.todayCapacities).map(this.mapCapacity),
+                        data: this.smoothenCapacityRecords(
+                            this.todayCapacities,
+                        ).map(this.mapCapacity),
                         backgroundColor: 'transparent',
                         borderColor: this.todayColor,
                         borderWidth: this.lineThickness,
                     },
                     {
                         label: 'Average capacity for weekday',
-                        data: this.smoothenCapacityRecords(this.weekdayAverageCapacities).map(this.mapCapacity),
+                        data: this.smoothenCapacityRecords(
+                            this.weekdayAverageCapacities,
+                        ).map(this.mapCapacity),
                         backgroundColor: this.weekdayAverageColor,
                         borderColor: 'transparent',
                         borderWidth: 0,
@@ -70,6 +89,7 @@ export default {
             },
             {
                 plugins: [annotationPlugin],
+                aspectRatio: this.aspectRatio,
                 legend: {
                     display: false,
                 },
@@ -96,13 +116,17 @@ export default {
                     ],
                     yAxes: [
                         {
+                            id: 'capacity',
                             display: false,
                             gridLines: {
                                 display: false,
                             },
                             ticks: {
                                 beginAtZero: true,
-                                suggestedMax: this.fullCapacityValue + this.fullCapacityValue * this.topPaddingScale,
+                                suggestedMax:
+                                    this.fullCapacityValue
+                                    + this.fullCapacityValue
+                                        * this.topPaddingScale,
                             },
                         },
                     ],
@@ -114,12 +138,13 @@ export default {
                             type: 'line',
                             mode: 'horizontal',
                             value: this.fullCapacityValue,
-                            scaleID: 'y-axis-0',
+                            scaleID: 'capacity',
                             drawTime: 'beforeDatasetsDraw',
                             borderColor: this.fullCapacityAnnotationColor,
                             borderWidth: this.lineThickness,
                             borderDash: [
-                                this.lineThickness * this.fullCapacityAnnotationBorderDashScale,
+                                this.lineThickness
+                                    * this.fullCapacityAnnotationBorderDashScale,
                             ],
                         },
                     ],
@@ -149,7 +174,8 @@ export default {
         getTimeLabels () {
             const hoursInDay = 24;
             const minutesInHour = 60;
-            const datapointsCount = (hoursInDay * minutesInHour) / this.granularityInMinutes;
+            const datapointsCount
+                = (hoursInDay * minutesInHour) / this.granularityInMinutes;
 
             const labels = [];
             for (let i = 0; i < datapointsCount; i++) {
@@ -171,10 +197,13 @@ export default {
                 capacityRecords.map(({ capacity }) => capacity),
             );
 
-            return smoothenedCapacities.map((capacity, idx) => ({
-                ...capacityRecords[idx],
-                capacity,
-            }), []);
+            return smoothenedCapacities.map(
+                (capacity, idx) => ({
+                    ...capacityRecords[idx],
+                    capacity,
+                }),
+                [],
+            );
         },
         /**
          * Maps a capacity record to a graph point.

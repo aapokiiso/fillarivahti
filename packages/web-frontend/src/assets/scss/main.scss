@@ -1,0 +1,52 @@
+@import "./includes/vars/colors";
+@import "./includes/vars/font-sizes";
+@import "./includes/vars/space-units";
+
+:root {
+    --color-dark-gray: #{$color-dark-gray};
+    --color-light-gray: #{$color-light-gray};
+    --color-light-gray-accent: #{$color-light-gray-accent};
+    --color-mid-gray: #{$color-mid-gray};
+    --color-white: #{$color-white};
+    --color-yellow: #{$color-yellow};
+
+    --font-size: #{$font-size};
+    --font-size-xs: #{$font-size-xs};
+    --font-size-sm: #{$font-size-sm};
+    --font-size-md: #{$font-size-md};
+    --font-size-lg: #{$font-size-lg};
+
+    --space-unit: #{$space-unit};
+    --space-unit-xxs: #{$space-unit-xxs};
+    --space-unit-xs: #{$space-unit-xs};
+    --space-unit-sm: #{$space-unit-sm};
+    --space-unit-md: #{$space-unit-md};
+    --space-unit-lg: #{$space-unit-lg};
+    --space-unit-xl: #{$space-unit-xl};
+    --space-unit-xxl: #{$space-unit-xxl};
+}
+
+body {
+    color: var(--color-dark-gray);
+    background-color: var(--color-light-gray);
+    font-family: "Open Sans", sans-serif;
+    overflow-y: scroll;
+}
+
+a {
+    text-decoration: none;
+
+    &:visited {
+        color: inherit;
+    }
+}
+
+figure {
+    margin: 0;
+}
+
+.content-wrapper {
+    max-width: 48rem;
+    margin-left: auto;
+    margin-right: auto;
+}

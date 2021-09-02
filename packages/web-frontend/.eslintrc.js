@@ -10,5 +10,6 @@ module.exports = {
     rules: {
         'import/extensions': 'off',
         'semi': ['error', 'always'],
+        "vue/html-indent": ["error", 4]
     },
 };

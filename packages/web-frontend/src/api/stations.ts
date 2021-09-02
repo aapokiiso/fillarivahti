@@ -2,7 +2,9 @@ import { NuxtAxiosInstance } from '@nuxtjs/axios';
 
 export type BikeStation = {
     stationId: string,
-    name: string
+    name: string,
+    bikesAvailable: number,
+    capacity: number,
 };
 
 export const fetchStations = async (hslGraphqlClient: NuxtAxiosInstance, stationIds?: string[]): Promise<BikeStation[]> => {
@@ -17,6 +19,8 @@ export const fetchStations = async (hslGraphqlClient: NuxtAxiosInstance, station
                     bikeRentalStations${filter} {
                         stationId
                         name
+                        bikesAvailable
+                        capacity
                     }
                 }`,
             },

@@ -33,7 +33,10 @@
     "@types/jest": "^27.0.1",
     "@types/node": "^16.7.1",
     "eslint": "^7.32.0",
+    "fibers": "^5.0.0",
     "jest": "^27.1.0",
+    "sass": "^1.39.0",
+    "sass-loader": "10",
     "ts-jest": "^27.0.5"
   },
   "dependencies": {
