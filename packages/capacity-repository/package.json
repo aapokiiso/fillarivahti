@@ -1,6 +1,6 @@
 {
   "name": "@aapokiiso/fillarivahti-capacity-repository",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Capacity repository for Fillarivahti.",
   "author": "Aapo Kiiso <aapo@kii.so>",
   "license": "MIT",
@@ -23,7 +23,7 @@
     "lint:fix": "eslint --fix src"
   },
   "dependencies": {
-    "@aapokiiso/fillarivahti-orm": "^1.5.0",
+    "@aapokiiso/fillarivahti-orm": "^1.6.0",
     "date-fns-tz": "^1.1.6",
     "sequelize": "^6.6.5"
   },
