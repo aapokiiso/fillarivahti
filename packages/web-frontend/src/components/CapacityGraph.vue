@@ -1,10 +1,20 @@
+<template>
+    <LineChart :chart-data="chartData" :options="options" />
+</template>
+
 <script>
-import { Line } from 'vue-chartjs';
+import { Chart } from 'chart.js';
 import annotationPlugin from 'chartjs-plugin-annotation';
+import { LineChart } from 'vue-chart-3';
+import { defineComponent } from '@vue/composition-api';
 import gaussianSmoothen from '~/helpers/gaussian-smoothen';
 
-export default {
-    extends: Line,
+Chart.register(annotationPlugin);
+
+export default defineComponent({
+    components: {
+        LineChart,
+    },
     props: {
         todayCapacities: {
             type: Array,
@@ -51,108 +61,8 @@ export default {
             // eslint-disable-next-line no-magic-numbers
             default: 16 / 9,
         },
-        // Unsetting width and height for the Line component is required for
-        // aspect ratio to work.
-        width: {
-            default: null,
-            type: Number,
-        },
-        height: {
-            default: null,
-            type: Number,
-        },
     },
-    mounted () {
-        this.renderChart(
-            {
-                labels: this.getTimeLabels(),
-                datasets: [
-                    {
-                        label: 'Capacity today',
-                        data: this.smoothenCapacityRecords(
-                            this.todayCapacities,
-                        ).map(this.mapCapacity),
-                        backgroundColor: 'transparent',
-                        borderColor: this.todayColor,
-                        borderWidth: this.lineThickness,
-                    },
-                    {
-                        label: 'Average capacity for weekday',
-                        data: this.smoothenCapacityRecords(
-                            this.weekdayAverageCapacities,
-                        ).map(this.mapCapacity),
-                        backgroundColor: this.weekdayAverageColor,
-                        borderColor: 'transparent',
-                        borderWidth: 0,
-                    },
-                ],
-            },
-            {
-                plugins: [annotationPlugin],
-                aspectRatio: this.aspectRatio,
-                legend: {
-                    display: false,
-                },
-                tooltips: {
-                    enabled: false,
-                },
-                elements: {
-                    point: {
-                        radius: 0,
-                        borderWidth: 0,
-                        hitRadius: 0,
-                        hoverRadius: 0,
-                        hoverBorderWidth: 0,
-                    },
-                },
-                scales: {
-                    xAxes: [
-                        {
-                            display: false,
-                            gridLines: {
-                                display: false,
-                            },
-                        },
-                    ],
-                    yAxes: [
-                        {
-                            id: 'capacity',
-                            display: false,
-                            gridLines: {
-                                display: false,
-                            },
-                            ticks: {
-                                beginAtZero: true,
-                                suggestedMax:
-                                    this.fullCapacityValue
-                                    + this.fullCapacityValue
-                                        * this.topPaddingScale,
-                            },
-                        },
-                    ],
-                },
-                annotation: {
-                    annotations: [
-                        {
-                            id: 'full-capacity',
-                            type: 'line',
-                            mode: 'horizontal',
-                            value: this.fullCapacityValue,
-                            scaleID: 'capacity',
-                            drawTime: 'beforeDatasetsDraw',
-                            borderColor: this.fullCapacityAnnotationColor,
-                            borderWidth: this.lineThickness,
-                            borderDash: [
-                                this.lineThickness
-                                    * this.fullCapacityAnnotationBorderDashScale,
-                            ],
-                        },
-                    ],
-                },
-            },
-        );
-    },
-    methods: {
+    setup (props) {
         /**
          * Pads time unit to 24-hour format.
          * For example 0 -> "00".
@@ -160,39 +70,41 @@ export default {
          * @param {Number} timeUnit
          * @returns {String}
          */
-        padTimeUnit (timeUnit) {
+        function padTimeUnit (timeUnit) {
             const paddedLength = 2;
 
             return timeUnit.toString().padStart(paddedLength, '0');
-        },
+        }
+
         /**
          * Provides "hh:mm" labels for the graph, to be used as the x-axis
          * values.
          *
          * @returns {String[]}
          */
-        getTimeLabels () {
+        function getTimeLabels () {
             const hoursInDay = 24;
             const minutesInHour = 60;
             const datapointsCount
-                = (hoursInDay * minutesInHour) / this.granularityInMinutes;
+                = (hoursInDay * minutesInHour) / props.granularityInMinutes;
 
             const labels = [];
             for (let i = 0; i < datapointsCount; i++) {
-                const nthMinuteOfDay = i * this.granularityInMinutes;
+                const nthMinuteOfDay = i * props.granularityInMinutes;
 
                 const hour = Math.floor(nthMinuteOfDay / minutesInHour);
                 const minute = nthMinuteOfDay - hour * minutesInHour;
 
-                const hourLabel = this.padTimeUnit(hour);
-                const minuteLabel = this.padTimeUnit(minute);
+                const hourLabel = padTimeUnit(hour);
+                const minuteLabel = padTimeUnit(minute);
 
                 labels.push(`${hourLabel}:${minuteLabel}`);
             }
 
             return labels;
-        },
-        smoothenCapacityRecords (capacityRecords) {
+        }
+
+        function smoothenCapacityRecords (capacityRecords) {
             const smoothenedCapacities = gaussianSmoothen(
                 capacityRecords.map(({ capacity }) => capacity),
             );
@@ -204,27 +116,114 @@ export default {
                 }),
                 [],
             );
-        },
+        }
+
         /**
          * Maps a capacity record to a graph point.
          *
          * @param {Capacity} capacityRecord
          * @returns {Point}
          */
-        mapCapacity (capacityRecord) {
+        function mapCapacity (capacityRecord) {
             const { timestamp, capacity } = capacityRecord;
 
             const hour = timestamp.getHours();
             const minute = timestamp.getMinutes();
 
-            const hourLabel = this.padTimeUnit(hour);
-            const minuteLabel = this.padTimeUnit(minute);
+            const hourLabel = padTimeUnit(hour);
+            const minuteLabel = padTimeUnit(minute);
 
             return {
                 x: `${hourLabel}:${minuteLabel}`,
-                y: Math.round(capacity * this.fullCapacityValue),
+                y: Math.round(capacity * props.fullCapacityValue),
             };
-        },
+        }
+
+        const chartData = {
+            labels: getTimeLabels(),
+            datasets: [
+                {
+                    label: 'Capacity today',
+                    data: smoothenCapacityRecords(props.todayCapacities).map(
+                        mapCapacity,
+                    ),
+                    backgroundColor: 'transparent',
+                    borderColor: props.todayColor,
+                    borderWidth: props.lineThickness,
+                    tension: 0.4,
+                },
+                {
+                    label: 'Average capacity for weekday',
+                    data: smoothenCapacityRecords(
+                        props.weekdayAverageCapacities,
+                    ).map(mapCapacity),
+                    backgroundColor: props.weekdayAverageColor,
+                    borderColor: 'transparent',
+                    borderWidth: props.lineThickness,
+                    fill: {
+                        target: 'origin',
+                    },
+                    tension: 0.4,
+                },
+            ],
+        };
+
+        const options = {
+            responsive: true,
+            aspectRatio: props.aspectRatio,
+            elements: {
+                point: {
+                    radius: 0,
+                    borderWidth: 0,
+                    hitRadius: 0,
+                    hoverRadius: 0,
+                    hoverBorderWidth: 0,
+                },
+            },
+            scales: {
+                x: {
+                    display: false,
+                    grid: {
+                        display: false,
+                    },
+                },
+                y: {
+                    display: false,
+                    grid: {
+                        display: false,
+                    },
+                    beginAtZero: true,
+                    suggestedMax:
+                        props.fullCapacityValue
+                        + props.fullCapacityValue * props.topPaddingScale,
+                },
+            },
+            plugins: {
+                annotation: {
+                    annotations: [
+                        {
+                            id: 'full-capacity',
+                            type: 'line',
+                            mode: 'horizontal',
+                            value: props.fullCapacityValue,
+                            scaleID: 'y',
+                            drawTime: 'beforeDatasetsDraw',
+                            borderColor: props.fullCapacityAnnotationColor,
+                            borderWidth: props.lineThickness,
+                            borderDash: [
+                                props.lineThickness
+                                    * props.fullCapacityAnnotationBorderDashScale,
+                            ],
+                        },
+                    ],
+                },
+            },
+        };
+
+        return {
+            chartData,
+            options,
+        };
     },
-};
+});
 </script>

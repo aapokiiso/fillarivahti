@@ -1,6 +1,6 @@
 <template>
     <p class="capacity-status">
-        <span>Bikes right now</span>
+        <span>{{ $t('capacityStatus') }}</span>
         <span class="capacity-status__bikes-available">{{
             bikesAvailable
         }}</span>

@@ -5,13 +5,13 @@
             v-model="queryInput"
             type="text"
             class="station-search__query-input"
-            placeholder="Search stations..."
-            title="Search for stations by their name or address"
+            :placeholder="$t('stationSearch.inputPlaceholder')"
+            :title="$t('stationSearch.inputHelp')"
             @input="onQueryInputDebounced"
         >
         <button
             class="station-search__location-button"
-            title="Search for stations near you"
+            :title="$t('stationSearch.locationHelp')"
             :class="{ 'is-active': location }"
             @click="onLocationButtonClick"
         >

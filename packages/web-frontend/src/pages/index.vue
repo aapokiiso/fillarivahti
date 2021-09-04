@@ -8,16 +8,16 @@
             />
 
             <p v-if="isPending" class="station-list__pending">
-                Fetching stations...
+                {{ $t('stationList.pending') }}
             </p>
 
             <p v-if="isError" class="station-list__error">
-                Something went wrong :(
+                {{ $t('stationList.error') }}
             </p>
 
             <section v-if="canShowStations" class="station-list">
                 <p v-if="!stations.length" class="station-list__empty">
-                    No stations found.
+                    {{ $t('stationList.empty') }}
                 </p>
 
                 <div
