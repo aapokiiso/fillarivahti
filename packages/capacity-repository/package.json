@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@aapokiiso/fillarivahti-orm": "^1.6.0",
+    "date-fns": "^2.23.0",
     "date-fns-tz": "^1.1.6",
     "sequelize": "^6.6.5"
   },
