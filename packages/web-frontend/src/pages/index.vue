@@ -2,15 +2,24 @@
     <main>
         <div class="content-wrapper">
             <StationSearch
+                @search-pending="onStationSearchPending"
                 @search-results="onStationSearchResults"
+                @search-error="onStationSearchError"
             />
-            <section class="station-list">
-                <p v-if="$fetchState.pending">
-                    Fetching stations...
+
+            <p v-if="isPending" class="station-list__pending">
+                Fetching stations...
+            </p>
+
+            <p v-if="isError" class="station-list__error">
+                Something went wrong :(
+            </p>
+
+            <section v-if="canShowStations" class="station-list">
+                <p v-if="!stations.length" class="station-list__empty">
+                    No stations found.
                 </p>
-                <p v-else-if="$fetchState.error">
-                    Failed to fetch stations.
-                </p>
+
                 <div
                     v-for="station in stations"
                     v-else
@@ -35,7 +44,7 @@
 </template>
 
 <script lang="ts">
-import axios, { CancelTokenSource } from 'axios';
+import { CancelTokenSource } from 'axios';
 import { defineComponent } from '@vue/composition-api';
 import {
     Capacity,
@@ -51,52 +60,100 @@ export default defineComponent({
             todayCapacities: {} as Record<string, Capacity[]>,
             weekdayAverageCapacities: {} as Record<string, Capacity[]>,
             cancelToken: null as CancelTokenSource | null,
+            isPending: false,
+            isError: false,
         };
     },
-    async fetch () {
-        // TODO: Implement proper station search
-
-        const demoStationIds = ['062', '162'];
-
-        await this.loadStations(demoStationIds);
+    computed: {
+        canShowStations () {
+            return !this.isPending && !this.isError;
+        },
     },
     methods: {
+        onStationSearchPending (): void {
+            this.isError = false;
+            this.isPending = true;
+        },
         onStationSearchResults (stationIds: string[]): void {
+            this.isPending = false;
+
             this.loadStations(stationIds);
+        },
+        onStationSearchError (): void {
+            this.isPending = false;
+            this.isError = true;
         },
         async loadStations (stationIds: string[]): Promise<void> {
             const { context } = this.$nuxt;
 
-            if (this.cancelToken) {
-                this.cancelToken.cancel();
+            if (process.client) {
+                if (this.cancelToken) {
+                    this.cancelToken.cancel();
+                }
+                this.cancelToken = this.$axios.CancelToken.source();
             }
-            this.cancelToken = axios.CancelToken.source();
+
+            this.isError = false;
+            this.isPending = true;
 
             try {
-                const [stations, todayCapacities, weekdayAverageCapacities]
-                = await Promise.all([
-                    fetchStationsByIds(context.$hslGraphqlClient, stationIds, {
-                        cancelToken: this.cancelToken.token,
-                    }),
-                    fetchTodayForStations(context.$capacityClient, stationIds, {
-                        cancelToken: this.cancelToken.token,
-                    }),
-                    fetchWeekdayAverageForStations(
-                        context.$capacityClient,
-                        stationIds,
-                        { cancelToken: this.cancelToken.token },
-                    ),
-                ]);
+                if (stationIds.length) {
+                    const [
+                        stations,
+                        todayCapacities,
+                        weekdayAverageCapacities,
+                    ] = await Promise.all([
+                        fetchStationsByIds(
+                            context.$hslGraphqlClient,
+                            stationIds,
+                            {
+                                cancelToken: this.cancelToken
+                                    ? this.cancelToken.token
+                                    : undefined,
+                            },
+                        ),
+                        fetchTodayForStations(
+                            context.$capacityClient,
+                            stationIds,
+                            {
+                                cancelToken: this.cancelToken
+                                    ? this.cancelToken.token
+                                    : undefined,
+                            },
+                        ),
+                        fetchWeekdayAverageForStations(
+                            context.$capacityClient,
+                            stationIds,
+                            {
+                                cancelToken: this.cancelToken
+                                    ? this.cancelToken.token
+                                    : undefined,
+                            },
+                        ),
+                    ]);
 
-                this.stations = stations;
-                this.todayCapacities = todayCapacities;
-                this.weekdayAverageCapacities = weekdayAverageCapacities;
+                    this.stations = stations;
+                    this.todayCapacities = todayCapacities;
+                    this.weekdayAverageCapacities = weekdayAverageCapacities;
+                } else {
+                    this.stations = [];
+                    this.todayCapacities = {};
+                    this.weekdayAverageCapacities = {};
+                }
+
+                this.isPending = false;
             } catch (error) {
-                if (!axios.isCancel(error)) {
-                    // TODO: show error
+                if (!this.$axios.isCancel(error)) {
+                    this.isError = true;
                 }
             }
         },
     },
 });
 </script>
+
+<style lang="scss" scoped>
+.station-list {
+    margin-top: var(--space-unit);
+}
+</style>

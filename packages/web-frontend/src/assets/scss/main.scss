@@ -7,6 +7,7 @@
     --color-light-gray: #{$color-light-gray};
     --color-light-gray-accent: #{$color-light-gray-accent};
     --color-mid-gray: #{$color-mid-gray};
+    --color-mid-gray-accent: #{$color-mid-gray-accent};
     --color-white: #{$color-white};
     --color-yellow: #{$color-yellow};
 
@@ -24,6 +25,12 @@
     --space-unit-lg: #{$space-unit-lg};
     --space-unit-xl: #{$space-unit-xl};
     --space-unit-xxl: #{$space-unit-xxl};
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
 }
 
 body {

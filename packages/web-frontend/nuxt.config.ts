@@ -5,7 +5,8 @@ const config: NuxtConfig = {
         progress: false,
     },
     buildModules: [
-        '@nuxt/typescript-build'
+        '@nuxt/typescript-build',
+        '@nuxtjs/svg'
     ],
     components: true,
     css: [
@@ -14,9 +15,8 @@ const config: NuxtConfig = {
     env: {
         hslGraphqlEndpointUrl: process.env.HSL_GRAPHQL_ENDPOINT_URL || 'https://api.digitransit.fi/routing/v1/routers/hsl/index/graphql',
         addressSearchEndpointUrl: process.env.ADDRESS_SEARCH_ENDPOINT_URL || 'https://api.digitransit.fi/geocoding/v1/search',
-        locationSearchEndpointUrl: process.env.LOCATION_SEARCH_ENDPOINT_URL || 'https://api.digitransit.fi/geocoding/v1/reverse',
-        // TODO: TLS and proper domain for default
-        capacityEndpointUrl: process.env.CAPACITY_ENDPOINT_URL || 'http://34.88.107.181/'
+        // TODO: TLS for default
+        capacityEndpointUrl: process.env.CAPACITY_ENDPOINT_URL || 'https://api.fillarivahti.fi/'
     },
     head: {
         link: [

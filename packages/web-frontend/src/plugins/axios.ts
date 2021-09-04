@@ -25,11 +25,6 @@ const axiosPlugin: Plugin = context => {
         baseURL: process.env.addressSearchEndpointUrl,
         method: 'GET',
     });
-
-    context.$locationSearchClient = context.$axios.create({
-        baseURL: process.env.locationSearchEndpointUrl,
-        method: 'GET',
-    });
 };
 
 export default axiosPlugin;

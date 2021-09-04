@@ -8,6 +8,11 @@ export type BikeStation = {
     capacity: number,
 };
 
+export type Location = {
+    latitude: number,
+    longitude: number,
+};
+
 export const fetchStationsByIds = async (
     hslGraphqlClient: NuxtAxiosInstance,
     stationIds?: string[],
@@ -58,12 +63,6 @@ export const fetchStationById = async (
  */
 const DEFAULT_SEARCH_RESULTS_COUNT = 5;
 
-type SearchResult = {
-    properties: {
-        id: string,
-    }
-};
-
 export const findStationIdsByAddress = async (
     addressSearchClient: NuxtAxiosInstance,
     address: string,
@@ -74,12 +73,12 @@ export const findStationIdsByAddress = async (
         params: {
             text: address,
             size: DEFAULT_SEARCH_RESULTS_COUNT,
-            sources: 'citybikessmoove,citybikesvantaa',
+            sources: 'citybikessmoove',
             layers: 'bikestation',
         },
     });
 
-    const { features }: { features: SearchResult[] } = data;
+    const { features }: { features: any[] } = data;
 
     const stationIds = features.map(({ properties }) => properties.id);
 
@@ -87,25 +86,42 @@ export const findStationIdsByAddress = async (
 };
 
 export const findStationIdsByLocation = async (
-    locationSearchClient: NuxtAxiosInstance,
-    lat: number,
-    lon: number,
+    hslGraphqlClient: NuxtAxiosInstance,
+    location: Location,
     requestOptions: Partial<AxiosRequestConfig> = {},
 ): Promise<string[]> => {
-    const { data } = await locationSearchClient.request({
+    const resultsCount = DEFAULT_SEARCH_RESULTS_COUNT;
+
+    const { data } = await hslGraphqlClient.request({
         ...requestOptions,
-        params: {
-            'point.lat': lat,
-            'point.lon': lon,
-            size: DEFAULT_SEARCH_RESULTS_COUNT,
-            sources: 'citybikessmoove,citybikesvantaa',
-            layers: 'bikestation',
+        data: {
+            query: `{
+                nearest(lat: ${location.latitude}, lon: ${location.longitude}, maxResults: ${resultsCount}, filterByPlaceTypes: BICYCLE_RENT) {
+                    edges {
+                        node {
+                            place {
+                                ...on BikeRentalStation {
+                                    stationId
+                                }
+                            }
+                        }
+                    }
+                }
+            }`,
         },
     });
 
-    const { features }: { features: SearchResult[] } = data;
+    const { data: apiData = {} } = data;
+    const { nearest = {} } = apiData;
+    const { edges = [] } = nearest;
 
-    const stationIds = features.map(({ properties }) => properties.id);
+    const stationIds = edges.map((edge: any) => {
+        const { node = {} } = edge;
+        const { place = {} } = node;
+        const { stationId } = place;
+
+        return stationId;
+    });
 
     return stationIds;
 };

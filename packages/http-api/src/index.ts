@@ -43,7 +43,7 @@ app.get('/', async (req, res) => {
         await conn.authenticate();
 
         return res.status(StatusCodes.OK).end();
-    } catch (error) {
+    } catch (error: any) {
         logger.error('Failed to connect to the database in the healthcheck endpoint.', {
             error: error.message,
             stack: error.stack,
@@ -64,7 +64,7 @@ app.get('/today', async (req, res) => {
         const capacities = await capacityProvider.getToday(stationIds);
 
         return res.status(StatusCodes.OK).json(capacities);
-    } catch (error) {
+    } catch (error: any) {
         logger.error('Failed to get capacities for today.', {
             error: error.message,
             stack: error.stack,
@@ -86,7 +86,7 @@ app.get('/weekday-average', async (req, res) => {
         const capacities = await capacityProvider.getWeekdayAverage(stationIds);
 
         return res.status(StatusCodes.OK).json(capacities);
-    } catch (error) {
+    } catch (error: any) {
         logger.error('Failed to get capacities for weekday average.', {
             error: error.message,
             stack: error.stack,

@@ -29,7 +29,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .capacity-status {
-    color: var(--color-mid-gray);
+    color: var(--color-mid-gray-accent);
     font-size: var(--font-size-sm);
     margin: 0;
 }
