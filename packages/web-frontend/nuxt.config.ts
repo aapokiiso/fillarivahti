@@ -39,6 +39,13 @@ const config: NuxtConfig = {
                 ...i18nHead.link
             ],
             meta: [
+                { charset: 'utf-8' },
+                { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+                {
+                    hid: 'description',
+                    name: 'description',
+                    content: this.$t('siteDescription')
+                },
                 ...i18nHead.meta
             ],
         };
@@ -60,6 +67,7 @@ const config: NuxtConfig = {
             messages: {
                 fi: {
                     siteTitle: 'Fillarivahti',
+                    siteDescription: 'Fillarivahti näyttää Helsingin seudun kaupunkipyörien saatavuuden tämänhetkisen tilanteen ja suunnan.',
                     capacityStatus: 'Pyöriä juuri nyt',
                     stationSearch: {
                         inputPlaceholder: 'Hae pyöräasemia...',
@@ -74,6 +82,7 @@ const config: NuxtConfig = {
                 },
                 en: {
                     siteTitle: 'Fillarivahti',
+                    siteDescription: 'Fillarivahti visualizes the availability situation and trend of Helsinki area city bikes.',
                     capacityStatus: 'Bikes right now',
                     stationSearch: {
                         inputPlaceholder: 'Search for bike stations...',
