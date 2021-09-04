@@ -33,11 +33,25 @@ const logger = winston.createLogger({
     ],
 });
 
-logger.info('Starting Fillarivahti HTTP API');
-
 const app = express();
 
 app.use(cors());
+
+app.get('/', async (req, res) => {
+    try {
+        const conn = await connectionProvider.getConnection();
+        await conn.authenticate();
+
+        return res.status(StatusCodes.OK).end();
+    } catch (error) {
+        logger.error('Failed to connect to the database in the healthcheck endpoint.', {
+            error: error.message,
+            stack: error.stack,
+        });
+
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).end();
+    }
+});
 
 app.get('/today', async (req, res) => {
     const stationIds = stationIdParser.parse(req.query);
@@ -83,4 +97,11 @@ app.get('/weekday-average', async (req, res) => {
     }
 });
 
-app.listen(process.env.PORT);
+const port = process.env.PORT;
+if (port) {
+    app.listen(port, () => {
+        logger.info(`Started Fillarivahti HTTP API on port ${port}.`);
+    });
+} else {
+    logger.error('PORT environment variable is missing.');
+}
