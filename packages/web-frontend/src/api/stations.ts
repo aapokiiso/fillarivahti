@@ -1,3 +1,4 @@
+import { AxiosRequestConfig } from 'axios';
 import { NuxtAxiosInstance } from '@nuxtjs/axios';
 
 export type BikeStation = {
@@ -10,6 +11,7 @@ export type BikeStation = {
 export const fetchStationsByIds = async (
     hslGraphqlClient: NuxtAxiosInstance,
     stationIds?: string[],
+    requestOptions: Partial<AxiosRequestConfig> = {},
 ): Promise<BikeStation[]> => {
     try {
         const filter = stationIds
@@ -17,6 +19,7 @@ export const fetchStationsByIds = async (
             : '';
 
         const { data } = await hslGraphqlClient.request({
+            ...requestOptions,
             data: {
                 query: `{
                     bikeRentalStations${filter} {
@@ -43,8 +46,9 @@ export const fetchStationsByIds = async (
 export const fetchStationById = async (
     hslGraphqlClient: NuxtAxiosInstance,
     stationId: string,
+    requestOptions: Partial<AxiosRequestConfig> = {},
 ): Promise<BikeStation | undefined> => {
-    const [station] = await fetchStationsByIds(hslGraphqlClient, [stationId]);
+    const [station] = await fetchStationsByIds(hslGraphqlClient, [stationId], requestOptions);
 
     return station;
 };
@@ -60,16 +64,16 @@ type SearchResult = {
     }
 };
 
-export const findStationsByAddress = async (
+export const findStationIdsByAddress = async (
     addressSearchClient: NuxtAxiosInstance,
-    hslGraphqlClient: NuxtAxiosInstance,
     address: string,
-    resultsCount: number = DEFAULT_SEARCH_RESULTS_COUNT,
-): Promise<BikeStation[]> => {
-    const { data } = await addressSearchClient.get('/', {
+    requestOptions: Partial<AxiosRequestConfig> = {},
+): Promise<string[]> => {
+    const { data } = await addressSearchClient.request({
+        ...requestOptions,
         params: {
             text: address,
-            size: resultsCount,
+            size: DEFAULT_SEARCH_RESULTS_COUNT,
             sources: 'citybikessmoove,citybikesvantaa',
             layers: 'bikestation',
         },
@@ -79,21 +83,21 @@ export const findStationsByAddress = async (
 
     const stationIds = features.map(({ properties }) => properties.id);
 
-    return fetchStationsByIds(hslGraphqlClient, stationIds);
+    return stationIds;
 };
 
-export const findStationsByLocation = async (
+export const findStationIdsByLocation = async (
     locationSearchClient: NuxtAxiosInstance,
-    hslGraphqlClient: NuxtAxiosInstance,
     lat: number,
     lon: number,
-    resultsCount: number = DEFAULT_SEARCH_RESULTS_COUNT,
-): Promise<BikeStation[]> => {
-    const { data } = await locationSearchClient.get('/', {
+    requestOptions: Partial<AxiosRequestConfig> = {},
+): Promise<string[]> => {
+    const { data } = await locationSearchClient.request({
+        ...requestOptions,
         params: {
             'point.lat': lat,
             'point.lon': lon,
-            size: resultsCount,
+            size: DEFAULT_SEARCH_RESULTS_COUNT,
             sources: 'citybikessmoove,citybikesvantaa',
             layers: 'bikestation',
         },
@@ -103,5 +107,5 @@ export const findStationsByLocation = async (
 
     const stationIds = features.map(({ properties }) => properties.id);
 
-    return fetchStationsByIds(hslGraphqlClient, stationIds);
+    return stationIds;
 };

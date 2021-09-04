@@ -1,3 +1,4 @@
+import { AxiosRequestConfig } from 'axios';
 import { NuxtAxiosInstance } from '@nuxtjs/axios';
 
 export type Capacity = {
@@ -33,30 +34,48 @@ const mapCapacityResponse = (data: Record<string, ResponseCapacity[]>): Record<s
         return acc;
     }, {});
 
-export const fetchTodayForStations = async (capacityClient: NuxtAxiosInstance, stationIds: string[]): Promise<Record<string, Capacity[]>> => {
+export const fetchTodayForStations = async (
+    capacityClient: NuxtAxiosInstance,
+    stationIds: string[],
+    requestOptions: Partial<AxiosRequestConfig> = {},
+): Promise<Record<string, Capacity[]>> => {
     const { data } = await capacityClient.get('/today', {
+        ...requestOptions,
         params: mapStationIds(stationIds),
     });
 
     return mapCapacityResponse(data);
 };
 
-export const fetchTodayForStation = async (capacityClient: NuxtAxiosInstance, stationId: string): Promise<Capacity[]> => {
-    const capacities = await fetchTodayForStations(capacityClient, [stationId]);
+export const fetchTodayForStation = async (
+    capacityClient: NuxtAxiosInstance,
+    stationId: string,
+    requestOptions: Partial<AxiosRequestConfig> = {},
+): Promise<Capacity[]> => {
+    const capacities = await fetchTodayForStations(capacityClient, [stationId], requestOptions);
 
     return capacities[stationId] || [];
 };
 
-export const fetchWeekdayAverageForStations = async (capacityClient: NuxtAxiosInstance, stationIds: string[]): Promise<Record<string, Capacity[]>> => {
+export const fetchWeekdayAverageForStations = async (
+    capacityClient: NuxtAxiosInstance,
+    stationIds: string[],
+    requestOptions: Partial<AxiosRequestConfig> = {},
+): Promise<Record<string, Capacity[]>> => {
     const { data } = await capacityClient.get('/weekday-average', {
+        ...requestOptions,
         params: mapStationIds(stationIds),
     });
 
     return mapCapacityResponse(data);
 };
 
-export const fetchWeekdayAverageForStation = async (capacityClient: NuxtAxiosInstance, stationId: string): Promise<Capacity[]> => {
-    const capacities = await fetchWeekdayAverageForStations(capacityClient, [stationId]);
+export const fetchWeekdayAverageForStation = async (
+    capacityClient: NuxtAxiosInstance,
+    stationId: string,
+    requestOptions: Partial<AxiosRequestConfig> = {},
+): Promise<Capacity[]> => {
+    const capacities = await fetchWeekdayAverageForStations(capacityClient, [stationId], requestOptions);
 
     return capacities[stationId] || [];
 };

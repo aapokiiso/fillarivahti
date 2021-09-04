@@ -1,6 +1,9 @@
 <template>
     <main>
         <div class="content-wrapper">
+            <StationSearch
+                @search-results="onStationSearchResults"
+            />
             <section class="station-list">
                 <p v-if="$fetchState.pending">
                     Fetching stations...
@@ -32,6 +35,7 @@
 </template>
 
 <script lang="ts">
+import axios, { CancelTokenSource } from 'axios';
 import { defineComponent } from '@vue/composition-api';
 import {
     Capacity,
@@ -46,29 +50,53 @@ export default defineComponent({
             stations: [] as BikeStation[],
             todayCapacities: {} as Record<string, Capacity[]>,
             weekdayAverageCapacities: {} as Record<string, Capacity[]>,
+            cancelToken: null as CancelTokenSource | null,
         };
     },
     async fetch () {
-        const { context } = this.$nuxt;
-
-        // eslint-disable-next-line no-warning-comments
         // TODO: Implement proper station search
 
         const demoStationIds = ['062', '162'];
 
-        const [stations, todayCapacities, weekdayAverageCapacities]
-            = await Promise.all([
-                fetchStationsByIds(context.$hslGraphqlClient, demoStationIds),
-                fetchTodayForStations(context.$capacityClient, demoStationIds),
-                fetchWeekdayAverageForStations(
-                    context.$capacityClient,
-                    demoStationIds,
-                ),
-            ]);
+        await this.loadStations(demoStationIds);
+    },
+    methods: {
+        onStationSearchResults (stationIds: string[]): void {
+            this.loadStations(stationIds);
+        },
+        async loadStations (stationIds: string[]): Promise<void> {
+            const { context } = this.$nuxt;
 
-        this.stations = stations;
-        this.todayCapacities = todayCapacities;
-        this.weekdayAverageCapacities = weekdayAverageCapacities;
+            if (this.cancelToken) {
+                this.cancelToken.cancel();
+            }
+            this.cancelToken = axios.CancelToken.source();
+
+            try {
+                const [stations, todayCapacities, weekdayAverageCapacities]
+                = await Promise.all([
+                    fetchStationsByIds(context.$hslGraphqlClient, stationIds, {
+                        cancelToken: this.cancelToken.token,
+                    }),
+                    fetchTodayForStations(context.$capacityClient, stationIds, {
+                        cancelToken: this.cancelToken.token,
+                    }),
+                    fetchWeekdayAverageForStations(
+                        context.$capacityClient,
+                        stationIds,
+                        { cancelToken: this.cancelToken.token },
+                    ),
+                ]);
+
+                this.stations = stations;
+                this.todayCapacities = todayCapacities;
+                this.weekdayAverageCapacities = weekdayAverageCapacities;
+            } catch (error) {
+                if (!axios.isCancel(error)) {
+                    // TODO: show error
+                }
+            }
+        },
     },
 });
 </script>
