@@ -40,6 +40,8 @@
                 </div>
             </section>
         </div>
+
+        <CreditsFooter />
     </main>
 </template>
 
