@@ -34,7 +34,11 @@ export default defineComponent({
         },
         weekdayAverageColor: {
             type: String,
-            default: '#F4F4F5',
+            default: 'rgb(244, 244, 245, 0.9)',
+        },
+        tickColor: {
+            type: String,
+            default: '#333333',
         },
         lineThickness: {
             type: Number,
@@ -61,6 +65,22 @@ export default defineComponent({
             // eslint-disable-next-line no-magic-numbers
             default: 16 / 9,
         },
+        visibleTimeLabels: {
+            type: Array,
+            default () {
+                return [
+                    '00:00',
+                    '03:00',
+                    '06:00',
+                    '09:00',
+                    '12:00',
+                    '15:00',
+                    '18:00',
+                    '21:00',
+                    '24:00',
+                ];
+            },
+        },
     },
     setup (props) {
         /**
@@ -76,6 +96,8 @@ export default defineComponent({
             return timeUnit.toString().padStart(paddedLength, '0');
         }
 
+        let timeLabels;
+
         /**
          * Provides "hh:mm" labels for the graph, to be used as the x-axis
          * values.
@@ -83,27 +105,50 @@ export default defineComponent({
          * @returns {String[]}
          */
         function getTimeLabels () {
-            const hoursInDay = 24;
-            const minutesInHour = 60;
-            const datapointsCount
-                = (hoursInDay * minutesInHour) / props.granularityInMinutes;
+            if (!timeLabels) {
+                const hoursInDay = 24;
+                const minutesInHour = 60;
+                const datapointsCount
+                    = (hoursInDay * minutesInHour) / props.granularityInMinutes;
 
-            const labels = [];
-            for (let i = 0; i < datapointsCount; i++) {
-                const nthMinuteOfDay = i * props.granularityInMinutes;
+                const labels = [];
+                for (let i = 0; i <= datapointsCount; i++) {
+                    const nthMinuteOfDay = i * props.granularityInMinutes;
 
-                const hour = Math.floor(nthMinuteOfDay / minutesInHour);
-                const minute = nthMinuteOfDay - hour * minutesInHour;
+                    const hour = Math.floor(nthMinuteOfDay / minutesInHour);
+                    const minute = nthMinuteOfDay - hour * minutesInHour;
 
-                const hourLabel = padTimeUnit(hour);
-                const minuteLabel = padTimeUnit(minute);
+                    const hourLabel = padTimeUnit(hour);
+                    const minuteLabel = padTimeUnit(minute);
 
-                labels.push(`${hourLabel}:${minuteLabel}`);
+                    labels.push(`${hourLabel}:${minuteLabel}`);
+                }
+
+                timeLabels = labels;
             }
 
-            return labels;
+            return timeLabels;
         }
 
+        /**
+         * Maps time label to an x-axis tick.
+         *
+         * @param {String} timeLabel
+         * @returns {String}
+         */
+        function mapTimeLabelToTick (timeLabel) {
+            const [hour] = timeLabel.split(':');
+
+            return `${parseInt(hour)}h`;
+        }
+
+        /**
+         * Applies Gaussian smoothing on capacity records which contain quite
+         * a bit of noise from people taking and leaving bikes in surges.
+         *
+         * @param {Capacity[]} capacityRecords
+         * @returns {Capacity[]}
+         */
         function smoothenCapacityRecords (capacityRecords) {
             const smoothenedCapacities = gaussianSmoothen(
                 capacityRecords.map(({ capacity }) => capacity),
@@ -124,7 +169,7 @@ export default defineComponent({
          * @param {Capacity} capacityRecord
          * @returns {Point}
          */
-        function mapCapacity (capacityRecord) {
+        function mapCapacityToPoint (capacityRecord) {
             const { timestamp, capacity } = capacityRecord;
 
             const hour = timestamp.getHours();
@@ -145,7 +190,7 @@ export default defineComponent({
                 {
                     label: 'Capacity today',
                     data: smoothenCapacityRecords(props.todayCapacities).map(
-                        mapCapacity,
+                        mapCapacityToPoint,
                     ),
                     backgroundColor: 'transparent',
                     borderColor: props.todayColor,
@@ -156,7 +201,7 @@ export default defineComponent({
                     label: 'Average capacity for weekday',
                     data: smoothenCapacityRecords(
                         props.weekdayAverageCapacities,
-                    ).map(mapCapacity),
+                    ).map(mapCapacityToPoint),
                     backgroundColor: props.weekdayAverageColor,
                     borderColor: 'transparent',
                     borderWidth: props.lineThickness,
@@ -182,9 +227,21 @@ export default defineComponent({
             },
             scales: {
                 x: {
-                    display: false,
                     grid: {
                         display: false,
+                        borderColor: 'transparent',
+                    },
+                    ticks: {
+                        color: props.tickColor,
+                        maxRotation: 0,
+                        autoSkip: false,
+                        callback (idx) {
+                            const label = getTimeLabels()[idx];
+
+                            return props.visibleTimeLabels.includes(label)
+                                ? mapTimeLabelToTick(label)
+                                : '';
+                        },
                     },
                 },
                 y: {

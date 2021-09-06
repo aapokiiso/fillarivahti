@@ -9,14 +9,7 @@
             })
         "
     >
-        <span
-            class="capacity-status__available"
-            :class="{
-                'is-high': isHighAvailability,
-                'is-mid': isMidAvailability,
-                'is-low': isLowAvailability,
-            }"
-        >
+        <span class="capacity-status__available" :class="availabilityClassName">
             {{ bikesAvailable }}
         </span>
         <span v-if="capacity" class="capacity-status__capacity">
@@ -39,27 +32,33 @@ export default defineComponent({
             required: false,
             default: 0,
         },
-        highAvailabilityLimit: {
+        maxBadAvailability: {
             type: Number,
-            default: 10,
+            default: 0.15,
         },
-        midAvailabilityLimit: {
+        maxLowAvailability: {
             type: Number,
-            default: 6,
+            default: 0.325,
         },
     },
     computed: {
-        isHighAvailability (): boolean {
-            return this.bikesAvailable >= this.highAvailabilityLimit;
+        availabilityPercentage (): number {
+            return this.bikesAvailable / this.capacity;
         },
-        isMidAvailability (): boolean {
-            return (
-                this.bikesAvailable >= this.midAvailabilityLimit
-                && this.bikesAvailable < this.highAvailabilityLimit
-            );
+        maxBadAvailabilityCount (): number {
+            return Math.round(this.capacity * this.maxBadAvailability);
         },
-        isLowAvailability (): boolean {
-            return this.bikesAvailable < this.midAvailabilityLimit;
+        maxLowAvailabilityCount (): number {
+            return Math.round(this.capacity * this.maxLowAvailability);
+        },
+        availabilityClassName (): string {
+            if (this.bikesAvailable <= this.maxBadAvailabilityCount) {
+                return 'is-bad';
+            } else if (this.bikesAvailable <= this.maxLowAvailabilityCount) {
+                return 'is-low';
+            }
+
+            return 'is-good';
         },
     },
 });
@@ -73,15 +72,15 @@ export default defineComponent({
 .capacity-status__available {
     font-weight: bold;
 
-    &.is-low {
+    &.is-bad {
         color: var(--color-red);
     }
 
-    &.is-mid {
+    &.is-low {
         color: var(--color-yellow);
     }
 
-    &.is-high {
+    &.is-good {
         color: var(--color-green);
     }
 }
