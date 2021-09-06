@@ -2,6 +2,7 @@ import express from 'express';
 import { MysqlConnectionProvider, EnvConfiguration as OrmConfiguration } from '@aapokiiso/fillarivahti-orm';
 import { OrmCapacityProvider, EnvConfiguration as CapacityRepositoryConfiguration, DefaultAggregateCapacityMapper } from '@aapokiiso/fillarivahti-capacity-repository';
 import DefaultStationIdParser from './service/DefaultStationIdParser';
+import DefaultCapacityCacheLifetimeResolver from './service/DefaultCapacityCacheLifetimeResolver';
 import { StatusCodes } from 'http-status-codes';
 import * as winston from 'winston';
 import cors from 'cors';
@@ -25,6 +26,10 @@ const capacityProvider = new OrmCapacityProvider(
 );
 
 const stationIdParser = new DefaultStationIdParser();
+
+const capacityCacheLifetimeResolver = new DefaultCapacityCacheLifetimeResolver(
+    capacityRepositoryConfiguration,
+);
 
 const logger = winston.createLogger({
     format: winston.format.json(),
@@ -63,6 +68,9 @@ app.get('/today', async (req, res) => {
     try {
         const capacities = await capacityProvider.getToday(stationIds);
 
+        const cacheLifetime = capacityCacheLifetimeResolver.getCacheLifetimeInSeconds();
+        res.setHeader('Cache-Control', `public, max-age=${cacheLifetime}`);
+
         return res.status(StatusCodes.OK).json(capacities);
     } catch (error: any) {
         logger.error('Failed to get capacities for today.', {
@@ -84,6 +92,9 @@ app.get('/weekday-average', async (req, res) => {
 
     try {
         const capacities = await capacityProvider.getWeekdayAverage(stationIds);
+
+        const cacheLifetime = capacityCacheLifetimeResolver.getCacheLifetimeInSeconds();
+        res.setHeader('Cache-Control', `public, max-age=${cacheLifetime}`);
 
         return res.status(StatusCodes.OK).json(capacities);
     } catch (error: any) {
