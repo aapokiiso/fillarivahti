@@ -1,6 +1,6 @@
 {
   "name": "@aapokiiso/fillarivahti-http-api",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "Capacity HTTP API for Fillarivahti.",
   "author": "Aapo Kiiso <aapo@kii.so>",
   "license": "MIT",
