@@ -1,14 +1,25 @@
 <template>
     <article class="station-card">
-        <h3 class="station-card__title">
-            {{ station.name }}
-        </h3>
+        <header class="station-card__header">
+            <h3 class="station-card__title">
+                <span>{{ station.name }}</span>
+                <a
+                    :href="getExternalLinkUrl"
+                    target="_blank"
+                    class="station-card__external-link"
+                    :title="$t('stationCard.journeyPlannerLinkTitle')"
+                    :aria-label="$t('stationCard.journeyPlannerLinkTitle')"
+                >
+                    <ExternalLinkIcon />
+                </a>
+            </h3>
 
-        <CapacityStatus
-            :bikes-available="station.bikesAvailable"
-            :capacity="station.capacity"
-            class="station-card__capacity-status"
-        />
+            <CapacityStatus
+                :bikes-available="station.bikesAvailable"
+                :capacity="station.capacity"
+                class="station-card__capacity-status"
+            />
+        </header>
 
         <figure class="station-card__capacity-trend">
             <slot name="capacity-trend" />
@@ -21,12 +32,24 @@
 // eslint-disable-next-line import/named
 import { defineComponent, PropType } from '@vue/composition-api';
 import { BikeStation } from '~/api/stations';
+import ExternalLinkIcon from '~/assets/icons/external-link-alt-solid.svg?inline';
 
 export default defineComponent({
+    components: {
+        ExternalLinkIcon,
+    },
     props: {
         station: {
             type: Object as PropType<BikeStation>,
             required: true,
+        },
+    },
+    computed: {
+        getExternalLinkUrl (): string {
+            return (
+                `https://reittiopas.hsl.fi/pyoraasemat/${
+                    this.station.stationId}`
+            );
         },
     },
 });
@@ -41,8 +64,29 @@ export default defineComponent({
     padding: var(--space-unit-sm) var(--space-unit);
 }
 
+.station-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
 .station-card__title {
-    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    font-size: var(--font-size);
     margin: 0;
+}
+
+.station-card__external-link {
+    width: var(--space-unit);
+    height: var(--space-unit);
+    margin-left: var(--space-unit-sm);
+    color: var(--color-light-gray-accent);
+    transition: color var(--transition-time);
+
+    &:hover,
+    &:focus {
+        color: var(--color-blue);
+    }
 }
 </style>

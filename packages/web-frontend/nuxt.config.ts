@@ -68,7 +68,13 @@ const config: NuxtConfig = {
                 fi: {
                     siteTitle: 'Fillarivahti',
                     siteDescription: 'Fillarivahti näyttää Helsingin seudun kaupunkipyörien saatavuuden tämänhetkisen tilanteen ja suunnan.',
-                    capacityStatus: 'Pyöriä juuri nyt',
+                    stationCard: {
+                        journeyPlannerLinkTitle: 'Katso asema HSL Reittioppaassa',
+                    },
+                    capacityStatus: {
+                        title: 'Pyöriä juuri nyt',
+                        ariaLabel: '{bikesAvailable} / {capacity} pyörää saatavilla juuri nyt'
+                    },
                     stationSearch: {
                         inputPlaceholder: 'Hae pyöräasemia...',
                         inputHelp: 'Hae pyöräasemia nimen tai osoitteen mukaan',
@@ -83,7 +89,13 @@ const config: NuxtConfig = {
                 en: {
                     siteTitle: 'Fillarivahti',
                     siteDescription: 'Fillarivahti visualizes the availability situation and trend of Helsinki area city bikes.',
-                    capacityStatus: 'Bikes right now',
+                    stationCard: {
+                        journeyPlannerLinkTitle: 'View station in HSL Journey Planner',
+                    },
+                    capacityStatus: {
+                        title: 'Bikes available right now',
+                        ariaLabel: '{bikesAvailable} out of {capacity} bikes available right now'
+                    },
                     stationSearch: {
                         inputPlaceholder: 'Search for bike stations...',
                         inputHelp: 'Search for bike stations by their name or address',

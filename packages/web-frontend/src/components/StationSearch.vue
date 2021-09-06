@@ -7,11 +7,13 @@
             class="station-search__query-input"
             :placeholder="$t('stationSearch.inputPlaceholder')"
             :title="$t('stationSearch.inputHelp')"
+            :aria-label="$t('stationSearch.inputHelp')"
             @input="onQueryInputDebounced"
         >
         <button
             class="station-search__location-button"
             :title="$t('stationSearch.locationHelp')"
+            :aria-label="$t('stationSearch.locationHelp')"
             :class="{ 'is-active': location }"
             @click="onLocationButtonClick"
         >
@@ -210,16 +212,20 @@ export default defineComponent({
     position: absolute;
     border: none;
     background: none;
-    padding: 0;
+    font-size: var(--font-size);
+    padding: 0 var(--space-unit);
     color: var(--color-dark-gray);
-    width: var(--space-unit);
-    right: var(--space-unit);
-    top: 50%;
-    transform: translateY(-50%);
+    right: 0;
+    top: 0;
+    height: 100%;
     cursor: pointer;
 
     &.is-active {
         color: var(--color-yellow);
     }
+}
+
+.station-search__location-icon {
+    width: var(--space-unit);
 }
 </style>
