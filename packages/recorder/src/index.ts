@@ -40,10 +40,10 @@ cron.schedule('*/5 * * * *', async function () {
     try {
         const capacities = await capacityProvider.getCapacities();
 
-        await Promise.all(capacities.map(capacity => capacityRepository.create(capacity)));
+        await capacityRepository.createMany(capacities);
 
         logger.info('Fillarivahti recorder is completed.');
-    } catch (error) {
+    } catch (error: any) {
         logger.error('Failed to record bike station capacities.', {
             error: error.message,
             stack: error.stack,
