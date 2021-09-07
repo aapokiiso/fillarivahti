@@ -33,6 +33,14 @@ function importCapacityModel(sequelize: Sequelize): ModelCtor<Model> {
                         'stationId',
                     ],
                 },
+                {
+                    name: 'station_id_timestamp',
+                    using: 'BTREE',
+                    fields: [
+                        'stationId',
+                        'timestamp',
+                    ],
+                },
             ],
         },
     );

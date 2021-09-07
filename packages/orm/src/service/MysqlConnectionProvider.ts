@@ -19,7 +19,9 @@ export default class MysqlConnectionProvider implements ConnectionProvider {
         if (this.connection === null) {
             this.connection = this.createConnection();
             this.importModels(this.connection);
-            await this.connection.sync();
+
+            // TODO: Remove altering once migration deployment is automated.
+            await this.connection.sync({ alter: true });
         }
 
         return this.connection;
