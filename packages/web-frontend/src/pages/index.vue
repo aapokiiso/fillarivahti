@@ -31,12 +31,12 @@
                             <template #capacity-trend>
                                 <CapacityGraph
                                     :today-capacities="
-                                        todayCapacities[station.stationId]
+                                        todayCapacities[station.stationId] || []
                                     "
                                     :weekday-average-capacities="
                                         weekdayAverageCapacities[
                                             station.stationId
-                                        ]
+                                        ] || []
                                     "
                                 />
                             </template>

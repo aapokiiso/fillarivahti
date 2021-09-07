@@ -32,7 +32,7 @@ const gaussianSmoothen = (dataset: number[], sigma: number = DEFAULT_SIGMA): num
     const kernelWidth = 2 * sigma + 1;
 
     if (dataset.length < kernelWidth) {
-        throw new Error(`Dataset needs to be larger than the kernel diameter (${kernelWidth}).`);
+        return dataset;
     }
 
     return dataset.map((value, idx1) => {

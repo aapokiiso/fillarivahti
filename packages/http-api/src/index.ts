@@ -115,7 +115,7 @@ app.get('/weekday-average', async (req, res) => {
     }
 });
 
-const port = process.env.PORT;
+const port = process.env.PORT ? Number(process.env.PORT) : null;
 if (port) {
     app.listen(port, () => {
         logger.info(`Started Fillarivahti HTTP API on port ${port}.`);

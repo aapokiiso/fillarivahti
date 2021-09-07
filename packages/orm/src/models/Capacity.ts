@@ -19,7 +19,7 @@ function importCapacityModel(sequelize: Sequelize): ModelCtor<Model> {
             },
             capacity: {
                 // eslint-disable-next-line new-cap, no-magic-numbers
-                type: DataTypes.DECIMAL(3, 2),
+                type: DataTypes.DECIMAL(4, 2),
                 comment: 'Capacity percentage',
             },
         },

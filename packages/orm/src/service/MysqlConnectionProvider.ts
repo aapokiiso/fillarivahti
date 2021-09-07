@@ -20,7 +20,7 @@ export default class MysqlConnectionProvider implements ConnectionProvider {
             this.connection = this.createConnection();
             this.importModels(this.connection);
 
-            // TODO: Remove altering once migration deployment is automated.
+            // TODO: Remove altering when migration deployments are automated.
             await this.connection.sync({ alter: true });
         }
 
