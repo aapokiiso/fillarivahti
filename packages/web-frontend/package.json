@@ -23,7 +23,9 @@
     "start": "nuxt start",
     "lint": "eslint --ext .ts,.js,.vue src",
     "lint:fix": "npm run lint -- --fix",
-    "test": "jest"
+    "test": "jest",
+    "prepublish": "npm run build",
+    "deploy": "npm run build && gcloud app deploy"
   },
   "devDependencies": {
     "@lamiaoy/eslint-config": "^3.0.0",

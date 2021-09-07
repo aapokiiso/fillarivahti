@@ -20,7 +20,8 @@
     "clean": "rm -rf dist",
     "build": "npm run clean && tsc",
     "lint": "eslint src",
-    "lint:fix": "eslint --fix src"
+    "lint:fix": "eslint --fix src",
+    "prepublish": "npm run build"
   },
   "dependencies": {
     "@aapokiiso/fillarivahti-orm": "^1.9.0",
