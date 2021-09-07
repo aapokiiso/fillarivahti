@@ -2,46 +2,51 @@
     <main>
         <div class="content-wrapper">
             <StationSearch
+                class="station-search"
                 @search-pending="onStationSearchPending"
                 @search-results="onStationSearchResults"
                 @search-error="onStationSearchError"
             />
 
-            <p v-if="isPending" class="station-list__pending">
-                {{ $t('stationList.pending') }}
-            </p>
-
-            <p v-if="isError" class="station-list__error">
-                {{ $t('stationList.error') }}
-            </p>
-
-            <section v-if="canShowStations" class="station-list">
-                <p v-if="!stations.length" class="station-list__empty">
-                    {{ $t('stationList.empty') }}
+            <section class="station-list">
+                <p v-if="isPending" class="station-list__pending">
+                    {{ $t("stationList.pending") }}
                 </p>
 
-                <div
-                    v-for="station in stations"
-                    v-else
-                    :key="station.stationId"
-                >
-                    <StationCard :station="station">
-                        <template #capacity-trend>
-                            <CapacityGraph
-                                :today-capacities="
-                                    todayCapacities[station.stationId]
-                                "
-                                :weekday-average-capacities="
-                                    weekdayAverageCapacities[station.stationId]
-                                "
-                            />
-                        </template>
-                    </StationCard>
+                <p v-if="isError" class="station-list__error">
+                    {{ $t("stationList.error") }}
+                </p>
+
+                <div v-if="canShowStations">
+                    <p v-if="!stations.length" class="station-list__empty">
+                        {{ $t("stationList.empty") }}
+                    </p>
+
+                    <div
+                        v-for="station in stations"
+                        v-else
+                        :key="station.stationId"
+                    >
+                        <StationCard :station="station">
+                            <template #capacity-trend>
+                                <CapacityGraph
+                                    :today-capacities="
+                                        todayCapacities[station.stationId]
+                                    "
+                                    :weekday-average-capacities="
+                                        weekdayAverageCapacities[
+                                            station.stationId
+                                        ]
+                                    "
+                                />
+                            </template>
+                        </StationCard>
+                    </div>
                 </div>
             </section>
-        </div>
 
-        <CreditsFooter />
+            <AboutDriver class="about-driver" />
+        </div>
     </main>
 </template>
 
@@ -155,7 +160,12 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.about-driver,
+.station-search {
+    margin: var(--space-unit-sm) 0;
+}
+
 .station-list {
-    margin-top: var(--space-unit);
+    margin: var(--space-unit) 0;
 }
 </style>

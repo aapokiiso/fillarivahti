@@ -7,8 +7,8 @@
                     :href="getExternalLinkUrl"
                     target="_blank"
                     class="station-card__external-link"
-                    :title="$t('stationCard.journeyPlannerLinkTitle')"
-                    :aria-label="$t('stationCard.journeyPlannerLinkTitle')"
+                    :title="$t('stationCard.journeyPlannerLinkLabel')"
+                    :aria-label="$t('stationCard.journeyPlannerLinkLabel')"
                 >
                     <ExternalLinkIcon />
                 </a>

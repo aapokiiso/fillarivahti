@@ -69,7 +69,7 @@ const config: NuxtConfig = {
                     siteTitle: 'Fillarivahti',
                     siteDescription: 'Fillarivahti näyttää Helsingin seudun kaupunkipyörien saatavuuden tämänhetkisen tilanteen ja suunnan.',
                     stationCard: {
-                        journeyPlannerLinkTitle: 'Katso asema HSL Reittioppaassa',
+                        journeyPlannerLinkLabel: 'Katso asema HSL Reittioppaassa',
                     },
                     capacityStatus: {
                         title: 'Pyöriä juuri nyt',
@@ -84,22 +84,28 @@ const config: NuxtConfig = {
                         pending: 'Asemia ladataan...',
                         error: 'Jotain meni pieleen :( Sivun päivitys voi auttaa',
                         empty: 'Ei asemia. Voit kokeilla hakea niitä hakusanan tai sijaintisi perusteella.',
+                        backLink: 'Takaisin asemalistaan',
                     },
-                    creditsPage: {
+                    about: {
+                        title: 'Tietoja',
+                        linkLabel: 'Tietoja',
+                        backLinkLabel: 'Takaisin asemalistaan',
+                        summary: 'Fillarivahti seuraa taustalla Helsingin ja Espoon kaupunkipyörien saatavuutta. Jokaisesta pyöräasemasta piirtyy kuva, jossa näkyy keltaisella tämänpäiväinen saatavuustilanne, ja harmaalla viikonpäivän keskiarvo. Musta katkoviiva kuvaa aseman täyttä kapasiteettia ja auttaa hahmottamaan saatavuustilannetta.'
+                    },
+                    credits: {
                         title: 'Kiitokset',
                         hsl: 'Tää oli tosi hauska tehdä! Isot kiitokset HSL:lle ja DigiTransitille loistavista rajapinnoista ja isosta kasasta avointa dataa 😍',
                         about: 'Jos kiinnostaa tutkailla miten saitti on rakennettu, lähdekoodi löytyy Githubista. Samassa paketissa on myös saatavuustietojen seuranta ja rajapinta josta niitä voi kysellä.',
                         githubLink: 'Linkki Githubiin',
                         licensesTitle: 'Lisenssit',
                         fontAwesome: 'Font Awesome -ikonikirjasto',
-                        backLink: 'Takaisin asemalistaan',
                     }
                 },
                 en: {
                     siteTitle: 'Fillarivahti',
                     siteDescription: 'Fillarivahti visualizes the availability situation and trend of Helsinki area city bikes.',
                     stationCard: {
-                        journeyPlannerLinkTitle: 'View station in HSL Journey Planner',
+                        journeyPlannerLinkLabel: 'View station in HSL Journey Planner',
                     },
                     capacityStatus: {
                         title: 'Bikes available right now',
@@ -115,14 +121,19 @@ const config: NuxtConfig = {
                         error: 'Something went wrong :( Reloading the site might help',
                         empty: 'No stations found. You can try to find them by their name or your location.',
                     },
-                    creditsPage: {
+                    about: {
+                        title: 'About',
+                        linkLabel: 'About',
+                        backLinkLabel: 'Back to station list',
+                        summary: 'Fillarivahti records the availability of each bike station in Helsinki and Espoo. The yellow line graphs today\'s availability, and the gray area shows the weekday\'s average availability. The black, dashed line visualizes full capacity, and helps put things in perspective.'
+                    },
+                    credits: {
                         title: 'Credits',
                         hsl: 'This was super fun to make! Big thanks for HSL and DigiTransit for providing such great APIs and boatloads of open data 😍',
                         about: 'If you\'re interested to check out how the site is built, the sources are available on Github. The repository includes the availability recorder and the API for reading them, as well.',
                         githubLink: 'Link to Github',
                         licensesTitle: 'Licenses',
                         fontAwesome: 'Font Awesome icon library',
-                        backLink: 'Back to station list',
                     }
                 },
             }
@@ -135,14 +146,7 @@ const config: NuxtConfig = {
             '@nuxtjs/i18n',
             {
                 strategy: 'prefix_except_default',
-                baseUrl: 'https://fillarivahti.fi',
-                parsePages: false,
-                pages: {
-                    credits: {
-                        fi: '/kiitokset',
-                        en: '/credits',
-                    }
-                }
+                baseUrl: 'https://fillarivahti.fi'
             }
         ],
     ],
