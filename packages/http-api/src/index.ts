@@ -3,6 +3,8 @@ import { MysqlConnectionProvider, EnvConfiguration as OrmConfiguration } from '@
 import { OrmCapacityProvider, EnvConfiguration as CapacityRepositoryConfiguration, DefaultAggregateCapacityMapper } from '@aapokiiso/fillarivahti-capacity-repository';
 import DefaultStationIdParser from './service/DefaultStationIdParser';
 import DefaultCapacityCacheLifetimeResolver from './service/DefaultCapacityCacheLifetimeResolver';
+import DefaultLatestCapacityTimestampResolver from './service/DefaultLatestCapacityTimestampResolver';
+import DefaultCapacityCacheControlApplier from './service/DefaultCapacityCacheControlApplier';
 import { StatusCodes } from 'http-status-codes';
 import * as winston from 'winston';
 import cors from 'cors';
@@ -29,6 +31,13 @@ const stationIdParser = new DefaultStationIdParser();
 
 const capacityCacheLifetimeResolver = new DefaultCapacityCacheLifetimeResolver(
     capacityRepositoryConfiguration,
+);
+
+const latestCapacityTimestampResolver = new DefaultLatestCapacityTimestampResolver();
+
+const capacityCacheControlApplier = new DefaultCapacityCacheControlApplier(
+    latestCapacityTimestampResolver,
+    capacityCacheLifetimeResolver,
 );
 
 const logger = winston.createLogger({
@@ -68,8 +77,7 @@ app.get('/today', async (req, res) => {
     try {
         const capacities = await capacityProvider.getToday(stationIds);
 
-        const cacheLifetime = capacityCacheLifetimeResolver.getCacheLifetimeInSeconds();
-        res.setHeader('Cache-Control', `public, max-age=${cacheLifetime}`);
+        capacityCacheControlApplier.apply(res, capacities);
 
         return res.status(StatusCodes.OK).json(capacities);
     } catch (error: any) {
@@ -93,8 +101,7 @@ app.get('/weekday-average', async (req, res) => {
     try {
         const capacities = await capacityProvider.getWeekdayAverage(stationIds);
 
-        const cacheLifetime = capacityCacheLifetimeResolver.getCacheLifetimeInSeconds();
-        res.setHeader('Cache-Control', `public, max-age=${cacheLifetime}`);
+        capacityCacheControlApplier.apply(res, capacities);
 
         return res.status(StatusCodes.OK).json(capacities);
     } catch (error: any) {
