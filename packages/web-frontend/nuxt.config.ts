@@ -90,14 +90,17 @@ const config: NuxtConfig = {
                         title: 'Tietoja',
                         linkLabel: 'Tietoja',
                         backLinkLabel: 'Takaisin asemalistaan',
-                        summary: 'Fillarivahti seuraa taustalla Helsingin ja Espoon kaupunkipyörien saatavuutta. Jokaisesta pyöräasemasta piirtyy kuva, jossa näkyy keltaisella tämänpäiväinen saatavuustilanne, ja harmaalla viikonpäivän keskiarvo. Musta katkoviiva kuvaa aseman täyttä kapasiteettia ja auttaa hahmottamaan saatavuustilannetta.'
+                        summary: 'Fillarivahti seuraa taustalla Helsingin ja Espoon kaupunkipyörien saatavuutta. Jokaisesta pyöräasemasta piirtyy kuva, jossa näkyy keltaisella tämänpäiväinen saatavuustilanne, ja harmaalla viikonpäivän keskiarvo. Musta katkoviiva kuvaa aseman täyttä kapasiteettia ja auttaa hahmottamaan saatavuustilannetta.',
+                        sources: 'Jos kiinnostaa tutkailla miten saitti on rakennettu, lähdekoodi löytyy Githubista. Samassa paketissa on myös saatavuustietojen seuranta ja rajapinta josta niitä voi kysellä.',
+                        githubLink: 'Linkki Githubiin',
                     },
                     credits: {
                         title: 'Kiitokset',
-                        hsl: 'Tää oli tosi hauska tehdä! Isot kiitokset HSL:lle ja DigiTransitille loistavista rajapinnoista ja isosta kasasta avointa dataa 😍',
+                        hsl: 'Kiitokset HSL:lle ja DigiTransitille loistavista rajapinnoista, ja Markus Kainulle isosta kasasta historiallista pyörien saatavuusdataa!',
                         about: 'Jos kiinnostaa tutkailla miten saitti on rakennettu, lähdekoodi löytyy Githubista. Samassa paketissa on myös saatavuustietojen seuranta ja rajapinta josta niitä voi kysellä.',
                         githubLink: 'Linkki Githubiin',
                         licensesTitle: 'Lisenssit',
+                        historicalData: 'Historialliset pyörien saatavuustiedot (Markus Kainu)',
                         fontAwesome: 'Font Awesome -ikonikirjasto',
                     }
                 },
@@ -125,14 +128,15 @@ const config: NuxtConfig = {
                         title: 'About',
                         linkLabel: 'About',
                         backLinkLabel: 'Back to station list',
-                        summary: 'Fillarivahti records the availability of each bike station in Helsinki and Espoo. The yellow line graphs today\'s availability, and the gray area shows the weekday\'s average availability. The black, dashed line visualizes full capacity, and helps put things in perspective.'
+                        summary: 'Fillarivahti records the availability of each bike station in Helsinki and Espoo. The yellow line graphs today\'s availability, and the gray area shows the weekday\'s average availability. The black, dashed line visualizes full capacity, and helps put things in perspective.',
+                        sources: 'If you\'re interested to check out how the site is built, the sources are available on Github. The repository includes the availability recorder and the API for reading them, as well.',
+                        githubLink: 'Link to Github',
                     },
                     credits: {
                         title: 'Credits',
-                        hsl: 'This was super fun to make! Big thanks for HSL and DigiTransit for providing such great APIs and boatloads of open data 😍',
-                        about: 'If you\'re interested to check out how the site is built, the sources are available on Github. The repository includes the availability recorder and the API for reading them, as well.',
-                        githubLink: 'Link to Github',
+                        hsl: 'Thanks to HSL and DigiTransit for providing open APIs, and to Markus Kainu for collecting historical bike availability data!',
                         licensesTitle: 'Licenses',
+                        historicalData: 'Historical bike availability data (Markus Kainu)',
                         fontAwesome: 'Font Awesome icon library',
                     }
                 },

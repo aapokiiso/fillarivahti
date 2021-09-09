@@ -5,6 +5,9 @@
 
             <section>
                 <p>{{ $t("about.summary") }}</p>
+
+                <p>{{ $t("about.sources") }}</p>
+                <p><a href="https://github.com/aapokiiso/fillarivahti">{{ $t('about.githubLink') }}</a></p>
             </section>
 
             <section>
@@ -12,11 +15,13 @@
 
                 <p>{{ $t("credits.hsl") }}</p>
 
-                <p>{{ $t("credits.about") }}</p>
-                <p><a href="https://github.com/aapokiiso/fillarivahti">{{ $t('credits.githubLink') }}</a></p>
-
                 <h3>{{ $t("credits.licensesTitle") }}</h3>
                 <ul>
+                    <li>
+                        <a href="https://data.markuskainu.fi/opendata/kaupunkipyorat/">
+                            {{ $t("credits.historicalData") }}
+                        </a>
+                    </li>
                     <li>
                         <a href="https://fontawesome.com/license">
                             {{ $t("credits.fontAwesome") }}

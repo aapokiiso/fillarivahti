@@ -24,7 +24,6 @@
     "lint": "eslint --ext .ts,.js,.vue src",
     "lint:fix": "npm run lint -- --fix",
     "test": "jest",
-    "prepublish": "npm run build",
     "deploy": "npm run build && gcloud app deploy"
   },
   "devDependencies": {
