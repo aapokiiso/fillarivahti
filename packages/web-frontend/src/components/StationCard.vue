@@ -89,4 +89,8 @@ export default defineComponent({
         color: var(--color-blue);
     }
 }
+
+.station-card__capacity-trend {
+    margin-top: var(--space-unit-sm);
+}
 </style>

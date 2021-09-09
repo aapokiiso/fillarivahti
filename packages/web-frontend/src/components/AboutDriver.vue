@@ -3,8 +3,6 @@
         <NuxtLink
             :to="localePath('about')"
             class="about-driver__link"
-            :title="$t('about.linkHelp')"
-            :aria-label="$t('about.linkHelp')"
         >
             {{ $t('about.linkLabel') }}
         </NuxtLink>

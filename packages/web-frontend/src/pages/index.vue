@@ -30,15 +30,17 @@
                         <StationCard :station="station">
                             <template #capacity-trend>
                                 <CapacityGraph
+                                    v-if="!isStationPending(station.stationId)"
                                     :today-capacities="
-                                        todayCapacities[station.stationId] || []
+                                        todayCapacities[station.stationId]
                                     "
                                     :weekday-average-capacities="
                                         weekdayAverageCapacities[
                                             station.stationId
-                                        ] || []
+                                        ]
                                     "
                                 />
+                                <PuSkeleton v-else height="var(--space-unit-xxl)" />
                             </template>
                         </StationCard>
                     </div>
@@ -90,6 +92,12 @@ export default defineComponent({
             this.isPending = false;
             this.isError = true;
         },
+        isStationPending (stationId: string): boolean {
+            return !(
+                this.todayCapacities[stationId]
+                && this.weekdayAverageCapacities[stationId]
+            );
+        },
         async loadStations (stationIds: string[]): Promise<void> {
             const { context } = this.$nuxt;
 
@@ -105,41 +113,40 @@ export default defineComponent({
 
             try {
                 if (stationIds.length) {
-                    const [
-                        stations,
-                        todayCapacities,
-                        weekdayAverageCapacities,
-                    ] = await Promise.all([
-                        fetchStationsByIds(
-                            context.$hslGraphqlClient,
-                            stationIds,
-                            {
-                                cancelToken: this.cancelToken
-                                    ? this.cancelToken.token
-                                    : undefined,
-                            },
-                        ),
-                        fetchTodayForStations(
-                            context.$capacityClient,
-                            stationIds,
-                            {
-                                cancelToken: this.cancelToken
-                                    ? this.cancelToken.token
-                                    : undefined,
-                            },
-                        ),
-                        fetchWeekdayAverageForStations(
-                            context.$capacityClient,
-                            stationIds,
-                            {
-                                cancelToken: this.cancelToken
-                                    ? this.cancelToken.token
-                                    : undefined,
-                            },
-                        ),
-                    ]);
+                    this.stations = await fetchStationsByIds(
+                        context.$hslGraphqlClient,
+                        stationIds,
+                        {
+                            cancelToken: this.cancelToken
+                                ? this.cancelToken.token
+                                : undefined,
+                        },
+                    );
 
-                    this.stations = stations;
+                    this.isPending = false;
+
+                    const [todayCapacities, weekdayAverageCapacities]
+                        = await Promise.all([
+                            fetchTodayForStations(
+                                context.$capacityClient,
+                                stationIds,
+                                {
+                                    cancelToken: this.cancelToken
+                                        ? this.cancelToken.token
+                                        : undefined,
+                                },
+                            ),
+                            fetchWeekdayAverageForStations(
+                                context.$capacityClient,
+                                stationIds,
+                                {
+                                    cancelToken: this.cancelToken
+                                        ? this.cancelToken.token
+                                        : undefined,
+                                },
+                            ),
+                        ]);
+
                     this.todayCapacities = todayCapacities;
                     this.weekdayAverageCapacities = weekdayAverageCapacities;
                 } else {
@@ -147,10 +154,12 @@ export default defineComponent({
                     this.todayCapacities = {};
                     this.weekdayAverageCapacities = {};
                 }
-
-                this.isPending = false;
             } catch (error) {
+                this.isPending = false;
+
                 if (!this.$axios.isCancel(error)) {
+                    console.error(error);
+
                     this.isError = true;
                 }
             }

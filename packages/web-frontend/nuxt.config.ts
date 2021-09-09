@@ -157,7 +157,8 @@ const config: NuxtConfig = {
     plugins: [
         '~/plugins/composition-api',
         '~/plugins/axios',
-        { src: '~/plugins/chartjs.ts', ssr: false }
+        { src: '~/plugins/chartjs.ts', ssr: false },
+        '~/plugins/loading-skeleton',
     ],
     srcDir: 'src',
 };
