@@ -61,7 +61,7 @@ export const fetchStationById = async (
 /**
  * Limits number of search results.
  */
-const DEFAULT_SEARCH_RESULTS_COUNT = 5;
+const DEFAULT_SEARCH_RESULTS_COUNT = 3;
 
 export const findStationIdsByAddress = async (
     addressSearchClient: NuxtAxiosInstance,
