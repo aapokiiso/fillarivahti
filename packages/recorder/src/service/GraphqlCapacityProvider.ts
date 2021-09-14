@@ -50,7 +50,7 @@ export default class GraphqlCapacityProvider implements CapacityProvider {
 
                     return capacity;
                 });
-        } catch (error) {
+        } catch (error: any) {
             throw new Error(`Failed to request capacities from HSL GraphQL API. Reason: ${error.message}`);
         }
     }

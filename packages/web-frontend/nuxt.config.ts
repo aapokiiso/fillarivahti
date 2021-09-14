@@ -3,7 +3,8 @@ import { NuxtConfig } from '@nuxt/types';
 const config: NuxtConfig = {
     buildModules: [
         '@nuxt/typescript-build',
-        '@nuxtjs/svg'
+        '@nuxtjs/svg',
+        '@nuxtjs/google-fonts',
     ],
     components: true,
     css: [
@@ -14,6 +15,13 @@ const config: NuxtConfig = {
         addressSearchEndpointUrl: process.env.ADDRESS_SEARCH_ENDPOINT_URL || 'https://api.digitransit.fi/geocoding/v1/search',
         capacityEndpointUrl: process.env.CAPACITY_ENDPOINT_URL || 'https://api.fillarivahti.fi/'
     },
+    googleFonts: {
+        families: {
+            'Open+Sans': {
+                wght: [400, 700]
+            },
+        }
+    },
     head() {
         const i18nHead = this.$nuxtI18nHead({ addSeoAttributes: true })
 
@@ -23,19 +31,6 @@ const config: NuxtConfig = {
                 ...i18nHead.htmlAttrs,
             },
             link: [
-                {
-                    rel: 'preconnect',
-                    href: 'https://fonts.googleapis.com'
-                },
-                {
-                    rel: 'preconnect',
-                    href: 'https://fonts.gstatic.com',
-                    crossOrigin: '',
-                },
-                {
-                    rel: 'stylesheet',
-                    href: 'https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap'
-                },
                 ...i18nHead.link
             ],
             meta: [
