@@ -22,28 +22,11 @@ const config: NuxtConfig = {
             },
         }
     },
-    head() {
-        const i18nHead = this.$nuxtI18nHead({ addSeoAttributes: true })
-
-        return {
-            title: this.$t('siteTitle'),
-            htmlAttrs: {
-                ...i18nHead.htmlAttrs,
-            },
-            link: [
-                ...i18nHead.link
-            ],
-            meta: [
-                { charset: 'utf-8' },
-                { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-                {
-                    hid: 'description',
-                    name: 'description',
-                    content: this.$t('siteDescription')
-                },
-                ...i18nHead.meta
-            ],
-        };
+    head: {
+        meta: [
+            { charset: 'utf-8' },
+            { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        ],
     },
     i18n: {
         locales: [

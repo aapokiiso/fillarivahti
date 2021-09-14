@@ -36,3 +36,36 @@
         </div>
     </main>
 </template>
+
+<script lang="ts">
+// TODO:
+// For some reason ESLint does not recognize the MetaInfo export. Have to
+// investigate this later when cleaning up head & meta information.
+// eslint-disable-next-line import/named
+import { MetaInfo } from 'vue-meta';
+import { defineComponent } from '@vue/composition-api';
+
+export default defineComponent({
+    head (): MetaInfo {
+        const i18nHead = this.$nuxtI18nHead({ addSeoAttributes: true });
+
+        return {
+            title: this.$t('siteTitle') as string,
+            htmlAttrs: {
+                ...i18nHead.htmlAttrs,
+            },
+            link: [
+                ...i18nHead.link,
+            ],
+            meta: [
+                {
+                    hid: 'description',
+                    name: 'description',
+                    content: this.$t('siteDescription') as string,
+                },
+                ...i18nHead.meta,
+            ],
+        };
+    },
+});
+</script>
