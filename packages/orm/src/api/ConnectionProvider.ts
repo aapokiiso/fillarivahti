@@ -1,7 +1,6 @@
 import { Sequelize } from 'sequelize';
 
-interface ConnectionProvider
-{
+interface ConnectionProvider {
     getConnection(): Promise<Sequelize>;
 }
 

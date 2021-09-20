@@ -1,0 +1,4 @@
+service: http-api
+runtime: nodejs14
+includes:
+  - env_variables.yaml

@@ -7,7 +7,7 @@ import Configuration from '../api/Configuration';
 export default class MysqlConnectionProvider implements ConnectionProvider {
     configuration: Configuration;
 
-    connection: Sequelize|null = null;
+    connection: Sequelize | null = null;
 
     constructor(
         configuration: Configuration,
@@ -48,6 +48,9 @@ export default class MysqlConnectionProvider implements ConnectionProvider {
                 dialect: 'mysql',
                 // eslint-disable-next-line no-console
                 logging: this.configuration.isLoggingEnabled() ? console.log : false,
+                dialectOptions: {
+                    socketPath: this.configuration.getSocketPath(),
+                },
             },
         );
     }

@@ -1,13 +1,15 @@
 interface Configuration {
-    getDatabase(): string|undefined;
+    getDatabase(): string | undefined;
 
-    getUsername(): string|undefined;
+    getUsername(): string | undefined;
 
-    getPassword(): string|undefined;
+    getPassword(): string | undefined;
 
-    getHost(): string|undefined;
+    getHost(): string | undefined;
 
-    getPort(): number|undefined;
+    getPort(): number | undefined;
+
+    getSocketPath(): string | undefined;
 
     isLoggingEnabled(): boolean;
 }

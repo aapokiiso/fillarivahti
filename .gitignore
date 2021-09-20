@@ -7,3 +7,4 @@ dist/
 .idea/
 lerna-debug.log
 npm-debug.log
+env_variables.yaml
