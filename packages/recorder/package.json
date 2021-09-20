@@ -1,6 +1,6 @@
 {
   "name": "@aapokiiso/fillarivahti-recorder",
-  "version": "1.10.0",
+  "version": "1.10.1",
   "description": "Records city bike station capacity statistics for Fillarivahti.",
   "author": "Aapo Kiiso <aapo@kii.so>",
   "license": "MIT",
@@ -25,9 +25,9 @@
     "prepublish": "npm run build"
   },
   "dependencies": {
-    "@aapokiiso/fillarivahti-capacity-repository": "^1.10.0",
-    "@aapokiiso/fillarivahti-hsl-graphql-client": "^1.9.1",
-    "@aapokiiso/fillarivahti-orm": "^1.9.2",
+    "@aapokiiso/fillarivahti-capacity-repository": "^1.10.1",
+    "@aapokiiso/fillarivahti-hsl-graphql-client": "^1.10.1",
+    "@aapokiiso/fillarivahti-orm": "^1.10.1",
     "node-cron": "^3.0.0",
     "winston": "^3.3.3"
   },
