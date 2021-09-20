@@ -27,6 +27,7 @@
   "dependencies": {
     "@aapokiiso/fillarivahti-capacity-repository": "^1.10.1",
     "@aapokiiso/fillarivahti-hsl-capacity-provider": "^1.11.0",
+    "@aapokiiso/fillarivahti-hsl-graphql-client": "^1.10.1",
     "@aapokiiso/fillarivahti-orm": "^1.10.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
@@ -40,5 +41,6 @@
     "@types/node": "^16.7.1",
     "eslint": "^7.32.0",
     "typescript": "^4.3.5"
-  }
+  },
+  "gitHead": "93816cde7ac04a82f053958d6215c9f0405a10e2"
 }
