@@ -1,9 +1,11 @@
-import GraphqlCapacityProvider from './service/GraphqlCapacityProvider';
+import express from 'express';
+import { GraphqlCapacityProvider } from '@aapokiiso/fillarivahti-hsl-capacity-provider';
 import { DefaultConnectionProvider, EnvConfiguration as GraphqlConfiguration } from '@aapokiiso/fillarivahti-hsl-graphql-client';
 import { MysqlConnectionProvider, EnvConfiguration as OrmConfiguration } from '@aapokiiso/fillarivahti-orm';
 import { OrmCapacityRepository } from '@aapokiiso/fillarivahti-capacity-repository';
+import { StatusCodes } from 'http-status-codes';
 import * as winston from 'winston';
-import * as cron from 'node-cron';
+import cors from 'cors';
 
 const graphqlConfiguration = new GraphqlConfiguration();
 
@@ -32,9 +34,11 @@ const logger = winston.createLogger({
     ],
 });
 
-logger.info('Starting Fillarivahti recorder.');
+const app = express();
 
-cron.schedule('*/5 * * * *', async function () {
+app.use(cors());
+
+app.get('/', async (req, res) => {
     logger.info('Fillarivahti recorder is run.');
 
     try {
@@ -43,10 +47,23 @@ cron.schedule('*/5 * * * *', async function () {
         await capacityRepository.createMany(capacities);
 
         logger.info('Fillarivahti recorder is completed.');
+
+        return res.status(StatusCodes.OK).end();
     } catch (error: any) {
         logger.error('Failed to record bike station capacities.', {
             error: error.message,
             stack: error.stack,
         });
+
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).end();
     }
 });
+
+const port = process.env.PORT ? Number(process.env.PORT) : null;
+if (port) {
+    app.listen(port, () => {
+        logger.info(`Started Fillarivahti recorder HTTP API on port ${port}.`);
+    });
+} else {
+    logger.error('PORT environment variable is missing.');
+}

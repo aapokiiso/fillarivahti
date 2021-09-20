@@ -24,7 +24,7 @@
     "lint": "eslint --ext .ts,.js,.vue src",
     "lint:fix": "npm run lint -- --fix",
     "test": "jest",
-    "deploy": "npm ci && npm run build && gcloud app deploy"
+    "deploy": "npm run build && gcloud app deploy"
   },
   "devDependencies": {
     "@lamiaoy/eslint-config": "^3.0.0",
