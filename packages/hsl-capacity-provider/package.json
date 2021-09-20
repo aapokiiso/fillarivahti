@@ -1,6 +1,6 @@
 {
   "name": "@aapokiiso/fillarivahti-hsl-capacity-provider",
-  "version": "1.10.1",
+  "version": "1.11.0",
   "description": "Provides bike station capacities through the HSL GraphQL API for Fillarivahti.",
   "author": "Aapo Kiiso <aapo@kii.so>",
   "license": "MIT",
