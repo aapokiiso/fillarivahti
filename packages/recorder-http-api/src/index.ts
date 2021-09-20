@@ -54,7 +54,7 @@ app.get('/', async (req, res) => {
     }
 });
 
-app.get('/record', async (req, res) => {
+app.post('/record', async (req, res) => {
     logger.info('Fillarivahti recorder is run.');
 
     try {
