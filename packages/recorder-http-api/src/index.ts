@@ -39,6 +39,22 @@ const app = express();
 app.use(cors());
 
 app.get('/', async (req, res) => {
+    try {
+        const conn = await ormConnectionProvider.getConnection();
+        await conn.authenticate();
+
+        return res.status(StatusCodes.OK).end();
+    } catch (error: any) {
+        logger.error('Failed to connect to the database in the healthcheck endpoint.', {
+            error: error.message,
+            stack: error.stack,
+        });
+
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).end();
+    }
+});
+
+app.get('/record', async (req, res) => {
     logger.info('Fillarivahti recorder is run.');
 
     try {

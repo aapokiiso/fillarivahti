@@ -7,5 +7,5 @@ export {
 import GraphqlCapacityProvider from './service/GraphqlCapacityProvider';
 
 export {
-    GraphqlCapacityProvider
+    GraphqlCapacityProvider,
 };
