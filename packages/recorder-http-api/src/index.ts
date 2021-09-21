@@ -86,8 +86,9 @@ app.post('/shred', async (req, res) => {
     logger.info('Fillarivahti recorder shredding is run.');
 
     // TODO: move to configuration
-    // Capacity records are retained for 4 full weeks (4 * 7 = 28).
-    const olderThanDays = 28;
+    // Capacity records are retained for 5 full weeks (5 * 7 = 35), ie. the
+    // current week and 4 weeks prior.
+    const olderThanDays = 35;
 
     try {
         await capacityShredder.shredByAge(olderThanDays);

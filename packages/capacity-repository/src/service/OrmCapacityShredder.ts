@@ -10,7 +10,7 @@ export default class OrmCapacityShredder implements CapacityShredder {
 
     constructor(
         ormConnectionProvider: OrmConnectionProvider,
-        configuration: Configuration
+        configuration: Configuration,
     ) {
         this.ormConnectionProvider = ormConnectionProvider;
         this.configuration = configuration;
@@ -32,7 +32,7 @@ export default class OrmCapacityShredder implements CapacityShredder {
                 timestamp: {
                     [Op.lt]: olderThan,
                 },
-            }
+            },
         });
     }
 }

@@ -89,7 +89,9 @@ export default class DefaultCapacityProvider implements CapacityProvider {
         const timeZone = this.configuration.getTimeZone();
         const granularityInMinutes = this.configuration.getGranularityInMinutes();
 
-        const now = utcToZonedTime(new Date(), timeZone);
+        const midnightZoned = utcToZonedTime(new Date(), timeZone);
+        midnightZoned.setHours(0, 0, 0, 0);
+        const midnight = zonedTimeToUtc(midnightZoned, timeZone);
 
         const result = await connection.models.Capacity.findAll({
             attributes: [
@@ -105,8 +107,13 @@ export default class DefaultCapacityProvider implements CapacityProvider {
                             [Op.in]: stationIds,
                         },
                     },
+                    {
+                        timestamp: {
+                            [Op.lt]: midnight,
+                        },
+                    },
                     // MySQL DAYOFWEEK is 1-indexed, while JS day of week is 0-indexed.
-                    literal(`DAYOFWEEK(CONVERT_TZ(timestamp, "UTC", "${timeZone}")) = ${(now.getDay() + 1)}`),
+                    literal(`DAYOFWEEK(CONVERT_TZ(timestamp, "UTC", "${timeZone}")) = ${(midnight.getDay() + 1)}`),
                 ],
             },
             group: [
