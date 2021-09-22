@@ -21,6 +21,8 @@
             />
         </header>
 
+        <slot name="capacity-estimate" />
+
         <figure class="station-card__capacity-trend">
             <slot name="capacity-trend" />
         </figure>

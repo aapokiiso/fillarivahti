@@ -1,13 +1,6 @@
 /* eslint-disable no-magic-numbers */
 
-/**
- * Sums numbers in dataset.
- *
- * @param {Number[]} dataset
- * @returns {Number}
- */
-const sum = (dataset: number[]): number =>
-    dataset.reduce((sum, value) => sum + value, 0);
+import sum from './sum';
 
 /**
  * Standard deviation (sigma) of 2 makes the smoothing take into account two

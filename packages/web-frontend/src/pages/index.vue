@@ -28,6 +28,20 @@
                         :key="station.stationId"
                     >
                         <StationCard :station="station">
+                            <template #capacity-estimate>
+                                <CapacityEstimate
+                                    v-if="!isStationPending(station.stationId)"
+                                    :today-capacities="
+                                        todayCapacities[station.stationId]
+                                    "
+                                    :weekday-average-capacities="
+                                        weekdayAverageCapacities[
+                                            station.stationId
+                                        ]
+                                    "
+                                />
+                            </template>
+
                             <template #capacity-trend>
                                 <CapacityGraph
                                     v-if="!isStationPending(station.stationId)"
@@ -40,7 +54,10 @@
                                         ]
                                     "
                                 />
-                                <PuSkeleton v-else height="var(--space-unit-xxl)" />
+                                <PuSkeleton
+                                    v-else
+                                    height="var(--space-unit-xxl)"
+                                />
                             </template>
                         </StationCard>
                     </div>
@@ -57,18 +74,18 @@
 // For some reason ESLint does not recognize the MetaInfo export. Have to
 // investigate this later when cleaning up head & meta information.
 // eslint-disable-next-line import/named
-import { MetaInfo } from 'vue-meta';
-import { CancelTokenSource } from 'axios';
-import { defineComponent } from '@vue/composition-api';
+import { MetaInfo } from "vue-meta";
+import { CancelTokenSource } from "axios";
+import { defineComponent } from "@vue/composition-api";
 import {
     Capacity,
     fetchTodayForStations,
     fetchWeekdayAverageForStations,
-} from '~/api/capacities';
-import { BikeStation, fetchStationsByIds } from '~/api/stations';
+} from "~/api/capacities";
+import { BikeStation, fetchStationsByIds } from "~/api/stations";
 
 export default defineComponent({
-    data () {
+    data() {
         return {
             stations: [] as BikeStation[],
             todayCapacities: {} as Record<string, Capacity[]>,
@@ -78,53 +95,51 @@ export default defineComponent({
             isError: false,
         };
     },
-    head (): MetaInfo {
+    head(): MetaInfo {
         const i18nHead = this.$nuxtI18nHead({ addSeoAttributes: true });
 
         return {
-            title: this.$t('siteTitle') as string,
+            title: this.$t("siteTitle") as string,
             htmlAttrs: {
                 ...i18nHead.htmlAttrs,
             },
-            link: [
-                ...i18nHead.link,
-            ],
+            link: [...i18nHead.link],
             meta: [
                 {
-                    hid: 'description',
-                    name: 'description',
-                    content: this.$t('siteDescription') as string,
+                    hid: "description",
+                    name: "description",
+                    content: this.$t("siteDescription") as string,
                 },
                 ...i18nHead.meta,
             ],
         };
     },
     computed: {
-        canShowStations () {
+        canShowStations() {
             return !this.isPending && !this.isError;
         },
     },
     methods: {
-        onStationSearchPending (): void {
+        onStationSearchPending(): void {
             this.isError = false;
             this.isPending = true;
         },
-        onStationSearchResults (stationIds: string[]): void {
+        onStationSearchResults(stationIds: string[]): void {
             this.isPending = false;
 
             this.loadStations(stationIds);
         },
-        onStationSearchError (): void {
+        onStationSearchError(): void {
             this.isPending = false;
             this.isError = true;
         },
-        isStationPending (stationId: string): boolean {
+        isStationPending(stationId: string): boolean {
             return !(
-                this.todayCapacities[stationId]
-                && this.weekdayAverageCapacities[stationId]
+                this.todayCapacities[stationId] &&
+                this.weekdayAverageCapacities[stationId]
             );
         },
-        async loadStations (stationIds: string[]): Promise<void> {
+        async loadStations(stationIds: string[]): Promise<void> {
             const { context } = this.$nuxt;
 
             if (process.client) {
@@ -146,13 +161,13 @@ export default defineComponent({
                             cancelToken: this.cancelToken
                                 ? this.cancelToken.token
                                 : undefined,
-                        },
+                        }
                     );
 
                     this.isPending = false;
 
-                    const [todayCapacities, weekdayAverageCapacities]
-                        = await Promise.all([
+                    const [todayCapacities, weekdayAverageCapacities] =
+                        await Promise.all([
                             fetchTodayForStations(
                                 context.$capacityClient,
                                 stationIds,
@@ -160,7 +175,7 @@ export default defineComponent({
                                     cancelToken: this.cancelToken
                                         ? this.cancelToken.token
                                         : undefined,
-                                },
+                                }
                             ),
                             fetchWeekdayAverageForStations(
                                 context.$capacityClient,
@@ -169,7 +184,7 @@ export default defineComponent({
                                     cancelToken: this.cancelToken
                                         ? this.cancelToken.token
                                         : undefined,
-                                },
+                                }
                             ),
                         ]);
 
