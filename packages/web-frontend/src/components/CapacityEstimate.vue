@@ -84,23 +84,22 @@ export default defineComponent({
                 return null;
             }
 
-            const {slope: todaySlope, intercept: todayIntercept} = this.linearRegressionForToday;
+            const {slope: todaySlope} = this.linearRegressionForToday;
             const {slope: weekdayAverageSlope} = this.linearRegressionForWeekdayAverage;
 
-            const todayDiffEstimate = Math.max(todaySlope * this.estimationIntervalLength, 0);
-            const weekdayAverageDiffEstimate = Math.max(weekdayAverageSlope * this.estimationIntervalLength, 0);
-
-            // When there is no resemblance, today's data is amplified in the
-            // estimate, since the weekday average data is not likely a good
+            // When there is no resemblance, today's slope is amplified in the
+            // estimate, since the weekday average slope is not likely a good
             // prediction. Conversely, when there is strong resemblance,
-            // the weekday average data is amplified in the estimate, since
+            // the weekday average slope is amplified in the estimate, since
             // it is likely a good prediction.
 
-            const diffEstimate = this.resemblance !== null
-                ? todayDiffEstimate * (1 - this.resemblance) + weekdayAverageDiffEstimate * this.resemblance
-                : todayDiffEstimate;
+            const estimateSlope = this.resemblance !== null
+                ? todaySlope * (1 - this.resemblance) + weekdayAverageSlope * this.resemblance
+                : todaySlope;
 
-            return todayIntercept + diffEstimate;
+            // TODO: clean up code
+
+            return Math.max(this.todayCapacities[this.nowIndex].capacity * 100 + estimateSlope * this.estimationIntervalLength, 0);
         }
     },
     methods: {
