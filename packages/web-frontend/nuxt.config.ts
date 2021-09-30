@@ -102,7 +102,7 @@ const config: NuxtConfig = {
                     siteDescription: 'Fillarivahti visualizes the availability situation and trend of Helsinki area city bikes.',
                     stationCard: {
                         journeyPlannerLinkLabel: 'View station in HSL Journey Planner',
-                        capacityStatusLabel: 'Pyöriä juuri nyt'
+                        capacityStatusLabel: 'Bikes right now'
                     },
                     capacityGraph: {
                         todayLegend: 'Bikes today',
