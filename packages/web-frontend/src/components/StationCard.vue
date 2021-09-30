@@ -15,7 +15,7 @@
             </h3>
 
             <CapacityStatus
-                :label="$t('stationCard.capacityStatusLabel')"
+                :aria-label="$t('stationCard.capacityStatusLabel')"
                 :bikes-available="station.bikesAvailable"
                 :capacity="station.capacity"
                 class="station-card__capacity-status"
@@ -102,6 +102,7 @@ export default defineComponent({
 .station-card__capacity-estimate {
     display: flex;
     justify-content: flex-end;
+    color: var(--color-mid-gray-accent);
 }
 
 .station-card__capacity-trend {

@@ -1,5 +1,5 @@
 <template>
-    <p class="capacity-status">
+    <p class="capacity-status" :aria-label="ariaLabel">
         <span v-if="label" class="capacity-status__label">
             {{ label }}
         </span>
@@ -22,7 +22,11 @@ export default defineComponent({
     props: {
         label: {
             type: String,
-            default: '',
+            default: null,
+        },
+        ariaLabel: {
+            type: String,
+            default: null,
         },
         bikesAvailable: {
             type: Number,
