@@ -15,13 +15,16 @@
             </h3>
 
             <CapacityStatus
+                :label="$t('stationCard.capacityStatusLabel')"
                 :bikes-available="station.bikesAvailable"
                 :capacity="station.capacity"
                 class="station-card__capacity-status"
             />
         </header>
 
-        <slot name="capacity-estimate" />
+        <div class="station-card__capacity-estimate">
+            <slot name="capacity-estimate" />
+        </div>
 
         <figure class="station-card__capacity-trend">
             <slot name="capacity-trend" />
@@ -90,6 +93,15 @@ export default defineComponent({
     &:focus {
         color: var(--color-blue);
     }
+}
+
+.station-card__capacity-status {
+    font-weight: bold;
+}
+
+.station-card__capacity-estimate {
+    display: flex;
+    justify-content: flex-end;
 }
 
 .station-card__capacity-trend {

@@ -7,15 +7,24 @@ import { Chart } from 'chart.js';
 import annotationPlugin from 'chartjs-plugin-annotation';
 import { LineChart } from 'vue-chart-3';
 import { defineComponent } from '@vue/composition-api';
+import { useWindowSize } from 'vue-window-size';
+import { useContext } from '@nuxtjs/composition-api';
 import gaussianSmoothen from '~/helpers/gaussian-smoothen';
 
 Chart.register(annotationPlugin);
+
+Chart.defaults.font.family = '"Open Sans", sans-serif';
+Chart.defaults.font.size = 14;
 
 export default defineComponent({
     components: {
         LineChart,
     },
     props: {
+        stationCapacity: {
+            type: Number,
+            required: true,
+        },
         todayCapacities: {
             type: Array,
             required: true,
@@ -44,15 +53,11 @@ export default defineComponent({
             type: Number,
             default: 4,
         },
-        fullCapacityValue: {
-            type: Number,
-            default: 100,
-        },
-        fullCapacityAnnotationBorderDashScale: {
+        stationCapacityAnnotationBorderDashScale: {
             type: Number,
             default: 2,
         },
-        fullCapacityAnnotationColor: {
+        stationCapacityAnnotationColor: {
             type: String,
             default: '#333',
         },
@@ -81,8 +86,15 @@ export default defineComponent({
                 ];
             },
         },
+        minWidthLegendVisible: {
+            type: Number,
+            default: 768,
+        },
     },
     setup (props) {
+        const { i18n } = useContext();
+        const { width: windowWidth } = useWindowSize();
+
         /**
          * Pads time unit to 24-hour format.
          * For example 0 -> "00".
@@ -180,7 +192,7 @@ export default defineComponent({
 
             return {
                 x: `${hourLabel}:${minuteLabel}`,
-                y: Math.round(capacity * props.fullCapacityValue),
+                y: Math.round(capacity * props.stationCapacity),
             };
         }
 
@@ -188,7 +200,7 @@ export default defineComponent({
             labels: getTimeLabels(),
             datasets: [
                 {
-                    label: 'Capacity today',
+                    label: i18n.t('capacityGraph.todayLegend'),
                     data: smoothenCapacityRecords(props.todayCapacities).map(
                         mapCapacityToPoint,
                     ),
@@ -198,17 +210,32 @@ export default defineComponent({
                     tension: 0.4,
                 },
                 {
-                    label: 'Average capacity for weekday',
+                    label: i18n.t('capacityGraph.weekdayAverageLegend', {
+                        weekday: i18n.t(
+                            `capacityGraph.weekdayForLegend.${new Date().getDay()}`,
+                        ),
+                    }),
                     data: smoothenCapacityRecords(
                         props.weekdayAverageCapacities,
                     ).map(mapCapacityToPoint),
                     backgroundColor: props.weekdayAverageColor,
-                    borderColor: 'transparent',
+                    borderColor: props.weekdayAverageColor,
                     borderWidth: props.lineThickness,
                     fill: {
                         target: 'origin',
                     },
                     tension: 0.4,
+                },
+                {
+                    label: i18n.t('capacityGraph.stationCapacityLegend'),
+                    data: [],
+                    backgroundColor: 'transparent',
+                    borderColor: props.stationCapacityAnnotationColor,
+                    borderWidth: props.lineThickness,
+                    borderDash: [
+                        props.lineThickness
+                            * props.stationCapacityAnnotationBorderDashScale,
+                    ],
                 },
             ],
         };
@@ -248,31 +275,41 @@ export default defineComponent({
                     display: false,
                     grid: {
                         display: false,
+                        borderColor: 'transparent',
                     },
                     beginAtZero: true,
                     suggestedMax:
-                        props.fullCapacityValue
-                        + props.fullCapacityValue * props.topPaddingScale,
+                        props.stationCapacity
+                        + props.stationCapacity * props.topPaddingScale,
                 },
             },
             plugins: {
                 annotation: {
                     annotations: [
                         {
-                            id: 'full-capacity',
+                            id: 'station-capacity',
                             type: 'line',
                             mode: 'horizontal',
-                            value: props.fullCapacityValue,
+                            value: props.stationCapacity,
                             scaleID: 'y',
                             drawTime: 'beforeDatasetsDraw',
-                            borderColor: props.fullCapacityAnnotationColor,
+                            borderColor: props.stationCapacityAnnotationColor,
                             borderWidth: props.lineThickness,
                             borderDash: [
                                 props.lineThickness
-                                    * props.fullCapacityAnnotationBorderDashScale,
+                                    * props.stationCapacityAnnotationBorderDashScale,
                             ],
                         },
                     ],
+                },
+                legend: {
+                    display: windowWidth.value >= props.minWidthLegendVisible,
+                    position: 'bottom',
+                    align: 'end',
+                    onClick: null,
+                    labels: {
+                        padding: 20,
+                    },
                 },
             },
         };

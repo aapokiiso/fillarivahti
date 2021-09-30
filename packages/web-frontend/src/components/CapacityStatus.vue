@@ -1,19 +1,16 @@
 <template>
-    <p
-        class="capacity-status"
-        :title="$t('capacityStatus.title')"
-        :aria-label="
-            $t('capacityStatus.ariaLabel', {
-                bikesAvailable,
-                capacity,
-            })
-        "
-    >
-        <span class="capacity-status__available" :class="availabilityClassName">
-            {{ bikesAvailable }}
+    <p class="capacity-status">
+        <span v-if="label" class="capacity-status__label">
+            {{ label }}
         </span>
-        <span v-if="capacity" class="capacity-status__capacity">
-            / {{ capacity }}
+
+        <span class="capacity-status__value">
+            <span class="capacity-status__available" :class="availabilityClassName">
+                {{ bikesAvailable }}
+            </span>
+            <span v-if="capacity" class="capacity-status__capacity">
+                / {{ capacity }}
+            </span>
         </span>
     </p>
 </template>
@@ -23,6 +20,10 @@ import { defineComponent } from '@vue/composition-api';
 
 export default defineComponent({
     props: {
+        label: {
+            type: String,
+            default: '',
+        },
         bikesAvailable: {
             type: Number,
             required: true,
@@ -67,10 +68,27 @@ export default defineComponent({
 <style lang="scss" scoped>
 .capacity-status {
     margin: 0;
+    display: flex;
+    align-items: center;
+    font-size: var(--font-size-sm);
+}
+
+.capacity-status__label {
+    margin: 0;
+    display: flex;
+
+    &::after {
+        content: ':';
+    }
+}
+
+.capacity-status__value {
+    margin-left: var(--space-unit-xs);
 }
 
 .capacity-status__available {
     font-weight: bold;
+    font-size: var(--font-size);
 
     &.is-bad {
         color: var(--color-red);
@@ -83,9 +101,5 @@ export default defineComponent({
     &.is-good {
         color: var(--color-green);
     }
-}
-
-.capacity-status__capacity {
-    font-size: var(--font-size-sm);
 }
 </style>

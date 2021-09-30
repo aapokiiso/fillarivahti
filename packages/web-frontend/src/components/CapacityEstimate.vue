@@ -1,20 +1,37 @@
 <template>
-    <div>
-        <p>Resemblance: {{resemblance}}</p>
-        <p>Estimate in {{estimationIntervalInMinutes}}min: {{estimate}}%</p>
+    <div class="capacity-estimate">
+        <CapacityStatus
+            :label="
+                $t('capacityEstimate.label', {
+                    minutes: estimationIntervalInMinutes,
+                })
+            "
+            :bikes-available="bikesEstimate"
+            :capacity="stationCapacity"
+            class="capacity-estimate__status"
+        />
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "@vue/composition-api";
-import linearRegression, {LinearRegressionResult} from '~/helpers/linear-regression';
+// ESLint does not recognized PropType exported by the Composition API.
+// eslint-disable-next-line import/named
+import { defineComponent, PropType } from '@vue/composition-api';
+import linearRegression, {
+    LinearRegressionResult,
+} from '~/helpers/linear-regression';
 import slopeAngle from '~/helpers/slope-angle';
-import {
-    Capacity,
-} from "~/api/capacities";
+import { Capacity } from '~/api/capacities';
+
+const decimalPrecision = 2;
+const percentMultiplier = 100;
 
 export default defineComponent({
     props: {
+        stationCapacity: {
+            type: Number,
+            required: true,
+        },
         todayCapacities: {
             type: Array as PropType<Capacity[]>,
             required: true,
@@ -29,63 +46,116 @@ export default defineComponent({
         },
         regressionIntervalInMinutes: {
             type: Number,
-            default: 30,
+            default: 60,
         },
         estimationIntervalInMinutes: {
             type: Number,
-            default: 15,
-        }
+            default: 30,
+        },
     },
     computed: {
-        regressionIntervalLength(): number {
-            return Math.floor(this.regressionIntervalInMinutes / this.granularityInMinutes);
+        currentCapacity (): number {
+            const { capacity } = this.todayCapacities[this.nowIndex] || {};
+
+            return capacity || 0;
         },
-        estimationIntervalLength(): number {
-            return Math.floor(this.estimationIntervalInMinutes / this.granularityInMinutes);
+        regressionIntervalLength (): number {
+            return Math.floor(
+                this.regressionIntervalInMinutes / this.granularityInMinutes,
+            );
         },
-        nowIndex(): number {
-            const hoursInDay = 24;
+        estimationIntervalLength (): number {
+            return Math.floor(
+                this.estimationIntervalInMinutes / this.granularityInMinutes,
+            );
+        },
+        nowIndex (): number {
             const minutesInHour = 60;
 
             const now = new Date();
 
-            const nowMinutes = now.getHours() * minutesInHour + now.getMinutes();
+            const nowMinutes
+                = now.getHours() * minutesInHour + now.getMinutes();
 
             return Math.floor(nowMinutes / this.granularityInMinutes);
         },
-        startIndex(): number {
-            return this.nowIndex - this.regressionIntervalLength;
+        pastLinearRegressionForToday (): LinearRegressionResult | null {
+            return this.getPastLinearRegression(
+                this.todayCapacities.map(this.mapCapacityToPercent),
+            );
         },
-        linearRegressionForToday(): LinearRegressionResult | null {
-            return this.getLinearRegression(this.todayCapacities.map(({capacity}) => capacity * 100));
+        pastLinearRegressionForWeekdayAverage (): LinearRegressionResult | null {
+            return this.getPastLinearRegression(
+                this.weekdayAverageCapacities.map(this.mapCapacityToPercent),
+            );
         },
-        linearRegressionForWeekdayAverage(): LinearRegressionResult | null {
-            return this.getLinearRegression(this.weekdayAverageCapacities.map(({capacity}) => capacity * 100));
+        futureLinearRegressionForWeekdayAverage (): LinearRegressionResult | null {
+            return this.getFutureLinearRegression(
+                this.weekdayAverageCapacities.map(this.mapCapacityToPercent),
+            );
         },
-        resemblance(): number|null {
-            if (!(this.linearRegressionForToday && this.linearRegressionForWeekdayAverage)) {
+        resemblance (): number | null {
+            if (
+                !(
+                    this.pastLinearRegressionForToday
+                    && this.pastLinearRegressionForWeekdayAverage
+                )
+            ) {
                 return null;
             }
 
-            const {slope: todaySlope} = this.linearRegressionForToday;
-            const {slope: weekdayAverageSlope} = this.linearRegressionForWeekdayAverage;
+            const { slope: todaySlope } = this.pastLinearRegressionForToday;
+            const { slope: weekdayAverageSlope }
+                = this.pastLinearRegressionForWeekdayAverage;
 
-            // Resemblance as cosine of slope angle
-            // - adjacent: cos(0deg) -> 1 (total resemblance)
-            // - normal: cos(90deg) -> 0 (no resemblance)
+            // Resemblance as cosine of difference in slopes' angles
+            // - adjacent: cos(0deg difference) -> 1 (total resemblance)
+            // - normal: cos(+90deg difference) -> 0 (no resemblance)
 
-            // TODO: clean up angle calculation
-            const angle = Math.round((slopeAngle(todaySlope, 0) - slopeAngle(weekdayAverageSlope, 0)) * 100) / 100;
+            // Calculate slope angles in relation to the x-axis.
 
-            return Math.abs(Math.round(Math.cos(angle) * 100) / 100);
+            const todaySlopeAngle = slopeAngle(todaySlope, 0);
+            const weekdayAverageSlopeAngle = slopeAngle(weekdayAverageSlope, 0);
+
+            // The difference of the two slopes' angles can be used to
+            // calculate resemblance. Cap it to 90deg to not flip cosine back
+            // towards 0 if angle difference is over 90deg. For example,
+            // cos(180deg) -> 0 (would erroneuously report total resemblance)
+            // on completely opposite slopes.
+
+            // eslint-disable-next-line no-magic-numbers
+            const ninetyDegInRad = Math.PI / 2;
+            const diffAngle = Math.min(
+                Math.abs(todaySlopeAngle - weekdayAverageSlopeAngle),
+                ninetyDegInRad,
+            );
+
+            // Math.cos has issues with high-precision floating point
+            // arithmetic. Round to two decimals, which is enough precision for
+            // this use case.
+            const diffAngleRounded = this.roundPrecision(
+                diffAngle,
+                decimalPrecision,
+            );
+
+            return this.roundPrecision(
+                Math.cos(diffAngleRounded),
+                decimalPrecision,
+            );
         },
-        estimate(): number|null {
-            if (!(this.linearRegressionForToday && this.linearRegressionForWeekdayAverage)) {
+        percentageEstimate (): number | null {
+            if (
+                !(
+                    this.pastLinearRegressionForToday
+                    && this.futureLinearRegressionForWeekdayAverage
+                )
+            ) {
                 return null;
             }
 
-            const {slope: todaySlope} = this.linearRegressionForToday;
-            const {slope: weekdayAverageSlope} = this.linearRegressionForWeekdayAverage;
+            const { slope: todayPastSlope } = this.pastLinearRegressionForToday;
+            const { slope: weekdayAverageFutureSlope }
+                = this.futureLinearRegressionForWeekdayAverage;
 
             // When there is no resemblance, today's slope is amplified in the
             // estimate, since the weekday average slope is not likely a good
@@ -93,32 +163,60 @@ export default defineComponent({
             // the weekday average slope is amplified in the estimate, since
             // it is likely a good prediction.
 
-            const estimateSlope = this.resemblance !== null
-                ? todaySlope * (1 - this.resemblance) + weekdayAverageSlope * this.resemblance
-                : todaySlope;
+            const estimateSlope
+                = this.resemblance !== null
+                    ? todayPastSlope * (1 - this.resemblance)
+                      + weekdayAverageFutureSlope * this.resemblance
+                    : todayPastSlope;
 
-            // TODO: clean up code
+            const percentEstimate = Math.max(
+                this.currentCapacity * percentMultiplier
+                    + estimateSlope * this.estimationIntervalLength,
+                0,
+            );
 
-            return Math.max(this.todayCapacities[this.nowIndex].capacity * 100 + estimateSlope * this.estimationIntervalLength, 0);
-        }
-    },
-    methods: {
-        getLinearRegression(data: number[]): LinearRegressionResult | null {
-            const startIndex = this.startIndex;
-            const nowIndex = this.nowIndex;
-
-            // Too early after midnight to calculate resemblance.
-            if (startIndex < 0) {
-                return null;
-            }
-
-            // TODO: what to do if either dataset is missing pieces? timestamps need to be synced
-            const sampleData = data.slice(startIndex, nowIndex);
-
-            return sampleData.length > 0
-                ? linearRegression([...Array(sampleData.length).keys()], sampleData)
+            return percentEstimate / percentMultiplier;
+        },
+        bikesEstimate (): number | null {
+            return this.percentageEstimate !== null
+                ? Math.round(this.stationCapacity * this.percentageEstimate)
                 : null;
         },
-    }
+    },
+    methods: {
+        roundPrecision (value: number, precision: number): number {
+            const base = 10;
+            const coefficient = Math.pow(base, precision);
+
+            return Math.round(value * coefficient) / coefficient;
+        },
+        mapCapacityToPercent (capacityRecord: Capacity): number {
+            const { capacity } = capacityRecord;
+
+            return capacity * percentMultiplier;
+        },
+        getPastLinearRegression (data: number[]): LinearRegressionResult | null {
+            const startIndex = Math.max(
+                this.nowIndex - this.regressionIntervalLength,
+                0,
+            );
+
+            const sampleData = data.slice(startIndex, this.nowIndex);
+
+            return sampleData.length > 0 ? linearRegression(sampleData) : null;
+        },
+        getFutureLinearRegression (
+            data: number[],
+        ): LinearRegressionResult | null {
+            const endIndex = Math.min(
+                this.nowIndex + this.regressionIntervalLength,
+                data.length,
+            );
+
+            const sampleData = data.slice(this.nowIndex + 1, endIndex + 1);
+
+            return sampleData.length > 0 ? linearRegression(sampleData) : null;
+        },
+    },
 });
 </script>

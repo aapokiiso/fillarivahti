@@ -5,6 +5,7 @@ const config: NuxtConfig = {
         '@nuxt/typescript-build',
         '@nuxtjs/svg',
         '@nuxtjs/google-fonts',
+        '@nuxtjs/composition-api/module'
     ],
     components: true,
     css: [
@@ -48,10 +49,24 @@ const config: NuxtConfig = {
                     siteDescription: 'Fillarivahti näyttää Helsingin seudun kaupunkipyörien saatavuuden tämänhetkisen tilanteen ja suunnan.',
                     stationCard: {
                         journeyPlannerLinkLabel: 'Katso asema HSL Reittioppaassa',
+                        capacityStatusLabel: 'Pyöriä juuri nyt'
                     },
-                    capacityStatus: {
-                        title: 'Pyöriä juuri nyt',
-                        ariaLabel: '{bikesAvailable} / {capacity} pyörää saatavilla juuri nyt'
+                    capacityGraph: {
+                        todayLegend: 'Pyöriä tänään',
+                        weekdayAverageLegend: 'Pyöriä keskimäärin {weekday}',
+                        stationCapacityLegend: 'Aseman kapasiteetti',
+                        weekdayForLegend: {
+                            0: 'sunnuntaisin',
+                            1: 'maanantaisin',
+                            2: 'tiistaisin',
+                            3: 'keskiviikkoisin',
+                            4: 'torstaisin',
+                            5: 'perjantaisin',
+                            6: 'lauantaisin',
+                        }
+                    },
+                    capacityEstimate: {
+                        label: 'Arvio {minutes}min kuluttua'
                     },
                     stationSearch: {
                         inputPlaceholder: 'Hae pyöräasemia...',
@@ -87,10 +102,24 @@ const config: NuxtConfig = {
                     siteDescription: 'Fillarivahti visualizes the availability situation and trend of Helsinki area city bikes.',
                     stationCard: {
                         journeyPlannerLinkLabel: 'View station in HSL Journey Planner',
+                        capacityStatusLabel: 'Pyöriä juuri nyt'
                     },
-                    capacityStatus: {
-                        title: 'Bikes available right now',
-                        ariaLabel: '{bikesAvailable} out of {capacity} bikes available right now'
+                    capacityGraph: {
+                        todayLegend: 'Bikes today',
+                        weekdayAverageLegend: 'Bikes on average on {weekday}',
+                        stationCapacityLegend: 'Station capacity',
+                        weekdayForLegend: {
+                            0: 'Sundays',
+                            1: 'Mondays',
+                            2: 'Tuesdays',
+                            3: 'Wednesdays',
+                            4: 'Thursdays',
+                            5: 'Fridays',
+                            6: 'Saturdays',
+                        }
+                    },
+                    capacityEstimate: {
+                        label: 'Estimate in {minutes}min'
                     },
                     stationSearch: {
                         inputPlaceholder: 'Search for bike stations...',
