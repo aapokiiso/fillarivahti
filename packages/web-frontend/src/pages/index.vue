@@ -1,6 +1,12 @@
 <template>
     <main>
         <div class="content-wrapper">
+            <Notice>
+                <template #content>
+                    {{ $t("seasonEndNotice") }}
+                </template>
+            </Notice>
+
             <StationSearch
                 class="station-search"
                 @search-pending="onStationSearchPending"
@@ -142,6 +148,16 @@ export default defineComponent({
             );
         },
         async loadStations (stationIds: string[]): Promise<void> {
+            this.isError = false;
+
+            if (!stationIds.length) {
+                this.stations = [];
+                this.todayCapacities = {};
+                this.weekdayAverageCapacities = {};
+
+                return;
+            }
+
             const { context } = this.$nuxt;
 
             if (process.client) {
@@ -151,52 +167,20 @@ export default defineComponent({
                 this.cancelToken = this.$axios.CancelToken.source();
             }
 
-            this.isError = false;
             this.isPending = true;
 
             try {
-                if (stationIds.length) {
-                    this.stations = await fetchStationsByIds(
-                        context.$hslGraphqlClient,
-                        stationIds,
-                        {
-                            cancelToken: this.cancelToken
-                                ? this.cancelToken.token
-                                : undefined,
-                        },
-                    );
+                this.stations = await fetchStationsByIds(
+                    context.$hslGraphqlClient,
+                    stationIds,
+                    {
+                        cancelToken: this.cancelToken
+                            ? this.cancelToken.token
+                            : undefined,
+                    },
+                );
 
-                    this.isPending = false;
-
-                    const [todayCapacities, weekdayAverageCapacities]
-                        = await Promise.all([
-                            fetchTodayForStations(
-                                context.$capacityClient,
-                                stationIds,
-                                {
-                                    cancelToken: this.cancelToken
-                                        ? this.cancelToken.token
-                                        : undefined,
-                                },
-                            ),
-                            fetchWeekdayAverageForStations(
-                                context.$capacityClient,
-                                stationIds,
-                                {
-                                    cancelToken: this.cancelToken
-                                        ? this.cancelToken.token
-                                        : undefined,
-                                },
-                            ),
-                        ]);
-
-                    this.todayCapacities = todayCapacities;
-                    this.weekdayAverageCapacities = weekdayAverageCapacities;
-                } else {
-                    this.stations = [];
-                    this.todayCapacities = {};
-                    this.weekdayAverageCapacities = {};
-                }
+                this.isPending = false;
             } catch (error) {
                 this.isPending = false;
 
@@ -204,6 +188,56 @@ export default defineComponent({
                     console.error(error);
 
                     this.isError = true;
+                }
+            }
+
+            try {
+                const [todayCapacities, weekdayAverageCapacities]
+                    = await Promise.all([
+                        fetchTodayForStations(
+                            context.$capacityClient,
+                            stationIds,
+                            {
+                                cancelToken: this.cancelToken
+                                    ? this.cancelToken.token
+                                    : undefined,
+                            },
+                        ),
+                        fetchWeekdayAverageForStations(
+                            context.$capacityClient,
+                            stationIds,
+                            {
+                                cancelToken: this.cancelToken
+                                    ? this.cancelToken.token
+                                    : undefined,
+                            },
+                        ),
+                    ]);
+
+                this.todayCapacities = todayCapacities;
+                this.weekdayAverageCapacities = weekdayAverageCapacities;
+            } catch (error) {
+                if (!this.$axios.isCancel(error)) {
+                    console.error(error);
+
+                    // Initialize capacities as empty in case of an error.
+
+                    this.todayCapacities = stationIds.reduce(
+                        (
+                            acc: Record<string, Capacity[]>,
+                            stationId: string,
+                        ) => {
+                            acc[stationId] = [];
+
+                            return acc;
+                        },
+                        {},
+                    );
+
+                    this.weekdayAverageCapacities = Object.assign(
+                        {},
+                        this.todayCapacities,
+                    );
                 }
             }
         },

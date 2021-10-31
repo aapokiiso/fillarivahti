@@ -1,5 +1,5 @@
 <template>
-    <div class="capacity-estimate">
+    <div v-if="bikesEstimate !== null" class="capacity-estimate">
         <CapacityStatus
             :label="
                 $t('capacityEstimate.label', {

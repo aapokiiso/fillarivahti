@@ -95,7 +95,8 @@ const config: NuxtConfig = {
                         licensesTitle: 'Lisenssit',
                         historicalData: 'Historialliset pyörien saatavuustiedot (Markus Kainu)',
                         fontAwesome: 'Font Awesome -ikonikirjasto',
-                    }
+                    },
+                    seasonEndNotice: '🎉 Kiitos kaudesta 2021! Kaupunkifillarit palaavat jälleen käyttöön huhtikuussa.'
                 },
                 en: {
                     siteTitle: 'Fillarivahti',
@@ -145,7 +146,8 @@ const config: NuxtConfig = {
                         licensesTitle: 'Licenses',
                         historicalData: 'Historical bike availability data (Markus Kainu)',
                         fontAwesome: 'Font Awesome icon library',
-                    }
+                    },
+                    seasonEndNotice: '🎉 Thank you for 2021! City bikes will return in April.'
                 },
             }
         }
