@@ -1,7 +1,9 @@
-import Configuration from '../api/Configuration';
-import { DEFAULT_TIME_ZONE, DEFAULT_GRANULARITY_IN_MINUTES } from '../api/Configuration';
+import { singleton } from 'tsyringe';
+import { Configuration } from '../interface/Configuration';
+import { DEFAULT_TIME_ZONE, DEFAULT_GRANULARITY_IN_MINUTES } from '../interface/Configuration';
 
-export default class EnvConfiguration implements Configuration {
+@singleton()
+export class EnvConfiguration implements Configuration {
     getTimeZone(): string {
         return process.env.TIME_ZONE || DEFAULT_TIME_ZONE;
     }

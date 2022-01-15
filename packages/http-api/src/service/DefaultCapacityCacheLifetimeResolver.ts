@@ -1,14 +1,12 @@
-import CapacityCacheLifetimeResolver from '../api/CapacityCacheLifetimeResolver';
-import { Configuration } from '@aapokiiso/fillarivahti-capacity-repository';
+import { singleton, inject } from 'tsyringe';
+import { CapacityCacheLifetimeResolver } from '../interface/CapacityCacheLifetimeResolver';
+import * as FillarivahtiCapacityRepository from '@aapokiiso/fillarivahti-capacity-repository';
 
-export default class DefaultCapacityCacheLifetimeResolver implements CapacityCacheLifetimeResolver {
-    configuration: Configuration;
-
+@singleton()
+export class DefaultCapacityCacheLifetimeResolver implements CapacityCacheLifetimeResolver {
     constructor(
-        configuration: Configuration,
-    ) {
-        this.configuration = configuration;
-    }
+        @inject('FillarivahtiCapacityRepository.Configuration') private configuration: FillarivahtiCapacityRepository.Configuration,
+    ) { }
 
     resolve(ref: Date): number {
         const granularityInMinutes = this.configuration.getGranularityInMinutes();

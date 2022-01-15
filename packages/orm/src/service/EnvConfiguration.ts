@@ -1,6 +1,8 @@
-import Configuration from '../api/Configuration';
+import { singleton } from 'tsyringe';
+import { Configuration } from '../interface/Configuration';
 
-export default class EnvConfiguration implements Configuration {
+@singleton()
+export class EnvConfiguration implements Configuration {
     getDatabase(): string | undefined {
         return process.env.DB_NAME;
     }

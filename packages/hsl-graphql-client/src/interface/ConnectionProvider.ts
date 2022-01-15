@@ -1,8 +1,5 @@
 import { AxiosInstance } from 'axios';
 
-interface ConnectionProvider
-{
+export interface ConnectionProvider {
     getConnection(): AxiosInstance;
 }
-
-export default ConnectionProvider;

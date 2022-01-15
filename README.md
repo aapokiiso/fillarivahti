@@ -21,3 +21,20 @@ collected by Markus Kainu was used during testing. But at the moment the
 service tracks only the current week and the last four weeks for performance
 reasons. Hopefully in the future more historical data could be included in the
 forecast.
+
+Development
+---
+
+:construction: This section is incomplete! :construction:
+
+To install dependencies, run
+
+```shell
+$ npx lerna bootstrap --hoist
+```
+
+To lint code style, run
+
+```shell
+$ npx lerna run lint
+```

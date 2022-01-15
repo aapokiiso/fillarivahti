@@ -1,8 +1,7 @@
-import AggregateCapacity from './data/AggregateCapacity';
-import Capacity from './data/Capacity';
+import { AggregateCapacity } from './data/AggregateCapacity';
+import { Capacity } from './data/Capacity';
 
-interface AggregateCapacityMapper
-{
+export interface AggregateCapacityMapper {
     /**
      * Maps aggregated capacity to a capacity record. Since the aggregated
      * capacity is not for any specific point of time, the current date will
@@ -15,5 +14,3 @@ interface AggregateCapacityMapper
      */
     map(aggregateCapacity: AggregateCapacity): Capacity;
 }
-
-export default AggregateCapacityMapper;

@@ -1,4 +1,4 @@
-interface Configuration {
+export interface Configuration {
     getDatabase(): string | undefined;
 
     getUsername(): string | undefined;
@@ -13,5 +13,3 @@ interface Configuration {
 
     isLoggingEnabled(): boolean;
 }
-
-export default Configuration;

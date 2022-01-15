@@ -1,17 +1,15 @@
+import { singleton, inject } from 'tsyringe';
 import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
-import AggregateCapacityMapper from '../api/AggregateCapacityMapper';
-import AggregateCapacity from '../api/data/AggregateCapacity';
-import Capacity from '../api/data/Capacity';
-import Configuration from '../api/Configuration';
+import { AggregateCapacityMapper } from '../interface/AggregateCapacityMapper';
+import { AggregateCapacity } from '../interface/data/AggregateCapacity';
+import { Capacity } from '../interface/data/Capacity';
+import { Configuration } from '../interface/Configuration';
 
-export default class DefaultAggregateCapacityMapper implements AggregateCapacityMapper {
-    configuration: Configuration;
-
+@singleton()
+export class DefaultAggregateCapacityMapper implements AggregateCapacityMapper {
     constructor(
-        configuration: Configuration,
-    ) {
-        this.configuration = configuration;
-    }
+        @inject('FillarivahtiCapacityRepository.Configuration') private configuration: Configuration,
+    ) { }
 
     map(aggregateCapacity: AggregateCapacity): Capacity {
         const { stationId, capacity, hour, minute } = aggregateCapacity;

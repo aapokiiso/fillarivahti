@@ -1,20 +1,16 @@
-import CapacityShredder from '../api/CapacityShredder';
-import Configuration from '../api/Configuration';
-import { ConnectionProvider as OrmConnectionProvider } from '@aapokiiso/fillarivahti-orm';
+import { singleton, inject } from 'tsyringe';
 import { Op } from 'sequelize';
 import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
+import * as FillarivahtiOrm from '@aapokiiso/fillarivahti-orm';
+import { CapacityShredder } from '../interface/CapacityShredder';
+import { Configuration } from '../interface/Configuration';
 
-export default class OrmCapacityShredder implements CapacityShredder {
-    ormConnectionProvider: OrmConnectionProvider;
-    configuration: Configuration;
-
+@singleton()
+export class OrmCapacityShredder implements CapacityShredder {
     constructor(
-        ormConnectionProvider: OrmConnectionProvider,
-        configuration: Configuration,
-    ) {
-        this.ormConnectionProvider = ormConnectionProvider;
-        this.configuration = configuration;
-    }
+        @inject('FillarivahtiOrm.ConnectionProvider') private ormConnectionProvider: FillarivahtiOrm.ConnectionProvider,
+        @inject('FillarivahtiCapacityRepository.Configuration') private configuration: Configuration,
+    ) { }
 
     async shredByAge(olderThanDays: number): Promise<void> {
         const connection = await this.ormConnectionProvider.getConnection();

@@ -1,8 +1,7 @@
 export const DEFAULT_TIME_ZONE = 'Europe/Helsinki';
 export const DEFAULT_GRANULARITY_IN_MINUTES = 5;
 
-interface Configuration
-{
+export interface Configuration {
     /**
      * Timezone capacity records are reported in.
      *
@@ -19,5 +18,3 @@ interface Configuration
      */
     getGranularityInMinutes(): number;
 }
-
-export default Configuration;

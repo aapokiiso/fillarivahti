@@ -1,7 +1,6 @@
 import { ParsedQs } from 'qs';
 
-interface StationIdParser
-{
+export interface StationIdParser {
     /**
      * Parses station IDs from query string if present.
      *
@@ -11,5 +10,3 @@ interface StationIdParser
      */
     parse(qs: ParsedQs): string[];
 }
-
-export default StationIdParser;

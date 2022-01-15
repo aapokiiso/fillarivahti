@@ -1,8 +1,10 @@
+import { singleton } from 'tsyringe';
 import { Capacity } from '@aapokiiso/fillarivahti-capacity-repository';
-import LatestCapacityTimestampResolver from '../api/LatestCapacityTimestampResolver';
+import { LatestCapacityTimestampResolver } from '../interface/LatestCapacityTimestampResolver';
 
-export default class DefaultLatestCapacityTimestampResolver implements LatestCapacityTimestampResolver {
-    resolve(capacities: Capacity[]): Date|null {
+@singleton()
+export class DefaultLatestCapacityTimestampResolver implements LatestCapacityTimestampResolver {
+    resolve(capacities: Capacity[]): Date | null {
         const timestamps = capacities.map(({ timestamp }) => timestamp);
 
         const descendingTimestamps = timestamps.slice().sort((a, b) => b.getTime() - a.getTime());

@@ -27,7 +27,9 @@
     "@aapokiiso/fillarivahti-orm": "^1.10.1",
     "date-fns": "^2.23.0",
     "date-fns-tz": "^1.1.6",
-    "sequelize": "^6.6.5"
+    "reflect-metadata": "^0.1.13",
+    "sequelize": "^6.6.5",
+    "tsyringe": "^4.6.0"
   },
   "devDependencies": {
     "@types/node": "^16.7.1",

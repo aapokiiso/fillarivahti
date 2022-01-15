@@ -1,17 +1,15 @@
-import CapacityProvider from '../api/CapacityProvider';
-import { ConnectionProvider } from '@aapokiiso/fillarivahti-hsl-graphql-client';
-import { Capacity } from '@aapokiiso/fillarivahti-capacity-repository';
+import { singleton, inject } from 'tsyringe';
+import { CapacityProvider } from '../interface/CapacityProvider';
+import * as FillarivahtiHslGraphqlClient from '@aapokiiso/fillarivahti-hsl-graphql-client';
+import * as FillarivahtiCapacityRepository from '@aapokiiso/fillarivahti-capacity-repository';
 
-export default class GraphqlCapacityProvider implements CapacityProvider {
-    graphqlConnectionProvider: ConnectionProvider;
-
+@singleton()
+export class GraphqlCapacityProvider implements CapacityProvider {
     constructor(
-        graphqlConnectionProvider: ConnectionProvider,
-    ) {
-        this.graphqlConnectionProvider = graphqlConnectionProvider;
-    }
+        @inject('FillarivahtiHslGraphqlClient.ConnectionProvider') private graphqlConnectionProvider: FillarivahtiHslGraphqlClient.ConnectionProvider,
+    ) { }
 
-    async getCapacities(stationIds?: string[]): Promise<Capacity[]> {
+    async getCapacities(stationIds?: string[]): Promise<FillarivahtiCapacityRepository.Capacity[]> {
         const connection = this.graphqlConnectionProvider.getConnection();
 
         try {
@@ -42,7 +40,7 @@ export default class GraphqlCapacityProvider implements CapacityProvider {
 
             return bikeRentalStations
                 .map(({ stationId, bikesAvailable, capacity: maxBikes }: BikeStationData) => {
-                    const capacity: Capacity = {
+                    const capacity: FillarivahtiCapacityRepository.Capacity = {
                         stationId,
                         timestamp: new Date(),
                         capacity: maxBikes > 0 ? bikesAvailable / maxBikes : 0,

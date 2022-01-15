@@ -1,26 +1,20 @@
-import Configuration from '../api/Configuration';
-import Capacity from '../api/data/Capacity';
-import AggregateCapacity from '../api/data/AggregateCapacity';
-import AggregateCapacityMapper from '../api/AggregateCapacityMapper';
-import { ConnectionProvider as OrmConnectionProvider } from '@aapokiiso/fillarivahti-orm';
+import { singleton, inject } from 'tsyringe';
 import { Op, fn, col, literal, Model } from 'sequelize';
 import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
-import CapacityProvider from '../api/CapacityProvider';
+import * as FillarivahtiOrm from '@aapokiiso/fillarivahti-orm';
+import { Configuration } from '../interface/Configuration';
+import { Capacity } from '../interface/data/Capacity';
+import { AggregateCapacity } from '../interface/data/AggregateCapacity';
+import { AggregateCapacityMapper } from '../interface/AggregateCapacityMapper';
+import { CapacityProvider } from '../interface/CapacityProvider';
 
-export default class DefaultCapacityProvider implements CapacityProvider {
-    ormConnectionProvider: OrmConnectionProvider;
-    configuration: Configuration;
-    aggregateCapacityMapper: AggregateCapacityMapper;
-
+@singleton()
+export class OrmCapacityProvider implements CapacityProvider {
     constructor(
-        ormConnectionProvider: OrmConnectionProvider,
-        configuration: Configuration,
-        aggregateCapacityMapper: AggregateCapacityMapper,
-    ) {
-        this.ormConnectionProvider = ormConnectionProvider;
-        this.configuration = configuration;
-        this.aggregateCapacityMapper = aggregateCapacityMapper;
-    }
+        @inject('FillarivahtiOrm.ConnectionProvider') private ormConnectionProvider: FillarivahtiOrm.ConnectionProvider,
+        @inject('FillarivahtiCapacityRepository.Configuration') private configuration: Configuration,
+        @inject('FillarivahtiCapacityRepository.AggregateCapacityMapper') private aggregateCapacityMapper: AggregateCapacityMapper,
+    ) { }
 
     async getToday(stationIds: string[]): Promise<Record<string, Capacity[]>> {
         const connection = await this.ormConnectionProvider.getConnection();

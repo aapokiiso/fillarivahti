@@ -1,6 +1,6 @@
 import { Capacity } from '@aapokiiso/fillarivahti-capacity-repository';
 
-interface LatestCapacityTimestampResolver {
+export interface LatestCapacityTimestampResolver {
     /**
      * Resolves latest timestamp from set of capacity records.
      *
@@ -8,7 +8,5 @@ interface LatestCapacityTimestampResolver {
      *
      * @returns {Date|null}
      */
-    resolve(capacities: Capacity[]): Date|null;
+    resolve(capacities: Capacity[]): Date | null;
 }
-
-export default LatestCapacityTimestampResolver;

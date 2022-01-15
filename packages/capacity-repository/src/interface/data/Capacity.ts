@@ -1,5 +1,4 @@
-interface Capacity
-{
+export interface Capacity {
     stationId: string;
 
     timestamp: Date;
@@ -10,5 +9,3 @@ interface Capacity
      */
     capacity: number;
 }
-
-export default Capacity;

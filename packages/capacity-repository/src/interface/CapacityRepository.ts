@@ -1,7 +1,6 @@
-import Capacity from './data/Capacity';
+import { Capacity } from './data/Capacity';
 
-interface CapacityRepository
-{
+export interface CapacityRepository {
     /**
      * Creates a new capacity record.
      *
@@ -22,5 +21,3 @@ interface CapacityRepository
      */
     createMany(capacities: Capacity[]): Promise<void>;
 }
-
-export default CapacityRepository;

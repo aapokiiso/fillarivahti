@@ -1,17 +1,16 @@
+import { singleton, inject } from 'tsyringe';
 import axios from 'axios';
 import { AxiosInstance } from 'axios';
-import Configuration from '../api/Configuration';
-import ConnectionProvider from '../api/ConnectionProvider';
+import { Configuration } from '../interface/Configuration';
+import { ConnectionProvider } from '../interface/ConnectionProvider';
 
-export default class DefaultConnectionProvider implements ConnectionProvider {
-    configuration: Configuration;
-    connection: AxiosInstance|null = null;
+@singleton()
+export class DefaultConnectionProvider implements ConnectionProvider {
+    connection: AxiosInstance | null = null;
 
     constructor(
-        configuration: Configuration,
-    ) {
-        this.configuration = configuration;
-    }
+        @inject('FillarivahtiHslGraphqlClient.Configuration') private configuration: Configuration,
+    ) { }
 
     getConnection(): AxiosInstance {
         if (this.connection === null) {
