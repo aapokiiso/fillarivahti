@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { Capacity } from '@aapokiiso/fillarivahti-capacity-repository';
 
-interface CapacityCacheControlApplier {
+export interface CapacityCacheControlApplier {
     /**
      * Applies a Cache-Control header to the response based on capacity
      * records.
@@ -11,5 +11,3 @@ interface CapacityCacheControlApplier {
      */
     apply(response: Response, capacitiesByStation: Record<string, Capacity[]>): void;
 }
-
-export default CapacityCacheControlApplier;

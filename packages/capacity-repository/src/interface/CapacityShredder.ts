@@ -1,4 +1,4 @@
-interface CapacityShredder {
+export interface CapacityShredder {
     /**
      * Destroys old capacity records.
      *
@@ -7,5 +7,3 @@ interface CapacityShredder {
      */
     shredByAge(olderThanDays: number): Promise<void>;
 }
-
-export default CapacityShredder;

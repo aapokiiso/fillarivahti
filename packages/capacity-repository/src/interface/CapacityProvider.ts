@@ -1,7 +1,6 @@
-import Capacity from './data/Capacity';
+import { Capacity } from './data/Capacity';
 
-interface CapacityProvider
-{
+export interface CapacityProvider {
     /**
      * Provides capacity records for the current date for given station IDs.
      *
@@ -28,5 +27,3 @@ interface CapacityProvider
      */
     getWeekdayAverage(stationIds: string[]): Promise<Record<string, Capacity[]>>;
 }
-
-export default CapacityProvider;

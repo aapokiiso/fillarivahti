@@ -1,7 +1,9 @@
+import { singleton } from 'tsyringe';
 import { ParsedQs } from 'qs';
-import StationIdParser from '../api/StationIdParser';
+import { StationIdParser } from '../interface/StationIdParser';
 
-export default class DefaultStationIdParser implements StationIdParser {
+@singleton()
+export class DefaultStationIdParser implements StationIdParser {
     parse(qs: ParsedQs): string[] {
         const { stationIds } = qs;
 

@@ -1,19 +1,17 @@
+import { singleton, inject } from 'tsyringe';
 import { Sequelize } from 'sequelize';
-import ConnectionProvider from '../api/ConnectionProvider';
 import path from 'path';
 import fs from 'fs';
-import Configuration from '../api/Configuration';
+import { ConnectionProvider } from '../interface/ConnectionProvider';
+import { Configuration } from '../interface/Configuration';
 
-export default class MysqlConnectionProvider implements ConnectionProvider {
-    configuration: Configuration;
-
-    connection: Sequelize | null = null;
+@singleton()
+export class MysqlConnectionProvider implements ConnectionProvider {
+    private connection: Sequelize | null = null;
 
     constructor(
-        configuration: Configuration,
-    ) {
-        this.configuration = configuration;
-    }
+        @inject('FillarivahtiOrm.Configuration') private configuration: Configuration,
+    ) { }
 
     async getConnection(): Promise<Sequelize> {
         if (this.connection === null) {

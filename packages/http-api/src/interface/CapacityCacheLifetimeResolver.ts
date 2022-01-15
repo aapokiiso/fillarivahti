@@ -1,4 +1,4 @@
-interface CapacityCacheLifetimeResolver {
+export interface CapacityCacheLifetimeResolver {
     /**
      * Resolves cache lifetime in seconds from the given point in time.
      * The goal is to cache capacity records as long as possible until a new
@@ -10,7 +10,5 @@ interface CapacityCacheLifetimeResolver {
      *
      * @returns {Number}
      */
-     resolve(ref: Date): number;
+    resolve(ref: Date): number;
 }
-
-export default CapacityCacheLifetimeResolver;

@@ -26,7 +26,9 @@
   },
   "dependencies": {
     "@aapokiiso/fillarivahti-capacity-repository": "^1.12.1",
-    "@aapokiiso/fillarivahti-hsl-graphql-client": "^1.10.1"
+    "@aapokiiso/fillarivahti-hsl-graphql-client": "^1.10.1",
+    "reflect-metadata": "^0.1.13",
+    "tsyringe": "^4.6.0"
   },
   "devDependencies": {
     "@types/node": "^16.7.1",

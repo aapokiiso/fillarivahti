@@ -1,8 +1,9 @@
-import Configuration, { DEFAULT_GRAPHQL_ENDPOINT_URI } from '../api/Configuration';
+import { singleton } from 'tsyringe';
+import { Configuration, DEFAULT_GRAPHQL_ENDPOINT_URI } from '../interface/Configuration';
 
-export default class EnvConfiguration implements Configuration {
+@singleton()
+export class EnvConfiguration implements Configuration {
     getGraphqlEndpointUri(): string {
         return process.env.GRAPHQL_ENDPOINT_URI || DEFAULT_GRAPHQL_ENDPOINT_URI;
     }
-
 }

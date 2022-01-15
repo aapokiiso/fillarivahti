@@ -1,20 +1,16 @@
+import { singleton, inject } from 'tsyringe';
 import { Capacity } from '@aapokiiso/fillarivahti-capacity-repository';
 import { Response } from 'express';
-import CapacityCacheControlApplier from '../api/CapacityCacheControlApplier';
-import CapacityCacheLifetimeResolver from '../api/CapacityCacheLifetimeResolver';
-import LatestCapacityTimestampResolver from '../api/LatestCapacityTimestampResolver';
+import { CapacityCacheControlApplier } from '../interface/CapacityCacheControlApplier';
+import { CapacityCacheLifetimeResolver } from '../interface/CapacityCacheLifetimeResolver';
+import { LatestCapacityTimestampResolver } from '../interface/LatestCapacityTimestampResolver';
 
-export default class DefaultCapacityCacheControlApplier implements CapacityCacheControlApplier {
-    latestTimestampResolver: LatestCapacityTimestampResolver;
-    cacheLifetimeResolver: CapacityCacheLifetimeResolver;
-
+@singleton()
+export class DefaultCapacityCacheControlApplier implements CapacityCacheControlApplier {
     constructor(
-        latestTimestampResolver: LatestCapacityTimestampResolver,
-        cacheLifetimeResolver: CapacityCacheLifetimeResolver,
-    ) {
-        this.latestTimestampResolver = latestTimestampResolver;
-        this.cacheLifetimeResolver = cacheLifetimeResolver;
-    }
+        @inject('FillarivahtiHttpApi.LatestCapacityTimestampResolver') private latestTimestampResolver: LatestCapacityTimestampResolver,
+        @inject('FillarivahtiHttpApi.CapacityCacheLifetimeResolver') private cacheLifetimeResolver: CapacityCacheLifetimeResolver,
+    ) { }
 
     apply(response: Response, capacitiesByStation: Record<string, Capacity[]>): void {
         const allCapacities = Object.values(capacitiesByStation).flat();
