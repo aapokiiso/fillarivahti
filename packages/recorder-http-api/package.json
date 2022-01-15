@@ -30,6 +30,7 @@
     "@aapokiiso/fillarivahti-orm": "^1.10.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "express-basic-auth": "^1.2.1",
     "http-status-codes": "^2.1.4",
     "qs": "^6.10.1",
     "reflect-metadata": "^0.1.13",
