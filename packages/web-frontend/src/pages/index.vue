@@ -1,12 +1,6 @@
 <template>
     <main>
         <div class="content-wrapper">
-            <Notice>
-                <template #content>
-                    {{ $t("seasonEndNotice") }}
-                </template>
-            </Notice>
-
             <StationSearch
                 class="station-search"
                 @search-pending="onStationSearchPending"
