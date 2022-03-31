@@ -1,6 +1,6 @@
 {
   "name": "@aapokiiso/fillarivahti-orm-open-data-parser",
-  "version": "1.12.1",
+  "version": "1.13.0",
   "description": "City bike station availability open data parser for the Fillarivahti ORM.",
   "author": "Aapo Kiiso <aapo@kii.so>",
   "homepage": "https://github.com/aapokiiso/fillarivahti#readme",
