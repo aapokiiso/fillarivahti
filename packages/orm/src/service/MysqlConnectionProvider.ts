@@ -48,11 +48,13 @@ export class MysqlConnectionProvider implements ConnectionProvider {
                 logging: this.configuration.isLoggingEnabled() ? console.log : false,
                 dialectOptions: {
                     socketPath: this.configuration.getSocketPath(),
-                    ssl: {
-                        key: this.configuration.getSslKey(),
-                        cert: this.configuration.getSslCert(),
-                        ca: this.configuration.getSslCa(),
-                    },
+                    ssl: this.configuration.isSslEnabled()
+                        ? {
+                            key: this.configuration.getSslKey(),
+                            cert: this.configuration.getSslCert(),
+                            ca: this.configuration.getSslCa(),
+                        }
+                        : undefined,
                 },
             },
         );

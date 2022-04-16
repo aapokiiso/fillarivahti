@@ -33,6 +33,10 @@ export class EnvConfiguration implements Configuration {
         return process.env.DB_LOGGING === '1';
     }
 
+    isSslEnabled(): boolean {
+        return process.env.DB_SSL === '1';
+    }
+
     getSslKey(): string | undefined {
         return process.env.DB_SSL_KEY;
     }

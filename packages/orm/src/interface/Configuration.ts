@@ -13,6 +13,8 @@ export interface Configuration {
 
     isLoggingEnabled(): boolean;
 
+    isSslEnabled(): boolean;
+
     getSslKey(): string | undefined;
 
     getSslCert(): string | undefined;
