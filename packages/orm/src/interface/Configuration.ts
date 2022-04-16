@@ -12,4 +12,10 @@ export interface Configuration {
     getSocketPath(): string | undefined;
 
     isLoggingEnabled(): boolean;
+
+    getSslKey(): string | undefined;
+
+    getSslCert(): string | undefined;
+
+    getSslCa(): string | undefined;
 }
