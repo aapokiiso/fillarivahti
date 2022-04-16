@@ -22,7 +22,7 @@
     "lint": "eslint src",
     "lint:fix": "eslint --fix src",
     "start": "node dist/index.js",
-    "deploy": "npm install && npm run build && gcloud app deploy --project fillarivahti"
+    "deploy": "npm ci && npm run build && gcloud app deploy --project fillarivahti"
   },
   "dependencies": {
     "@aapokiiso/fillarivahti-capacity-repository": "^1.14.1",
