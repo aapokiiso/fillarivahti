@@ -17,17 +17,18 @@ const mapStationIds = (stationIds: string[]): URLSearchParams => new URLSearchPa
     stationIds.map((stationId: string) => ['stationIds[]', stationId]),
 );
 
-const mapCapacityResponse = (data: Record<string, ResponseCapacity[]>): Record<string, Capacity[]> => Object.keys(data)
+const mapCapacityResponse = (stationIds: string[], data: Record<string, ResponseCapacity[]>): Record<string, Capacity[]> => stationIds
     .reduce((acc: Record<string, Capacity[]>, stationId: string) => {
-        const capacities: Capacity[] = data[stationId].map((responseCapacity: ResponseCapacity) => {
-            const { stationId, timestamp, capacity } = responseCapacity;
+        const capacities: Capacity[] = (data[stationId] || [])
+            .map((responseCapacity: ResponseCapacity) => {
+                const { stationId, timestamp, capacity } = responseCapacity;
 
-            return {
-                stationId,
-                timestamp: new Date(timestamp),
-                capacity,
-            };
-        });
+                return {
+                    stationId,
+                    timestamp: new Date(timestamp),
+                    capacity,
+                };
+            });
 
         acc[stationId] = capacities;
 
@@ -44,7 +45,7 @@ export const fetchTodayForStations = async (
         params: mapStationIds(stationIds),
     });
 
-    return mapCapacityResponse(data);
+    return mapCapacityResponse(stationIds, data);
 };
 
 export const fetchTodayForStation = async (
@@ -67,7 +68,7 @@ export const fetchWeekdayAverageForStations = async (
         params: mapStationIds(stationIds),
     });
 
-    return mapCapacityResponse(data);
+    return mapCapacityResponse(stationIds, data);
 };
 
 export const fetchWeekdayAverageForStation = async (
