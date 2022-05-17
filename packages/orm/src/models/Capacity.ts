@@ -11,7 +11,7 @@ function importCapacityModel(sequelize: Sequelize): ModelCtor<Model> {
             },
             stationId: {
                 // eslint-disable-next-line new-cap, no-magic-numbers
-                type: DataTypes.STRING(5),
+                type: DataTypes.STRING(255),
                 comment: 'HSL station ID',
             },
             timestamp: {

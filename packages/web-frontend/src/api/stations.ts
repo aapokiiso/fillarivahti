@@ -73,7 +73,7 @@ export const findStationIdsByAddress = async (
         params: {
             text: address,
             size: DEFAULT_SEARCH_RESULTS_COUNT,
-            sources: 'citybikessmoove',
+            sources: 'citybikessmoove,citybikesvantaa',
             layers: 'bikestation',
         },
     });
