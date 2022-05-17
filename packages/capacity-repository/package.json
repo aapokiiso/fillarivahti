@@ -1,6 +1,6 @@
 {
   "name": "@aapokiiso/fillarivahti-capacity-repository",
-  "version": "1.14.1",
+  "version": "1.15.0",
   "description": "Capacity repository for Fillarivahti.",
   "author": "Aapo Kiiso <aapo@kii.so>",
   "license": "MIT",
@@ -24,7 +24,7 @@
     "prepublish": "npm run build"
   },
   "dependencies": {
-    "@aapokiiso/fillarivahti-orm": "^1.14.1",
+    "@aapokiiso/fillarivahti-orm": "^1.15.0",
     "date-fns": "^2.23.0",
     "date-fns-tz": "^1.1.6",
     "reflect-metadata": "^0.1.13",
