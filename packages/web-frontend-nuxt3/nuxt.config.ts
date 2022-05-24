@@ -1,8 +1,9 @@
-import { defineNuxtConfig } from 'nuxt';
+import { defineNuxtConfig } from 'nuxt'
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
-    typescript: {
-        shim: false,
-    },
-});
+  modules: ['@nuxtjs/tailwindcss'],
+  typescript: {
+    shim: false
+  }
+})
