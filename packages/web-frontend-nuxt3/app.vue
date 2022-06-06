@@ -95,7 +95,14 @@
                 <div class="absolute inset-y-0 left-0 flex items-center pointer-events-none">
                   <SearchIcon class="h-5 w-5" aria-hidden="true" />
                 </div>
-                <input id="search-field" class="block w-full h-full pl-8 pr-3 py-2 border-transparent text-gray-900 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-0 focus:border-transparent sm:text-sm" placeholder="Search" type="search" name="search">
+                <input
+                  id="search-field"
+                  v-model="searchText"
+                  class="block w-full h-full pl-8 pr-3 py-2 border-transparent text-gray-900 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-0 focus:border-transparent sm:text-sm"
+                  placeholder="Search"
+                  type="search"
+                  name="search"
+                >
               </div>
             </form>
           </div>
@@ -151,4 +158,6 @@ const navigation = computed(
 )
 
 const sidebarOpen = ref(false)
+
+const searchText = useSearchText()
 </script>
