@@ -1,8 +1,10 @@
 <template>
   <div>
-    <p v-if="!pending">
-      {{ stationIds }}
-    </p>
+    <ol v-if="!stationsPending">
+      <li v-for="station in stations" :key="station.stationId">
+        {{ station.name }}
+      </li>
+    </ol>
     <p v-else>
       Loading...
     </p>
@@ -10,9 +12,5 @@
 </template>
 
 <script setup>
-const searchText = useSearchText()
-
-const { idsByText } = useStationSearch()
-
-const { data: stationIds, pending } = await idsByText(searchText.value)
+const { stations, pending: stationsPending } = await useStations()
 </script>

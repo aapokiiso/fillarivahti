@@ -97,11 +97,12 @@
                 </div>
                 <input
                   id="search-field"
-                  v-model="searchText"
+                  :value="searchText"
                   class="block w-full h-full pl-8 pr-3 py-2 border-transparent text-gray-900 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-0 focus:border-transparent sm:text-sm"
                   placeholder="Search"
                   type="search"
                   name="search"
+                  @input="onSearchInput"
                 >
               </div>
             </form>
@@ -127,7 +128,7 @@ import {
   Dialog,
   DialogPanel,
   TransitionChild,
-  TransitionRoot
+  TransitionRoot,
 } from '@headlessui/vue'
 
 import {
@@ -136,15 +137,19 @@ import {
   LocationMarkerIcon,
   MapIcon,
   ViewListIcon,
-  QuestionMarkCircleIcon
+  QuestionMarkCircleIcon,
 } from '@heroicons/vue/outline'
 
 import { SearchIcon } from '@heroicons/vue/solid'
 
+import debounce from 'debounce'
+
+// TODO move navigation to its own component
+
 const navigationItems = [
   { name: 'Map view', route: 'index', icon: MapIcon },
   { name: 'List view', route: 'list', icon: ViewListIcon },
-  { name: 'About', route: 'about', icon: QuestionMarkCircleIcon }
+  { name: 'About', route: 'about', icon: QuestionMarkCircleIcon },
 ]
 
 const route = useRoute()
@@ -153,11 +158,15 @@ const navigation = computed(
   () => navigationItems
     .map(item => ({
       ...item,
-      current: item.route === route.name
-    }))
+      current: item.route === route.name,
+    })),
 )
 
 const sidebarOpen = ref(false)
 
+// TODO move search to its own component
+
 const searchText = useSearchText()
+
+const onSearchInput = debounce((event) => { searchText.value = event.target.value }, 300)
 </script>
