@@ -1,14 +1,12 @@
-export const useStationIds = async () => {
+export const useStationIds = () => {
   const searchText = useSearchText()
-
-  // TODO: Replace useFetch with $fetch, useFetch meant only for pages, components, plugins.
 
   const {
     data: stationIds,
     pending,
     refresh,
     error,
-  } = await useFetch(() => `/api/stations/address-search?address=${searchText.value}`)
+  } = useFetch(() => `/api/stations/address-search?address=${searchText.value}`)
 
   watch(searchText, () => refresh())
 

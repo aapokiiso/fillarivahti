@@ -12,5 +12,5 @@
 </template>
 
 <script setup>
-const { stations, pending: stationsPending } = await useStations()
+const { stations, pending: stationsPending } = useStations()
 </script>
