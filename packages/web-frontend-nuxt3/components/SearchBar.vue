@@ -37,7 +37,12 @@ import { SearchIcon } from '@heroicons/vue/solid'
 
 import debounce from 'debounce'
 
+const router = useRouter()
 const searchText = useSearchText()
 
-const onSearchInput = debounce((event) => { searchText.value = event.target.value }, 300)
+const onSearchInput = debounce((event) => {
+  router.push({
+    query: { q: event.target.value },
+  })
+}, 300)
 </script>
