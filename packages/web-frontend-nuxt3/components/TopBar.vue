@@ -9,7 +9,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {
   MenuAlt2Icon,
 } from '@heroicons/vue/outline'

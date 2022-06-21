@@ -1,4 +1,5 @@
 import { useQueryStationIds } from '../utils/useQueryStationIds'
+import type { BikeStation } from '~/types/BikeStation'
 
 export default defineEventHandler(async (event) => {
   const ids = useQueryStationIds(useQuery(event))
@@ -14,12 +15,7 @@ export default defineEventHandler(async (event) => {
 
     const result = await $fetch<{
       data: {
-        bikeRentalStations: {
-          stationId: string,
-          name: string,
-          bikesAvailable: number,
-          capacity: number
-        }[]
+        bikeRentalStations: BikeStation[]
       }
     }>(hslGraphqlEndpointUrl, {
       method: 'POST',

@@ -1,3 +1,5 @@
+import { BikeStation } from '~/types/BikeStation'
+
 export const useStations = () => {
   const { stationIds } = useStationIds()
 
@@ -8,7 +10,7 @@ export const useStations = () => {
     pending,
     refresh,
     error,
-  } = useAsyncData(
+  } = useAsyncData<BikeStation[]>(
     endpoint.value,
     () => {
       if (stationIds.value.length) {
