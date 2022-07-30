@@ -1,28 +1,13 @@
 export const useStationIds = () => {
+  const useStationIdsFetch = useFetchFactory<string[]>('stationIds', { defaultValue: [] })
+
   const searchText = useSearchText()
 
-  const endpoint = computed(() => `/api/stations/address-search?address=${searchText.value}`)
-
-  const {
-    data: stationIds,
-    pending,
-    refresh,
-    error,
-  } = useAsyncData<string[]>(
-    endpoint.value,
-    () => {
-      if (searchText.value.length >= 3) {
-        return $fetch(endpoint.value)
-      }
-
-      return Promise.resolve([])
-    },
-    {
-      default: () => [],
-    },
+  const endpoint = computed(
+    () => searchText.value.length >= 3
+      ? `/api/stations/address-search?address=${searchText.value}`
+      : '',
   )
 
-  watch(searchText, () => refresh())
-
-  return { stationIds, pending, refresh, error }
+  return useStationIdsFetch(endpoint)
 }

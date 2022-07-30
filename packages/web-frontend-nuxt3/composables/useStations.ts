@@ -1,30 +1,15 @@
 import { BikeStation } from '~/types/BikeStation'
 
-export const useStations = () => {
-  const { stationIds } = useStationIds()
+export const useStations = async () => {
+  const useStationsFetch = useFetchFactory<BikeStation[]>('stations', { defaultValue: [] })
 
-  const endpoint = computed(() => `/api/stations${stationIds.value.length ? '?' + stationIds.value.map(id => `ids=${id}`).join('&') : ''}`)
+  const { data: stationIds } = await useStationIds()
 
-  const {
-    data: stations,
-    pending,
-    refresh,
-    error,
-  } = useAsyncData<BikeStation[]>(
-    endpoint.value,
-    () => {
-      if (stationIds.value.length) {
-        return $fetch(endpoint.value)
-      }
-
-      return Promise.resolve([])
-    },
-    {
-      default: () => [],
-    },
+  const endpoint = computed(
+    () => stationIds.value.length
+      ? `/api/stations?${stationIds.value.map(id => `ids=${id}`).join('&')}`
+      : '',
   )
 
-  watch(stationIds, () => refresh())
-
-  return { stations, pending, refresh, error }
+  return useStationsFetch(endpoint)
 }
