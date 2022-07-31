@@ -6,7 +6,7 @@
           <BikeStationCard :station="station" />
         </div>
       </div>
-      <p v-else-if="stationsError">
+      <p v-else-if="stationIdsError || stationsError">
         Failed to load stations.
       </p>
       <p v-else>
@@ -20,31 +20,30 @@
 </template>
 
 <script setup lang="ts">
-const { pending: stationIdsPending } = await useStationIds()
-const { data: stations, pending: stationsPending, error: stationsError } = await useStations()
+const address = useSearchText()
 
-// Comparatively complicated pending logic below due to sequential pending
-// states between station IDs and stations data. Need to stay pending over the
-// duration of both fetches.
+const pending = ref(true)
 
-const pending = ref(false)
+const { data: stationIds, error: stationIdsError } = await useStationIdsByAddress(address.value)
+const { data: stations, error: stationsError } = await useStationsByIds(stationIds.value)
 
-watch(stationIdsPending, (nowPending) => {
-  if (nowPending === true) {
+pending.value = false
+
+const route = useRoute()
+watch(address, async (newAddress) => {
+  // Avoid empty load when search query is removed from the URL when navigating
+  // to another page.
+  if (route.name === 'list') {
     pending.value = true
-  } else {
-    // Wait for next tick to check if stations have started loading. If not,
-    // done pending.
-    setTimeout(() => {
-      if (stationsPending.value === false) {
-        pending.value = false
-      }
-    })
-  }
-})
 
-watch(stationsPending, (nowPending) => {
-  if (nowPending === false) {
+    const { data: newStationIds, error: newStationIdsError } = await useStationIdsByAddress(newAddress)
+    stationIds.value = newStationIds.value
+    stationIdsError.value = newStationIdsError.value
+
+    const { data: newStations, error: newStationsError } = await useStationsByIds(stationIds.value)
+    stations.value = newStations.value
+    stationsError.value = newStationsError.value
+
     pending.value = false
   }
 })

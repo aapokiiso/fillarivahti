@@ -1,4 +1,4 @@
-import sum from './sum';
+import { sum } from './sum';
 
 export type LinearRegressionResult = {
     slope: number,
@@ -11,7 +11,7 @@ export type LinearRegressionResult = {
  * @param {Number[]} data
  * @returns {Object}
  */
-const linearRegression = function (data: number[]): LinearRegressionResult {
+export const linearRegression = function (data: number[]): LinearRegressionResult {
     if (data.length === 0) {
         throw new Error('data must not be empty.');
     }
@@ -35,5 +35,3 @@ const linearRegression = function (data: number[]): LinearRegressionResult {
         intercept,
     };
 };
-
-export default linearRegression;

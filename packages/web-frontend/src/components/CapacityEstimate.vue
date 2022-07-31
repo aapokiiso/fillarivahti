@@ -17,10 +17,11 @@
 // ESLint does not recognized PropType exported by the Composition API.
 // eslint-disable-next-line import/named
 import { defineComponent, PropType } from '@vue/composition-api';
-import linearRegression, {
+import {
+    linearRegression,
     LinearRegressionResult,
-} from '~/helpers/linear-regression';
-import slopeAngle from '~/helpers/slope-angle';
+    slopeAngle,
+} from '@aapokiiso/fillarivahti-web-frontend-helpers';
 import { Capacity } from '~/api/capacities';
 
 const decimalPrecision = 2;

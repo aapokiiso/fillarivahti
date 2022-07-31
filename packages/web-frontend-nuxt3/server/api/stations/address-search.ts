@@ -3,9 +3,9 @@ export default defineEventHandler(async (event) => {
   const { addressSearchEndpointUrl } = useRuntimeConfig()
 
   // TODO error handling
-  // TODO move limits to config
+  // TODO move limits to env config
 
-  if (addressSearchEndpointUrl && address.length >= 3) {
+  if (address.length >= 3) {
     const result = await $fetch<{
       features: {
         properties: {

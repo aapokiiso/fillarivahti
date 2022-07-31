@@ -1,9 +1,11 @@
+import formsPlugin from '@tailwindcss/forms'
+
 module.exports = {
   content: [],
   theme: {
     extend: {},
   },
   plugins: [
-    require('@tailwindcss/forms'),
+    formsPlugin,
   ],
 }

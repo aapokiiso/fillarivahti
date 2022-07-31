@@ -1,6 +1,6 @@
 /* eslint-disable no-magic-numbers */
 
-import sum from './sum';
+import { sum } from './sum';
 
 /**
  * Standard deviation (sigma) of 2 makes the smoothing take into account two
@@ -21,7 +21,7 @@ const DEFAULT_SIGMA = 2;
  *
  * @throws {Error} If dataset is too small
  */
-const gaussianSmoothen = (dataset: number[], sigma: number = DEFAULT_SIGMA): number[] => {
+export const gaussianSmoothen = (dataset: number[], sigma: number = DEFAULT_SIGMA): number[] => {
     const kernelWidth = 2 * sigma + 1;
 
     if (dataset.length < kernelWidth) {
@@ -52,5 +52,3 @@ const gaussianSmoothen = (dataset: number[], sigma: number = DEFAULT_SIGMA): num
         );
     });
 };
-
-export default gaussianSmoothen;

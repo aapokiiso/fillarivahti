@@ -1,6 +1,6 @@
 import { QueryObject } from 'ufo'
 
-export const useQueryStationIds = (query: QueryObject): string[] => {
+export const parseStationIdsFromQuery = (query: QueryObject): string[] => {
   const { ids } = query
 
   if (Array.isArray(ids)) {

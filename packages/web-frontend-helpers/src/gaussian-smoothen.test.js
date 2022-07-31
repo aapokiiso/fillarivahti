@@ -1,6 +1,6 @@
 /* eslint-disable no-magic-numbers */
 
-const gaussianSmoothen = require('./gaussian-smoothen').default;
+const { gaussianSmoothen } = require('./gaussian-smoothen');
 
 test('too little data', () => {
     const data = [1, 2, 3];

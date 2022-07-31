@@ -1,14 +1,14 @@
-import { useQueryStationIds } from '../utils/useQueryStationIds'
+import { parseStationIdsFromQuery } from '../utils/parseStationIdsFromQuery'
 import type { BikeStation } from '~/types/BikeStation'
 
 export default defineEventHandler(async (event) => {
-  const ids = useQueryStationIds(useQuery(event))
+  const ids = parseStationIdsFromQuery(useQuery(event))
   const { hslGraphqlEndpointUrl } = useRuntimeConfig()
 
   // TODO error handling
   // TODO move limits to config
 
-  if (hslGraphqlEndpointUrl && ids.length > 0 && ids.length < 10) {
+  if (ids.length > 0 && ids.length < 10) {
     const idFilter = ids
       ? `(ids: [${ids.map(id => `"${id}"`).join(',')}])`
       : ''

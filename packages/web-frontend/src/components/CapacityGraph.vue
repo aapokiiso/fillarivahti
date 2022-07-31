@@ -9,7 +9,7 @@ import { LineChart } from 'vue-chart-3';
 import { defineComponent } from '@vue/composition-api';
 import { useWindowSize } from 'vue-window-size';
 import { useContext } from '@nuxtjs/composition-api';
-import gaussianSmoothen from '~/helpers/gaussian-smoothen';
+import { gaussianSmoothen } from '@aapokiiso/fillarivahti-web-frontend-helpers';
 
 Chart.register(annotationPlugin);
 

@@ -23,7 +23,7 @@
     "start": "nuxt start",
     "lint": "eslint --ext .ts,.js,.vue src",
     "lint:fix": "npm run lint -- --fix",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "deploy": "npm install && npm run build && gcloud app deploy --project fillarivahti"
   },
   "devDependencies": {
@@ -44,6 +44,7 @@
     "ts-jest": "^27.0.5"
   },
   "dependencies": {
+    "@aapokiiso/fillarivahti-web-frontend-helpers": "^1.15.1",
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/composition-api": "^0.29.2",
     "@nuxtjs/i18n": "^7.0.3",
