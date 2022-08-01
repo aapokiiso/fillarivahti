@@ -1,6 +1,6 @@
 {
   "name": "@aapokiiso/fillarivahti-availability-estimation",
-  "version": "1.16.0",
+  "version": "1.16.1",
   "description": "Bike availability estimation for Fillarivahti",
   "author": "Aapo Kiiso <aapo@kii.so>",
   "license": "MIT",
@@ -24,8 +24,8 @@
     "prepublish": "npm run build"
   },
   "dependencies": {
-    "@aapokiiso/fillarivahti-capacity-repository": "^1.16.0",
-    "@aapokiiso/fillarivahti-helpers": "^1.16.0",
+    "@aapokiiso/fillarivahti-capacity-repository": "^1.16.1",
+    "@aapokiiso/fillarivahti-helpers": "^1.16.1",
     "reflect-metadata": "^0.1.13",
     "tsyringe": "^4.6.0"
   },

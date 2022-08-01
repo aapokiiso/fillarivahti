@@ -1,6 +1,6 @@
 {
   "name": "@aapokiiso/fillarivahti-recorder-http-api",
-  "version": "1.16.0",
+  "version": "1.16.1",
   "description": "Records city bike station capacity statistics via HTTP trigger for Fillarivahti.",
   "author": "Aapo Kiiso <aapo@kii.so>",
   "license": "MIT",
@@ -25,9 +25,9 @@
     "deploy": "npm install && npm run build && gcloud app deploy --project fillarivahti"
   },
   "dependencies": {
-    "@aapokiiso/fillarivahti-capacity-repository": "^1.16.0",
-    "@aapokiiso/fillarivahti-hsl-capacity-provider": "^1.16.0",
-    "@aapokiiso/fillarivahti-orm": "^1.16.0",
+    "@aapokiiso/fillarivahti-capacity-repository": "^1.16.1",
+    "@aapokiiso/fillarivahti-hsl-capacity-provider": "^1.16.1",
+    "@aapokiiso/fillarivahti-orm": "^1.16.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-basic-auth": "^1.2.1",
