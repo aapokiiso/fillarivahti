@@ -55,7 +55,7 @@ export class LinearRegressionAvailabilityEstimation implements AvailabilityEstim
         const estimationIntervalLength = this.getEstimationIntervalLength(granularityInMinutes, estimationIntervalInMinutes);
         const pivotAvailability = todayAvailabilities[pivotIndex];
 
-        return (new Array(estimationIntervalLength)).map((_, idx) => {
+        return [...Array(estimationIntervalLength).keys()].map((_, idx) => {
             const nth = idx + 1;
 
             const percentEstimate = Math.max(
