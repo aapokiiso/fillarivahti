@@ -1,7 +1,7 @@
 {
   "name": "root",
   "scripts": {
-    "publish": "lerna run build && lerna publish"
+    "publish": "lerna run build --no-private && lerna publish"
   },
   "devDependencies": {
     "@lamiaoy/eslint-config": "^3.0.0",

@@ -14,5 +14,6 @@
   },
   "dependencies": {
     "fast-csv": "^4.3.6"
-  }
+  },
+  "gitHead": "ac0ae71c977be37afdee15c3c09f86d954c9f177"
 }
