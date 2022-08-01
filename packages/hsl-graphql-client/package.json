@@ -1,6 +1,6 @@
 {
   "name": "@aapokiiso/fillarivahti-hsl-graphql-client",
-  "version": "1.13.0",
+  "version": "1.16.0",
   "description": "HSL GraphQL API client for Fillarivahti.",
   "author": "Aapo Kiiso <aapo@kii.so>",
   "license": "MIT",

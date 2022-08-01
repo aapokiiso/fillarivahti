@@ -1,37 +1,37 @@
 {
-    "name": "@aapokiiso/fillarivahti-availability-estimation",
-    "version": "1.15.0",
-    "description": "Bike availability estimation for Fillarivahti",
-    "author": "Aapo Kiiso <aapo@kii.so>",
-    "license": "MIT",
-    "repository": {
-      "type": "git",
-      "url": "git+https://github.com/aapokiiso/fillarivahti.git"
-    },
-    "main": "dist/index",
-    "types": "dist/index",
-    "files": [
-      "dist"
-    ],
-    "publishConfig": {
-      "access": "public"
-    },
-    "scripts": {
-      "clean": "rm -rf dist",
-      "build": "npm run clean && tsc",
-      "lint": "eslint src",
-      "lint:fix": "eslint --fix src",
-      "prepublish": "npm run build"
-    },
-    "dependencies": {
-        "@aapokiiso/fillarivahti-capacity-repository": "^1.15.0",
-        "@aapokiiso/fillarivahti-helpers": "^1.15.1",
-        "reflect-metadata": "^0.1.13",
-        "tsyringe": "^4.6.0"
-    },
-    "devDependencies": {
-      "@types/node": "^16.7.1",
-      "eslint": "^7.32.0",
-      "typescript": "^4.3.5"
-    }
+  "name": "@aapokiiso/fillarivahti-availability-estimation",
+  "version": "1.16.0",
+  "description": "Bike availability estimation for Fillarivahti",
+  "author": "Aapo Kiiso <aapo@kii.so>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aapokiiso/fillarivahti.git"
+  },
+  "main": "dist/index",
+  "types": "dist/index",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "npm run clean && tsc",
+    "lint": "eslint src",
+    "lint:fix": "eslint --fix src",
+    "prepublish": "npm run build"
+  },
+  "dependencies": {
+    "@aapokiiso/fillarivahti-capacity-repository": "^1.16.0",
+    "@aapokiiso/fillarivahti-helpers": "^1.16.0",
+    "reflect-metadata": "^0.1.13",
+    "tsyringe": "^4.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^16.7.1",
+    "eslint": "^7.32.0",
+    "typescript": "^4.3.5"
   }
+}
