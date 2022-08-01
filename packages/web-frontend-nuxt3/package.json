@@ -12,6 +12,7 @@
     "@aapokiiso/fillarivahti-web-frontend-helpers": "^1.15.1",
     "@headlessui/vue": "^1.6.2",
     "@heroicons/vue": "^1.0.6",
+    "@nuxtjs/eslint-config-typescript": "^10.0.0",
     "@nuxtjs/tailwindcss": "^5.1.2",
     "@tailwindcss/forms": "^0.5.2",
     "chart.js": "^3.8.2",

@@ -1,7 +1,6 @@
 <template>
   <div class="min-h-full">
     <main class="py-10">
-      <!-- Page header -->
       <div class="max-w-3xl mx-auto px-4 sm:px-6 md:flex md:items-center md:justify-between md:space-x-5 lg:max-w-7xl lg:px-8">
         <div class="flex items-center space-x-5">
           <div>
@@ -52,7 +51,16 @@
                   In 30 minutes
                 </dt>
                 <dd class="text-sm text-gray-900">
-                  <BikeStationAvailabilityStatus :bikes-available="station.bikesAvailable" :capacity="station.capacity" :is-estimate="true" />
+                  <BikeStationAvailabilityStatus :bikes-available="estimatedBikesAvailable" :capacity="station.capacity">
+                    <template #trend>
+                      <BikeStationAvailabilityTrend
+                        class="mr-2 h-4 w-4"
+                        :estimated-bikes="estimatedBikesAvailable"
+                        :current-bikes="station.bikesAvailable"
+                        :capacity="station.capacity"
+                      />
+                    </template>
+                  </BikeStationAvailabilityStatus>
                 </dd>
               </div>
             </dl>
@@ -79,7 +87,7 @@
                 />
                 <Skeletor
                   v-else
-                  :height="graphSkeletonHeight"
+                  height="10rem"
                 />
               </div>
             </div>
@@ -97,10 +105,6 @@ import {
 
 import 'vue-skeletor/dist/vue-skeletor.css'
 import { Skeletor } from 'vue-skeletor'
-
-import resolveConfig from 'tailwindcss/resolveConfig'
-import * as tailwindConfig from '~/tailwind.config.js'
-const graphSkeletonHeight = resolveConfig(tailwindConfig).theme.height[52] // roughly 200px
 
 const route = useRoute()
 const stationId = route.params.id
@@ -126,5 +130,24 @@ const weekdayAverageAvailability = ref(weekdayAverageAvailabilities.value[statio
 
 watch(weekdayAverageAvailabilities, (newAvailabilities) => {
   weekdayAverageAvailability.value = newAvailabilities[stationId] || []
+})
+
+const {
+  data: estimatedAvailabilities,
+} = await useEstimatedBikeStationAvailabilities([stationId])
+const estimatedAvailability = ref(estimatedAvailabilities.value[stationId] || [])
+
+watch(estimatedAvailabilities, (newAvailabilities) => {
+  estimatedAvailability.value = newAvailabilities[stationId] || []
+})
+
+const estimatedBikesAvailable = computed(() => {
+  if (estimatedAvailability.value.length) {
+    const furthestEstimatedAvailability = estimatedAvailability.value[estimatedAvailability.value.length - 1]
+
+    return Math.round(furthestEstimatedAvailability.capacity * station.capacity)
+  }
+
+  return null
 })
 </script>

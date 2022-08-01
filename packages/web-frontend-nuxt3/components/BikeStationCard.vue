@@ -2,10 +2,13 @@
   <div class="bg-white overflow-hidden shadow rounded-lg">
     <div class="p-5">
       <div class="flex items-center">
-        <div class="flex-shrink-0">
-          <TrendingUpIcon class="h-6 w-6 text-gray-500" aria-hidden="true" />
-        </div>
-        <div class="ml-5 w-0 flex-1">
+        <BikeStationAvailabilityTrend
+          class="flex-shrink-0 h-6 w-6 mr-5"
+          :estimated-bikes="estimatedBikesAvailable"
+          :current-bikes="station.bikesAvailable"
+          :capacity="station.capacity"
+        />
+        <div class="w-0 flex-1">
           <dl>
             <dt class="text-sm font-medium text-gray-500 truncate">
               {{ station.name }}
@@ -31,10 +34,16 @@
 </template>
 
 <script setup lang="ts">
-import { TrendingUpIcon } from '@heroicons/vue/solid'
-import { BikeStation } from '~/types/BikeStation'
+import { BikeStation, BikeStationAvailability } from '~/types/BikeStation'
 
-defineProps<{
-  station: BikeStation
+const props = defineProps<{
+  station: BikeStation,
+  estimatedAvailability?: BikeStationAvailability,
 }>()
+
+const estimatedBikesAvailable = computed(
+  () => props.estimatedAvailability
+    ? Math.round(props.estimatedAvailability.capacity * props.station.capacity)
+    : null,
+)
 </script>

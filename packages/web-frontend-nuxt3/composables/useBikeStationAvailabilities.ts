@@ -24,3 +24,15 @@ export const useAverageBikeStationAvailabilitiesForWeekday = (stationIds: string
     transform: data => mapBikeStationAvailabilitiesResponse(stationIds, data as unknown as Record<string, BikeStationAvailabilityResponse[]>),
   })
 }
+
+export const useEstimatedBikeStationAvailabilities = (stationIds: string[]) => {
+  const url = `/api/stations/availability/estimated?${stationIds.map(id => `ids=${id}`).join('&')}`
+
+  return useFetch<Record<string, BikeStationAvailability[]>>(url, {
+    key: url,
+    server: false,
+    lazy: true,
+    default: () => ({}),
+    transform: data => mapBikeStationAvailabilitiesResponse(stationIds, data as unknown as Record<string, BikeStationAvailabilityResponse[]>),
+  })
+}
