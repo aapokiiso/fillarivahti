@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@aapokiiso/fillarivahti-capacity-repository": "^1.15.0",
+    "@aapokiiso/fillarivahti-availability-estimation": "^1.15.0",
     "@aapokiiso/fillarivahti-orm": "^1.15.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",

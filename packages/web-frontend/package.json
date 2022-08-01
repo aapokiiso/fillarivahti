@@ -1,21 +1,6 @@
 {
   "name": "@aapokiiso/fillarivahti-web-frontend",
-  "version": "1.15.1",
-  "description": "Web frontend for Fillarivahti.",
-  "author": "Aapo Kiiso <aapo@kii.so>",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/aapokiiso/fillarivahti.git"
-  },
-  "main": "dist/index",
-  "types": "dist/index",
-  "files": [
-    "dist"
-  ],
-  "publishConfig": {
-    "access": "public"
-  },
+  "private": true,
   "scripts": {
     "dev": "nuxt",
     "build": "nuxt build",
@@ -56,6 +41,5 @@
     "vue-chart-3": "^0.5.8",
     "vue-loading-skeleton": "^1.1.9",
     "vue-window-size": "1.0.x"
-  },
-  "gitHead": "d351e2d7015a9a35193de2d2dc5b3fc76dd13f87"
+  }
 }

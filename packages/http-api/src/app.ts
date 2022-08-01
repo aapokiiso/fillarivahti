@@ -4,6 +4,7 @@ import { StatusCodes } from 'http-status-codes';
 import { container } from 'tsyringe';
 import * as FillarivahtiOrm from '@aapokiiso/fillarivahti-orm';
 import * as FillarivahtiCapacityRepository from '@aapokiiso/fillarivahti-capacity-repository';
+import * as FillarivahtiAvailabilityEstimation from '@aapokiiso/fillarivahti-availability-estimation';
 import { StationIdParser } from './interface/StationIdParser';
 import { Logger } from 'winston';
 import { CapacityCacheControlApplier } from './interface/CapacityCacheControlApplier';
@@ -11,6 +12,8 @@ import { CapacityCacheControlApplier } from './interface/CapacityCacheControlApp
 const logger = container.resolve<Logger>('FillarivahtiHttpApi.Logger');
 const ormConnectionProvider = container.resolve<FillarivahtiOrm.ConnectionProvider>('FillarivahtiOrm.ConnectionProvider');
 const capacityProvider = container.resolve<FillarivahtiCapacityRepository.CapacityProvider>('FillarivahtiCapacityRepository.CapacityProvider');
+const capacityRepositoryConfiguration = container.resolve<FillarivahtiCapacityRepository.Configuration>('FillarivahtiCapacityRepository.Configuration');
+const availabilityEstimation = container.resolve<FillarivahtiAvailabilityEstimation.AvailabilityEstimation>('FillarivahtiAvailabilityEstimation.AvailabilityEstimation');
 const stationIdParser = container.resolve<StationIdParser>('FillarivahtiHttpApi.StationIdParser');
 const capacityCacheControlApplier = container.resolve<CapacityCacheControlApplier>('FillarivahtiHttpApi.CapacityCacheControlApplier');
 
@@ -73,6 +76,39 @@ app.get('/weekday-average', async (req, res) => {
         return res.status(StatusCodes.OK).json(capacities);
     } catch (error: any) {
         logger.error('Failed to get capacities for weekday average.', {
+            error: error.message,
+            stack: error.stack,
+            stationIds,
+        });
+
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({});
+    }
+});
+
+app.get('/estimated', async (req, res) => {
+    const stationIds = stationIdParser.parse(req.query);
+
+    if (!stationIds.length) {
+        return res.status(StatusCodes.OK).json({});
+    }
+
+    try {
+        const todayAvailabilities = await capacityProvider.getToday(stationIds);
+        const weekdayAverageAvailabilities = await capacityProvider.getWeekdayAverage(stationIds);
+
+        const estimated = stationIds.reduce((acc: Record<string, FillarivahtiCapacityRepository.Capacity[]>, stationId: string) => {
+            acc[stationId] = availabilityEstimation.estimate(
+                todayAvailabilities[stationId],
+                weekdayAverageAvailabilities[stationId],
+                { granularityInMinutes: capacityRepositoryConfiguration.getGranularityInMinutes() },
+            ) || [];
+
+            return acc;
+        }, {});
+
+        return res.status(StatusCodes.OK).json(estimated);
+    } catch (error: any) {
+        logger.error('Failed to estimate availabilities.', {
             error: error.message,
             stack: error.stack,
             stationIds,

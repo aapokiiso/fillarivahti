@@ -10,7 +10,7 @@
             "DOM"
         ],
         "outDir": "./dist",
-        "esModuleInterop": true,
+        "esModuleInterop": true
     },
     "include": [
         "./src"

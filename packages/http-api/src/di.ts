@@ -3,6 +3,7 @@ import { container } from 'tsyringe';
 
 import * as FillarivahtiOrm from '@aapokiiso/fillarivahti-orm';
 import * as FillarivahtiCapacityRepository from '@aapokiiso/fillarivahti-capacity-repository';
+import * as FillarivahtiAvailabilityEstimation from '@aapokiiso/fillarivahti-availability-estimation';
 
 import { CapacityCacheControlApplier } from './interface/CapacityCacheControlApplier';
 import { CapacityCacheLifetimeResolver } from './interface/CapacityCacheLifetimeResolver';
@@ -17,6 +18,7 @@ import { jsonLogger } from './util/json-logger';
 
 FillarivahtiOrm.diRegisterDefaults();
 FillarivahtiCapacityRepository.diRegisterDefaults();
+FillarivahtiAvailabilityEstimation.diRegisterDefaults();
 
 container.register<CapacityCacheControlApplier>('FillarivahtiHttpApi.CapacityCacheControlApplier', { useClass: DefaultCapacityCacheControlApplier });
 container.register<CapacityCacheLifetimeResolver>('FillarivahtiHttpApi.CapacityCacheLifetimeResolver', { useClass: DefaultCapacityCacheLifetimeResolver });

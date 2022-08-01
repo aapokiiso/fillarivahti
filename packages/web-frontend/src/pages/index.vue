@@ -29,18 +29,9 @@
                     >
                         <StationCard :station="station">
                             <template #capacity-estimate>
-                                <CapacityEstimate
-                                    v-if="!isStationPending(station.stationId)"
-                                    :station-capacity="station.capacity"
-                                    :today-capacities="
-                                        todayCapacities[station.stationId]
-                                    "
-                                    :weekday-average-capacities="
-                                        weekdayAverageCapacities[
-                                            station.stationId
-                                        ]
-                                    "
-                                />
+                                <!-- Capacity estimation has been moved to the
+                                backend, will be reintroduced with the new Nuxt
+                                3 frontend. -->
                             </template>
 
                             <template #capacity-trend>

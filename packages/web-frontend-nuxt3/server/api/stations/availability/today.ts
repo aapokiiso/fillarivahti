@@ -1,5 +1,5 @@
 import { parseStationIdsFromQuery } from '../../../utils/parseStationIdsFromQuery'
-import { BikeStationAvailabilityPlain } from '~/types/BikeStation'
+import { BikeStationAvailabilityResponse } from '~/types/BikeStation'
 
 export default defineEventHandler((event) => {
   const ids = parseStationIdsFromQuery(useQuery(event))
@@ -7,7 +7,7 @@ export default defineEventHandler((event) => {
 
   // TODO error handling
 
-  return $fetch<Record<string, BikeStationAvailabilityPlain[]>>('/today', {
+  return $fetch<Record<string, BikeStationAvailabilityResponse[]>>('/today', {
     baseURL: availabilityEndpointUrl,
     params: {
       stationIds: ids,

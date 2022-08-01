@@ -11,7 +11,7 @@ export type BikeStationAvailability = {
   capacity: number
 }
 
-export type BikeStationAvailabilityPlain = {
+export type BikeStationAvailabilityResponse = {
   stationId: string,
   timestamp: string, // UTC timestamp
   capacity: number
