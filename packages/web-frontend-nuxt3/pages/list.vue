@@ -6,7 +6,7 @@
           <BikeStationCard :station="station" :estimated-availability="stationsEstimatedAvailability[station.stationId]" />
         </div>
       </div>
-      <p v-else-if="stationIdsError || stationsError">
+      <p v-else-if="hasNetworkError">
         Failed to load stations.
       </p>
       <p v-else>
@@ -20,24 +20,36 @@
 </template>
 
 <script setup lang="ts">
-const address = useSearchText()
+const searchText = useSearchText()
+const searchLocation = useSearchLocation()
 
 const pending = ref(true)
 
-const { data: stationIds, error: stationIdsError } = await useBikeStationIdsByName(address.value)
+const { data: stationIds, error: stationIdsError } = searchLocation.value
+  ? await useBikeStationIdsByLocation(searchLocation.value)
+  : await useBikeStationIdsByName(searchText.value)
+
 const { data: stations, error: stationsError } = await useBikeStationsByIds(stationIds.value)
-const { data: stationsEstimatedAvailability } = await useBikeStationsFurthestEstimatedAvailability(stationIds.value)
+const { data: stationsEstimatedAvailability } = await useBikeStationsFurthestEstimatedAvailability(stationIds.value, {
+  lazy: true,
+  default: () => ({}),
+})
 
 pending.value = false
 
+const hasNetworkError = computed(() => stationIdsError.value || stationsError.value)
+
 const route = useRoute()
-watch(address, async (newAddress) => {
+watch([searchText, searchLocation], async ([newText, newLocation]) => {
   // Avoid empty load when search query is removed from the URL when navigating
   // to another page.
   if (route.name === 'list') {
     pending.value = true
 
-    const { data: newStationIds, error: newStationIdsError } = await useBikeStationIdsByName(newAddress)
+    const { data: newStationIds, error: newStationIdsError } = newLocation
+      ? await useBikeStationIdsByLocation(newLocation)
+      : await useBikeStationIdsByName(newText)
+
     stationIds.value = newStationIds.value
     stationIdsError.value = newStationIdsError.value
 
@@ -45,7 +57,10 @@ watch(address, async (newAddress) => {
     stations.value = newStations.value
     stationsError.value = newStationsError.value
 
-    const { data: newStationsEstimatedAvailability } = await useBikeStationsFurthestEstimatedAvailability(stationIds.value)
+    const { data: newStationsEstimatedAvailability } = await useBikeStationsFurthestEstimatedAvailability(stationIds.value, {
+      lazy: true,
+      default: () => ({}),
+    })
     stationsEstimatedAvailability.value = newStationsEstimatedAvailability.value
 
     pending.value = false

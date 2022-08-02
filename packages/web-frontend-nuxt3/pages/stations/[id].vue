@@ -7,8 +7,8 @@
             <h1 class="text-2xl font-bold text-gray-900">
               {{ station.name }}
             </h1>
-            <p class="text-sm font-medium text-gray-500">
-              0,5km away
+            <p v-if="distanceInKilometers !== null" class="text-sm font-medium text-gray-500">
+              {{ distanceInKilometers }} km away
             </p>
           </div>
         </div>
@@ -140,7 +140,10 @@ watch(weekdayAverageAvailabilities, (newStationsAvailability) => {
 
 const {
   data: stationsEstimatedAvailability,
-} = await useBikeStationsFurthestEstimatedAvailability([stationId])
+} = await useBikeStationsFurthestEstimatedAvailability([stationId], {
+  lazy: true,
+  default: () => ({}),
+})
 
 const estimatedAvailability = ref(stationsEstimatedAvailability.value[stationId])
 watch(stationsEstimatedAvailability, (newStationsAvailability) => {
@@ -149,5 +152,17 @@ watch(stationsEstimatedAvailability, (newStationsAvailability) => {
 
 const estimatedBikesAvailable = computed(
   () => useBikeStationEstimatedBikesAvailable(station, estimatedAvailability.value),
+)
+
+const searchLocation = useLastUsedSearchLocation()
+const distanceInMeters = computed(
+  () => searchLocation.value
+    ? useBikeStationDistanceInMeters(station, searchLocation.value)
+    : null,
+)
+const distanceInKilometers = computed(
+  () => distanceInMeters.value !== null
+    ? Math.round(distanceInMeters.value / 100) / 10
+    : null,
 )
 </script>

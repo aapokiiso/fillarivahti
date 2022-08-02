@@ -1,6 +1,6 @@
 <template>
   <p class="font-medium text-gray-900">
-    <span v-if="isEstimate && bikesAvailable !== null" class="mr-1 text-gray-500">~</span>
+    <span v-if="isEstimate && bikesAvailable !== null" class="mr-1 text-gray-500 font-bold">~</span>
     <span :class="availabilityStyle" class="text-lg">
       {{ bikesAvailable !== null ? bikesAvailable : '-' }}
     </span>

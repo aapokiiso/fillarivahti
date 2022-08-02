@@ -1,16 +1,21 @@
 import { parseStationIdsFromQuery } from '~/helpers/parseStationIdsFromQuery'
 import { BikeStationAvailabilityResponse } from '~/types/BikeStation'
 
-export default defineEventHandler((event) => {
+export default defineEventHandler(async (event) => {
   const stationIds = parseStationIdsFromQuery(useQuery(event))
   const { availabilityEndpointUrl } = useRuntimeConfig()
 
   // TODO error handling
+  // TODO pagination (max IDs limit)
 
-  return $fetch<Record<string, BikeStationAvailabilityResponse[]>>('/estimated', {
-    baseURL: availabilityEndpointUrl,
-    params: {
-      stationIds,
-    },
-  })
+  if (stationIds.length > 0) {
+    return await $fetch<Record<string, BikeStationAvailabilityResponse[]>>('/estimated', {
+      baseURL: availabilityEndpointUrl,
+      params: {
+        stationIds,
+      },
+    })
+  }
+
+  return []
 })

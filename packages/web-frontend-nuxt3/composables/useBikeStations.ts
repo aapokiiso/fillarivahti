@@ -1,3 +1,4 @@
+import getDistance from 'geolib/es/getDistance'
 import { BikeStation } from '~/types/BikeStation'
 
 export const useBikeStationsByIds = (stationIds: string[]) => {
@@ -5,3 +6,9 @@ export const useBikeStationsByIds = (stationIds: string[]) => {
 
   return useFetch<BikeStation[]>(url, { key: url, default: () => [] })
 }
+
+export const useBikeStationDistanceInMeters = (station: BikeStation, location: GeolocationCoordinates): number =>
+  getDistance(
+    { latitude: station.lat, longitude: station.lon },
+    { latitude: location.latitude, longitude: location.longitude },
+  )

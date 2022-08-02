@@ -2,7 +2,9 @@ export type BikeStation = {
   stationId: string,
   name: string,
   bikesAvailable: number,
-  capacity: number
+  capacity: number,
+  lat: number,
+  lon: number
 }
 
 export type BikeStationAvailability = {

@@ -47,8 +47,11 @@ export const useBikeStationsEstimatedAvailability = <DataT extends Record<string
   }, fetchOptions))
 }
 
-export const useBikeStationsFurthestEstimatedAvailability = (stationIds: string[]) => {
-  return useBikeStationsEstimatedAvailability<Record<string, BikeStationAvailability>>(stationIds, {
+export const useBikeStationsFurthestEstimatedAvailability = <DataT extends Record<string, any> = Record<string, BikeStationAvailability>>(
+  stationIds: string[],
+  fetchOptions?: UseFetchOptions<DataT, (res: Record<string, BikeStationAvailabilityResponse[]>) => DataT>,
+) => {
+  return useBikeStationsEstimatedAvailability<DataT>(stationIds, Object.assign({}, {
     transform: (res) => {
       const data = mapBikeStationsAvailabilityResponse(stationIds, res)
 
@@ -58,7 +61,7 @@ export const useBikeStationsFurthestEstimatedAvailability = (stationIds: string[
         return acc
       }, {})
     },
-  })
+  }, fetchOptions))
 }
 
 export const useBikeStationEstimatedBikesAvailable = (station: BikeStation, estimatedAvailability?: BikeStationAvailability) => {

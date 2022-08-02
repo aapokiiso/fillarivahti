@@ -1,11 +1,11 @@
 export default defineEventHandler(async (event) => {
-  const { q: text = '' } = useQuery(event)
+  const { text = '' } = useQuery(event)
   const { addressSearchEndpointUrl } = useRuntimeConfig()
 
   // TODO error handling
   // TODO move limits to env config
 
-  if (text.length >= 3) {
+  if (text.length >= 3 && text.length < 256) {
     const result = await $fetch<{
       features: {
         properties: {

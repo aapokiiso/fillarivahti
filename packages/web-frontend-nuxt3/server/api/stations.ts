@@ -6,9 +6,9 @@ export default defineEventHandler(async (event) => {
   const { hslGraphqlEndpointUrl } = useRuntimeConfig()
 
   // TODO error handling
-  // TODO move limits to config
+  // TODO pagination (max IDs limit)
 
-  if (ids.length > 0 && ids.length < 10) {
+  if (ids.length > 0) {
     const idFilter = ids
       ? `(ids: [${ids.map(id => `"${id}"`).join(',')}])`
       : ''
@@ -28,6 +28,8 @@ export default defineEventHandler(async (event) => {
         name
         bikesAvailable
         capacity
+        lat
+        lon
     }
 }
 `,
