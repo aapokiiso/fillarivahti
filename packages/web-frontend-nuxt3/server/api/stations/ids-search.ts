@@ -1,11 +1,11 @@
 export default defineEventHandler(async (event) => {
-  const { address = '' } = useQuery(event)
+  const { q: text = '' } = useQuery(event)
   const { addressSearchEndpointUrl } = useRuntimeConfig()
 
   // TODO error handling
   // TODO move limits to env config
 
-  if (address.length >= 3) {
+  if (text.length >= 3) {
     const result = await $fetch<{
       features: {
         properties: {
@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
       }[]
     }>(addressSearchEndpointUrl, {
       params: {
-        text: address,
+        text,
         sources: 'citybikessmoove,citybikesvantaa',
         layers: 'bikestation',
       },

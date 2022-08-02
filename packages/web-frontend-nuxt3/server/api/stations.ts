@@ -1,4 +1,4 @@
-import { parseStationIdsFromQuery } from '../utils/parseStationIdsFromQuery'
+import { parseStationIdsFromQuery } from '~/helpers/parseStationIdsFromQuery'
 import type { BikeStation } from '~/types/BikeStation'
 
 export default defineEventHandler(async (event) => {

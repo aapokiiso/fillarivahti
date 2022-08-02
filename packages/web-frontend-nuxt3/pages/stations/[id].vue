@@ -15,7 +15,7 @@
         <div class="mt-6 flex flex-col-reverse justify-stretch space-y-4 space-y-reverse sm:flex-row-reverse sm:justify-end sm:space-x-reverse sm:space-y-0 sm:space-x-3 md:mt-0 md:flex-row md:space-x-3">
           <NuxtLink
             :to="{name: 'index'}"
-            class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500"
+            class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500"
           >
             View on map
           </NuxtLink>
@@ -23,7 +23,7 @@
             :to="`https://reittiopas.hsl.fi/pyoraasemat/${station.stationId}`"
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500"
+            class="inline-flex items-center justify-center px-4 py-2 border border-transparent font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500"
           >
             <ExternalLinkIcon class="mr-3 flex-shrink-0 h-6 w-6 text-indigo-300" aria-hidden="true" />
             View on HSL.fi
@@ -39,28 +39,26 @@
             </h2>
             <dl class="grid grid-cols-1 gap-x-4 gap-y-4 mt-4">
               <div>
-                <dt class="text-sm font-medium text-gray-500">
+                <dt class="font-medium text-gray-500">
                   Right now
                 </dt>
-                <dd class="text-sm text-gray-900">
+                <dd class="text-gray-900">
                   <BikeStationAvailabilityStatus :bikes-available="station.bikesAvailable" :capacity="station.capacity" />
                 </dd>
               </div>
               <div>
-                <dt class="text-sm font-medium text-gray-500">
+                <dt class="font-medium text-gray-500">
                   In 30 minutes
                 </dt>
-                <dd class="text-sm text-gray-900">
-                  <BikeStationAvailabilityStatus :bikes-available="estimatedBikesAvailable" :capacity="station.capacity">
-                    <template #trend>
-                      <BikeStationAvailabilityTrend
-                        class="mr-2 h-4 w-4"
-                        :estimated-bikes="estimatedBikesAvailable"
-                        :current-bikes="station.bikesAvailable"
-                        :capacity="station.capacity"
-                      />
-                    </template>
-                  </BikeStationAvailabilityStatus>
+                <dd class="text-gray-900 flex items-center">
+                  <BikeStationAvailabilityStatus :bikes-available="estimatedBikesAvailable" :capacity="station.capacity" :is-estimate="true" />
+                  <BikeStationAvailabilityTrend
+                    v-if="estimatedBikesAvailable !== null"
+                    class="flex-shrink-0 h-4 w-4 ml-2"
+                    :estimated-bikes="estimatedBikesAvailable"
+                    :current-bikes="station.bikesAvailable"
+                    :capacity="station.capacity"
+                  />
                 </dd>
               </div>
             </dl>
@@ -109,45 +107,47 @@ import { Skeletor } from 'vue-skeletor'
 const route = useRoute()
 const stationId = route.params.id
 
-const { data: stations } = await useStationsByIds([stationId])
+const { data: stations } = await useBikeStationsByIds([stationId])
 const [station] = stations.value
 
 const {
   data: todayAvailabilities,
   pending: todayAvailabilitiesPending,
-} = await useBikeStationAvailabilitiesForToday([stationId])
-const todayAvailability = ref(todayAvailabilities.value[stationId] || [])
+} = await useBikeStationsAvailabilityForToday([stationId], {
+  server: false,
+  lazy: true,
+  default: () => ({}),
+})
 
-watch(todayAvailabilities, (newAvailabilities) => {
-  todayAvailability.value = newAvailabilities[stationId] || []
+const todayAvailability = ref(todayAvailabilities.value[stationId] || [])
+watch(todayAvailabilities, (newStationsAvailability) => {
+  todayAvailability.value = newStationsAvailability[stationId] || []
 })
 
 const {
   data: weekdayAverageAvailabilities,
   pending: weekdayAverageAvailabilitiesPending,
-} = await useAverageBikeStationAvailabilitiesForWeekday([stationId])
-const weekdayAverageAvailability = ref(weekdayAverageAvailabilities.value[stationId] || [])
+} = await useBikeStationsAverageAvailabilityForWeekday([stationId], {
+  server: false,
+  lazy: true,
+  default: () => ({}),
+})
 
-watch(weekdayAverageAvailabilities, (newAvailabilities) => {
-  weekdayAverageAvailability.value = newAvailabilities[stationId] || []
+const weekdayAverageAvailability = ref(weekdayAverageAvailabilities.value[stationId] || [])
+watch(weekdayAverageAvailabilities, (newStationsAvailability) => {
+  weekdayAverageAvailability.value = newStationsAvailability[stationId] || []
 })
 
 const {
-  data: estimatedAvailabilities,
-} = await useEstimatedBikeStationAvailabilities([stationId])
-const estimatedAvailability = ref(estimatedAvailabilities.value[stationId] || [])
+  data: stationsEstimatedAvailability,
+} = await useBikeStationsFurthestEstimatedAvailability([stationId])
 
-watch(estimatedAvailabilities, (newAvailabilities) => {
-  estimatedAvailability.value = newAvailabilities[stationId] || []
+const estimatedAvailability = ref(stationsEstimatedAvailability.value[stationId])
+watch(stationsEstimatedAvailability, (newStationsAvailability) => {
+  estimatedAvailability.value = newStationsAvailability[stationId]
 })
 
-const estimatedBikesAvailable = computed(() => {
-  if (estimatedAvailability.value.length) {
-    const furthestEstimatedAvailability = estimatedAvailability.value[estimatedAvailability.value.length - 1]
-
-    return Math.round(furthestEstimatedAvailability.capacity * station.capacity)
-  }
-
-  return null
-})
+const estimatedBikesAvailable = computed(
+  () => useBikeStationEstimatedBikesAvailable(station, estimatedAvailability.value),
+)
 </script>

@@ -1,4 +1,4 @@
-import { parseStationIdsFromQuery } from '../../../utils/parseStationIdsFromQuery'
+import { parseStationIdsFromQuery } from '~/helpers/parseStationIdsFromQuery'
 import { BikeStationAvailabilityResponse } from '~/types/BikeStation'
 
 export default defineEventHandler((event) => {

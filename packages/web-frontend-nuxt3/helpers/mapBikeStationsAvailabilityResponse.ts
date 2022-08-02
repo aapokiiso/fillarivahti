@@ -1,6 +1,6 @@
-import { BikeStationAvailability, BikeStationAvailabilityResponse } from '~~/types/BikeStation'
+import { BikeStationAvailability, BikeStationAvailabilityResponse } from '~/types/BikeStation'
 
-export const mapBikeStationAvailabilitiesResponse = (stationIds: string[], data: Record<string, BikeStationAvailabilityResponse[]>): Record<string, BikeStationAvailability[]> => stationIds
+export const mapBikeStationsAvailabilityResponse = (stationIds: string[], data: Record<string, BikeStationAvailabilityResponse[]>): Record<string, BikeStationAvailability[]> => stationIds
   .reduce((acc: Record<string, BikeStationAvailability[]>, stationId: string) => {
     const availabilities: BikeStationAvailability[] = (data[stationId] || [])
       .map((responseAvailability: BikeStationAvailabilityResponse) => {

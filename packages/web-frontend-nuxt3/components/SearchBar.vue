@@ -10,8 +10,8 @@
           <input
             id="search-field"
             v-model="searchInput"
-            class="block w-full h-full pl-8 pr-3 py-2 border-transparent text-gray-900 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-0 focus:border-transparent sm:text-sm"
-            placeholder="Search"
+            class="block w-full h-full pl-8 pr-3 py-2 border-transparent text-gray-900 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-0 focus:border-transparent"
+            placeholder="Search stations by name..."
             type="search"
             name="search"
           >

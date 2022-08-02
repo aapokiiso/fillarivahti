@@ -1,8 +1,8 @@
-import { parseStationIdsFromQuery } from '../../../utils/parseStationIdsFromQuery'
+import { parseStationIdsFromQuery } from '~/helpers/parseStationIdsFromQuery'
 import { BikeStationAvailabilityResponse } from '~/types/BikeStation'
 
 export default defineEventHandler((event) => {
-  const ids = parseStationIdsFromQuery(useQuery(event))
+  const stationIds = parseStationIdsFromQuery(useQuery(event))
   const { availabilityEndpointUrl } = useRuntimeConfig()
 
   // TODO error handling
@@ -10,7 +10,7 @@ export default defineEventHandler((event) => {
   return $fetch<Record<string, BikeStationAvailabilityResponse[]>>('/weekday-average', {
     baseURL: availabilityEndpointUrl,
     params: {
-      stationIds: ids,
+      stationIds,
     },
   })
 })

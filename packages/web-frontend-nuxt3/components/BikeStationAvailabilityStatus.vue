@@ -1,10 +1,10 @@
 <template>
-  <p class="font-medium text-gray-900 flex items-end">
-    <slot name="trend" />
-    <span :class="availabilityStyle" class="text-lg leading-none">
+  <p class="font-medium text-gray-900">
+    <span v-if="isEstimate && bikesAvailable !== null" class="mr-1 text-gray-500">~</span>
+    <span :class="availabilityStyle" class="text-lg">
       {{ bikesAvailable !== null ? bikesAvailable : '-' }}
     </span>
-    <span v-if="capacity" class="ml-1 leading-none">
+    <span v-if="capacity" class="ml-1">
       / {{ capacity }}
     </span>
   </p>
@@ -27,6 +27,10 @@ const props = defineProps({
   maxLowAvailability: {
     type: Number,
     default: 0.325,
+  },
+  isEstimate: {
+    type: Boolean,
+    default: false,
   },
 })
 

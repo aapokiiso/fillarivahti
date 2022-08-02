@@ -1,27 +1,24 @@
 <template>
   <div class="bg-white overflow-hidden shadow rounded-lg">
     <div class="p-5">
-      <div class="flex items-center">
-        <BikeStationAvailabilityTrend
-          class="flex-shrink-0 h-6 w-6 mr-5"
-          :estimated-bikes="estimatedBikesAvailable"
-          :current-bikes="station.bikesAvailable"
-          :capacity="station.capacity"
-        />
-        <div class="w-0 flex-1">
-          <dl>
-            <dt class="text-sm font-medium text-gray-500 truncate">
-              {{ station.name }}
-            </dt>
-            <dd>
-              <BikeStationAvailabilityStatus :bikes-available="station.bikesAvailable" :capacity="station.capacity" />
-            </dd>
-          </dl>
-        </div>
-      </div>
+      <dl>
+        <dt class="font-medium text-gray-500 truncate">
+          {{ station.name }}
+        </dt>
+        <dd class="flex items-center">
+          <BikeStationAvailabilityStatus :bikes-available="station.bikesAvailable" :capacity="station.capacity" />
+          <BikeStationAvailabilityTrend
+            v-if="estimatedBikesAvailable !== null"
+            class="flex-shrink-0 h-4 w-4 ml-2"
+            :estimated-bikes="estimatedBikesAvailable"
+            :current-bikes="station.bikesAvailable"
+            :capacity="station.capacity"
+          />
+        </dd>
+      </dl>
     </div>
     <div class="bg-gray-50 px-5 py-3">
-      <div class="text-sm">
+      <div>
         <NuxtLink
           :to="{name: 'stations-id', params: {id: station.stationId}}"
           class="font-medium text-cyan-700 hover:text-cyan-900"
@@ -41,9 +38,5 @@ const props = defineProps<{
   estimatedAvailability?: BikeStationAvailability,
 }>()
 
-const estimatedBikesAvailable = computed(
-  () => props.estimatedAvailability
-    ? Math.round(props.estimatedAvailability.capacity * props.station.capacity)
-    : null,
-)
+const estimatedBikesAvailable = useBikeStationEstimatedBikesAvailable(props.station, props.estimatedAvailability)
 </script>

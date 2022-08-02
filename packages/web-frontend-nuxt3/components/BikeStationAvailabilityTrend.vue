@@ -1,48 +1,59 @@
 <template>
-  <span v-if="canShowTrend" class="text-gray-500">
+  <span v-if="isTrendingUp || isTrendingDown" class="text-gray-500">
     <TrendingUpIcon v-if="isTrendingUp" aria-hidden="true" />
     <TrendingDownIcon v-else-if="isTrendingDown" aria-hidden="true" />
-    <MinusIcon v-else aria-hidden="true" />
   </span>
 </template>
 
 <script setup lang="ts">
-import { TrendingUpIcon, TrendingDownIcon, MinusIcon } from '@heroicons/vue/solid'
+import { TrendingUpIcon, TrendingDownIcon } from '@heroicons/vue/solid'
 
 const props = defineProps({
   estimatedBikes: {
     type: Number,
-    default: null,
+    required: true,
   },
   currentBikes: {
     type: Number,
-    default: null,
+    required: true,
   },
   capacity: {
     type: Number,
-    default: null,
+    required: true,
   },
-  trendingThreshold: {
+  percentOfCapacityDiffThreshold: {
     type: Number,
-    default: 0.15,
+    default: 0.1,
+  },
+  justNoticeableDiffThreshold: {
+    type: Number,
+    default: 0.1,
   },
 })
 
-const canShowTrend = computed(
-  () => props.estimatedBikes !== null && props.currentBikes !== null,
-)
-
-const percentDiff = computed(
+// Accounts for trends on stations with a lot of bikes, where an
+// addition/removal of several bikes might not cross the just-noticeable
+// difference threshold, but constitutes a clear trend nonetheless.
+const percentOfCapacityDiff = computed(
   () => props.capacity > 0
     ? (props.estimatedBikes - props.currentBikes) / props.capacity
     : 0,
 )
 
+// Accounts for trends on stations with a few bikes, where an addition/removal
+// of even one or two bikes makes a noticeable difference, even if
+// percentage-wise the change is small.
+const justNoticeableDiff = computed(
+  () => props.currentBikes > 0
+    ? (props.estimatedBikes - props.currentBikes) / props.currentBikes
+    : props.estimatedBikes > 0 ? 1 : 0,
+)
+
 const isTrendingUp = computed(
-  () => percentDiff.value >= props.trendingThreshold,
+  () => percentOfCapacityDiff.value >= props.percentOfCapacityDiffThreshold && justNoticeableDiff.value >= props.justNoticeableDiffThreshold,
 )
 
 const isTrendingDown = computed(
-  () => percentDiff.value <= props.trendingThreshold * -1,
+  () => percentOfCapacityDiff.value <= props.percentOfCapacityDiffThreshold * -1 && justNoticeableDiff.value <= props.justNoticeableDiffThreshold * -1,
 )
 </script>
