@@ -2,7 +2,7 @@
 version: '3'
 services:
   mysql:
-    image: mysql:5.7
+    image: mysql:8.0
     volumes:
       - ./.data:/var/lib/mysql-files
     environment:
@@ -14,5 +14,11 @@ services:
       - default
     ports:
       - 3306
+  redis:
+    image: redis:6
+    ports:
+      - 6379
+    networks:
+      - default
 networks:
   default:

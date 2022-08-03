@@ -7,15 +7,13 @@ import * as FillarivahtiCapacityRepository from '@aapokiiso/fillarivahti-capacit
 import * as FillarivahtiAvailabilityEstimation from '@aapokiiso/fillarivahti-availability-estimation';
 import { StationIdParser } from './interface/StationIdParser';
 import { Logger } from 'winston';
-import { CapacityCacheControlApplier } from './interface/CapacityCacheControlApplier';
 
 const logger = container.resolve<Logger>('FillarivahtiHttpApi.Logger');
 const ormConnectionProvider = container.resolve<FillarivahtiOrm.ConnectionProvider>('FillarivahtiOrm.ConnectionProvider');
-const capacityProvider = container.resolve<FillarivahtiCapacityRepository.CapacityProvider>('FillarivahtiCapacityRepository.CapacityProvider');
+const capacityProvider = container.resolve<FillarivahtiCapacityRepository.CapacityProvider>('FillarivahtiHttpApi.CacheAwareCapacityProvider');
 const capacityRepositoryConfiguration = container.resolve<FillarivahtiCapacityRepository.Configuration>('FillarivahtiCapacityRepository.Configuration');
 const availabilityEstimation = container.resolve<FillarivahtiAvailabilityEstimation.AvailabilityEstimation>('FillarivahtiAvailabilityEstimation.AvailabilityEstimation');
 const stationIdParser = container.resolve<StationIdParser>('FillarivahtiHttpApi.StationIdParser');
-const capacityCacheControlApplier = container.resolve<CapacityCacheControlApplier>('FillarivahtiHttpApi.CapacityCacheControlApplier');
 
 const app = express();
 
@@ -47,8 +45,6 @@ app.get('/today', async (req, res) => {
     try {
         const capacities = await capacityProvider.getToday(stationIds);
 
-        capacityCacheControlApplier.apply(res, capacities);
-
         return res.status(StatusCodes.OK).json(capacities);
     } catch (error: any) {
         logger.error('Failed to get capacities for today.', {
@@ -70,8 +66,6 @@ app.get('/weekday-average', async (req, res) => {
 
     try {
         const capacities = await capacityProvider.getWeekdayAverage(stationIds);
-
-        capacityCacheControlApplier.apply(res, capacities);
 
         return res.status(StatusCodes.OK).json(capacities);
     } catch (error: any) {

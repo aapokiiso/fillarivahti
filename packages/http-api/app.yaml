@@ -1,5 +1,7 @@
 service: http-api
 runtime: nodejs14
 instance_class: F2
+vpc_access_connector:
+  name: projects/fillarivahti/locations/europe-central2/connectors/app-engine
 includes:
   - env_variables.yaml
