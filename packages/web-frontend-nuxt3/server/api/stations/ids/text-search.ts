@@ -1,11 +1,12 @@
 export default defineEventHandler(async (event) => {
-  const { text = '' } = useQuery(event)
-  const { addressSearchEndpointUrl } = useRuntimeConfig()
+  const query = useQuery(event)
+  const { addressSearchEndpointUrl, maxSearchTextLength } = useRuntimeConfig()
 
   // TODO error handling
-  // TODO move limits to env config
 
-  if (text.length >= 3 && text.length < 256) {
+  const text = String(query.text) || ''
+
+  if (text.length >= 3 && text.length <= maxSearchTextLength) {
     const result = await $fetch<{
       features: {
         properties: {
@@ -22,10 +23,17 @@ export default defineEventHandler(async (event) => {
 
     const { features } = result
 
-    const stationIds = features.map(({ properties }) => properties.id)
+    // API does not offer full pagination
+    const limit = Number(query.limit)
+    const offset = Number(query.offset) || 0
+    const featuresPage = limit
+      ? features.slice(offset, offset + limit)
+      : features
 
-    return stationIds
+    const stationIds = featuresPage.map(({ properties }) => properties.id)
+
+    return { stationIds, totalCount: features.length }
   }
 
-  return []
+  return { stationIds: [], totalCount: 0 }
 })

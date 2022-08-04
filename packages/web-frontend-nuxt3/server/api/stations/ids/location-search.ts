@@ -1,5 +1,6 @@
 export default defineEventHandler(async (event) => {
   const query = useQuery(event)
+
   const latitude = Number(query.latitude)
   const longitude = Number(query.longitude)
 
@@ -14,7 +15,9 @@ export default defineEventHandler(async (event) => {
           {
             node: {
               place: {
-                stationId: string
+                stationId: string,
+                lat: number,
+                lon: number,
               }
             }
           }
@@ -47,7 +50,14 @@ export default defineEventHandler(async (event) => {
   const { nearest } = data
   const { edges } = nearest
 
-  const stationIds = edges.map((edge) => {
+  // API does not offer full pagination
+  const limit = Number(query.limit)
+  const offset = Number(query.offset) || 0
+  const edgesPage = limit
+    ? edges.slice(offset, offset + limit)
+    : edges
+
+  const stationIds = edgesPage.map((edge) => {
     const { node } = edge
     const { place } = node
     const { stationId } = place
@@ -55,5 +65,5 @@ export default defineEventHandler(async (event) => {
     return stationId
   })
 
-  return stationIds
+  return { stationIds, totalCount: edges.length }
 })

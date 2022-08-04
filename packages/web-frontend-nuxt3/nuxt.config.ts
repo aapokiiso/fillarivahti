@@ -10,5 +10,7 @@ export default defineNuxtConfig({
     hslGraphqlEndpointUrl: process.env.HSL_GRAPHQL_ENDPOINT_URL || 'https://api.digitransit.fi/routing/v1/routers/hsl/index/graphql',
     addressSearchEndpointUrl: process.env.ADDRESS_SEARCH_ENDPOINT_URL || 'https://api.digitransit.fi/geocoding/v1/search',
     availabilityEndpointUrl: process.env.AVAILABILITY_ENDPOINT_URL || 'https://http-api-dot-fillarivahti.appspot.com/',
+    maxSearchTextLength: process.env.MAX_SEARCH_TEXT_LENGTH || 32,
+    maxStationsPerPage: process.env.MAX_STATIONS_PER_PAGE || 12,
   },
 })

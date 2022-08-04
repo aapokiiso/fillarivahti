@@ -3,12 +3,11 @@ import type { BikeStation } from '~/types/BikeStation'
 
 export default defineEventHandler(async (event) => {
   const ids = parseStationIdsFromQuery(useQuery(event))
-  const { hslGraphqlEndpointUrl } = useRuntimeConfig()
+  const { hslGraphqlEndpointUrl, maxStationsPerPage } = useRuntimeConfig()
 
   // TODO error handling
-  // TODO pagination (max IDs limit)
 
-  if (ids.length > 0) {
+  if (ids.length > 0 && ids.length <= maxStationsPerPage) {
     const idFilter = ids
       ? `(ids: [${ids.map(id => `"${id}"`).join(',')}])`
       : ''
