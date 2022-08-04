@@ -23,7 +23,7 @@
           leave-from="translate-x-0"
           leave-to="-translate-x-full"
         >
-          <DialogPanel class="relative flex-1 flex flex-col max-w-xs w-full pt-5 pb-4 bg-indigo-700">
+          <DialogPanel class="relative flex-1 flex flex-col max-w-xs w-full pt-5 pb-4 bg-amber-300">
             <TransitionChild
               as="template"
               enter="ease-in-out duration-300"
@@ -41,12 +41,12 @@
               </div>
             </TransitionChild>
             <div class="flex-shrink-0 flex items-center px-4">
-              <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/workflow-logo-indigo-300-mark-white-text.svg" alt="Workflow">
+              <span class="text-2xl font-bold text-black leading-none">Fillarivahti</span>
             </div>
             <div class="mt-5 flex-1 h-0 overflow-y-auto">
               <nav class="px-2 space-y-1">
-                <NuxtLink v-for="item in navigation" :key="item.route" :to="localePath({name: item.route})" :class="[item.current ? 'bg-indigo-800 text-white' : 'text-indigo-100 hover:bg-indigo-600', 'group flex items-center px-2 py-2 text-base font-medium rounded-md']" @click="isSidebarOpen = false">
-                  <component :is="item.icon" class="mr-4 flex-shrink-0 h-6 w-6 text-indigo-300" aria-hidden="true" />
+                <NuxtLink v-for="item in navigation" :key="item.route" :to="localePath({name: item.route})" :class="[item.current ? 'bg-amber-200 text-black' : 'text-black hover:bg-amber-400', 'group flex items-center px-2 py-2 text-base font-medium rounded-md']" @click="isSidebarOpen = false">
+                  <component :is="item.icon" class="mr-4 flex-shrink-0 h-6 w-6 text-amber-700" aria-hidden="true" />
                   {{ $t(item.i18nLabel) }}
                 </NuxtLink>
               </nav>

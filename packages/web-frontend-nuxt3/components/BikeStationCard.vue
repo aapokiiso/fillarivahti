@@ -21,7 +21,7 @@
       <div>
         <NuxtLink
           :to="localePath({name: 'stations-id', params: {id: station.stationId}})"
-          class="font-medium text-cyan-700 hover:text-cyan-900"
+          class="font-medium text-amber-700 hover:text-amber-900"
         >
           {{ $t('bikeStationCard.viewDetails') }}
         </NuxtLink>

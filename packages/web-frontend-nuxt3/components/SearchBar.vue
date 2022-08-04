@@ -23,8 +23,8 @@
     <div class="ml-4 flex items-center md:ml-6">
       <button
         type="button"
-        class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        :class="{'bg-gray-400 text-white hover:text-gray-700': searchLocation && !isCurrentLocation, 'bg-indigo-500 text-white hover:text-white': searchLocation && isCurrentLocation}"
+        class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
+        :class="{'bg-gray-400 text-white hover:text-gray-700': searchLocation && !isCurrentLocation, 'bg-amber-500 text-white hover:text-white': searchLocation && isCurrentLocation}"
         @click="onLocationSearchClick"
       >
         <span class="sr-only">{{ $t('bikeStationSearch.locationHelp') }}</span>

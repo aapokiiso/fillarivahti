@@ -35,7 +35,7 @@ const props = defineProps({
   },
   todayColor: {
     type: String,
-    default: '#FBB701',
+    default: '#fbbf24',
   },
   weekdayAverageColor: {
     type: String,

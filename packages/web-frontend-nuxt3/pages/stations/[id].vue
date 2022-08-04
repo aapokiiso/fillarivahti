@@ -13,7 +13,7 @@
         <div class="mt-6 flex flex-col-reverse justify-stretch space-y-4 space-y-reverse sm:flex-row-reverse sm:justify-end sm:space-x-reverse sm:space-y-0 sm:space-x-3 md:mt-0 md:flex-row md:space-x-3">
           <NuxtLink
             :to="localePath({name: 'index'})"
-            class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500"
+            class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-amber-500"
           >
             {{ $t('bikeStationDetails.viewOnMap') }}
           </NuxtLink>
@@ -21,9 +21,9 @@
             :to="`https://reittiopas.hsl.fi/pyoraasemat/${station.stationId}`"
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-flex items-center justify-center px-4 py-2 border border-transparent font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500"
+            class="inline-flex items-center justify-center px-4 py-2 border border-transparent font-medium rounded-md shadow-sm text-black bg-amber-300 hover:bg-amber-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-amber-500"
           >
-            <ExternalLinkIcon class="mr-3 flex-shrink-0 h-6 w-6 text-indigo-300" aria-hidden="true" />
+            <ExternalLinkIcon class="mr-3 flex-shrink-0 h-6 w-6 text-amber-700" aria-hidden="true" />
             {{ $t('bikeStationDetails.viewOnHsl') }}
           </NuxtLink>
         </div>
