@@ -6,7 +6,7 @@
 import { Chart } from 'chart.js'
 import annotationPlugin from 'chartjs-plugin-annotation'
 import { LineChart } from 'vue-chart-3'
-import { gaussianSmoothen } from '@aapokiiso/fillarivahti-web-frontend-helpers'
+import { gaussianSmoothen } from '~/helpers/gaussianSmoothen'
 import { useI18n } from '#i18n'
 
 const { t: $t } = useI18n()

@@ -2,6 +2,8 @@
 !.gitattributes
 !.gitignore
 !.eslintrc.js
+!.editorconfig
+!.gcloudignore
 node_modules/
 dist/
 .idea/

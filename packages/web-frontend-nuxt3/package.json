@@ -6,10 +6,12 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "lint": "eslint --ext .ts,.js,.vue ."
+    "lint": "eslint --ext .ts,.js,.vue .",
+    "test": "jest",
+    "deploy": "npm ci && npm run build && gcloud app deploy --project fillarivahti",
+    "start": "node .output/server/index.mjs"
   },
   "devDependencies": {
-    "@aapokiiso/fillarivahti-web-frontend-helpers": "^1.15.1",
     "@headlessui/vue": "^1.6.2",
     "@heroicons/vue": "^1.0.6",
     "@nuxtjs/eslint-config-typescript": "^10.0.0",
@@ -21,7 +23,9 @@
     "debounce": "^1.2.1",
     "eslint": "^8.16.0",
     "geolib": "^3.3.3",
+    "jest": "^28.1.3",
     "nuxt": "3.0.0-rc.6",
+    "ts-jest": "^28.0.7",
     "vue-chart-3": "^3.1.8",
     "vue-skeletor": "^1.0.6"
   }
