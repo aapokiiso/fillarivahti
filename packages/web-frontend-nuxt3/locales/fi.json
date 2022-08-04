@@ -35,6 +35,10 @@
       "6": "lauantaisin"
     }
   },
+  "meta": {
+    "title": "Fillarivahti - HSL kaupunkipyörien saatavuus ja trendit",
+    "description": "Fillarivahti näyttää Helsingin seudun kaupunkipyörien saatavuuden tämänhetkisen tilanteen ja trendin."
+  },
   "pagination": {
     "previous": "Edellinen",
     "next": "Seuraava",

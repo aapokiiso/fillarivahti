@@ -35,6 +35,10 @@
       "6": "Saturdays"
     }
   },
+  "meta": {
+    "title": "Fillarivahti - HSL city bike availability and trends",
+    "description": "Fillarivahti visualizes the current availability and trend of Helsinki area city bikes."
+  },
   "pagination": {
     "previous": "Previous",
     "next": "Next",
