@@ -1,6 +1,16 @@
 <template>
-  <div class="py-8">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 md:flex md:items-center md:justify-between md:space-x-5 lg:max-w-7xl lg:px-8">
+  <div class="py-8 max-w-3xl mx-auto lg:max-w-7xl">
+    <div v-if="canGoBackToResults" class="mb-4 px-4 sm:px-6 lg:px-8">
+      <button
+        class="inline-flex items-center justify-center font-medium text-amber-700 hover:text-amber-900"
+        @click="router.back()"
+      >
+        <ArrowLeftIcon class="mr-2 flex-shrink-0 h-4 w-4" aria-hidden="true" />
+        {{ $t('bikeStationDetails.backToResults') }}
+      </button>
+    </div>
+
+    <div class="px-4 sm:px-6 md:flex md:items-center md:justify-between md:space-x-5 lg:px-8">
       <div class="flex items-center space-x-5">
         <div>
           <h1 class="text-2xl font-bold text-gray-900">
@@ -16,13 +26,13 @@
           rel="noopener noreferrer"
           class="inline-flex items-center justify-center px-4 py-2 border border-transparent font-medium rounded-md shadow-sm text-black bg-amber-300 hover:bg-amber-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-amber-500"
         >
-          <ExternalLinkIcon class="mr-3 flex-shrink-0 h-6 w-6 text-amber-700" aria-hidden="true" />
+          <ExternalLinkIcon class="mr-2 flex-shrink-0 h-4 w-4 text-amber-700" aria-hidden="true" />
           {{ $t('bikeStationDetails.viewOnHsl') }}
         </NuxtLink>
       </div>
     </div>
 
-    <div class="mt-8 max-w-3xl mx-auto grid grid-cols-1 gap-6 sm:px-6 lg:max-w-7xl lg:grid-flow-col-dense lg:grid-cols-3">
+    <div class="mt-8 grid grid-cols-1 gap-6 sm:px-6 lg:grid-flow-col-dense lg:grid-cols-3">
       <div class="lg:col-start-1 lg:col-span-1">
         <section aria-labelledby="availability-details-title">
           <div class="bg-white shadow sm:rounded-lg">
@@ -92,10 +102,15 @@
 <script setup>
 import {
   ExternalLinkIcon,
+  ArrowLeftIcon,
 } from '@heroicons/vue/solid'
 
 import 'vue-skeletor/dist/vue-skeletor.css'
 import { Skeletor } from 'vue-skeletor'
+
+import { useLocalePath } from '#i18n'
+
+const localePath = useLocalePath()
 
 const route = useRoute()
 const stationId = route.params.id
@@ -153,4 +168,9 @@ const distanceInMeters = computed(
     ? useBikeStationDistanceInMeters(station, searchLocation.value)
     : null,
 )
+
+const router = useRouter()
+
+// TODO check that referer is actually a search results page
+const canGoBackToResults = process.client && window.history.state.back
 </script>

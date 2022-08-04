@@ -26,7 +26,8 @@
     "availabilityDetailsTitle": "Bikes on station",
     "currentAvailabilityTitle": "Right now",
     "estimatedAvailabilityTitle": "In 30 minutes",
-    "availabilityHistoryTitle": "Bikes availability today"
+    "availabilityHistoryTitle": "Bikes availability today",
+    "backToResults": "Back to results"
   },
   "bikeStationDistance": {
     "iconLabel": "Distance",

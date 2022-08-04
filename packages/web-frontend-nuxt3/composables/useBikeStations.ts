@@ -1,4 +1,4 @@
-import getDistance from 'geolib/es/getDistance'
+import { getDistance } from 'geolib'
 import { BikeStation } from '~/types/BikeStation'
 
 export const useBikeStationsByIds = (stationIds: string[]) => {

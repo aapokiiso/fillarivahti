@@ -26,7 +26,8 @@
     "availabilityDetailsTitle": "Pyöriä asemalla",
     "currentAvailabilityTitle": "Juuri nyt",
     "estimatedAvailabilityTitle": "30 min kuluttua",
-    "availabilityHistoryTitle": "Pyörien saatavuus tänään"
+    "availabilityHistoryTitle": "Pyörien saatavuus tänään",
+    "backToResults": "Takaisin hakutuloksiin"
   },
   "bikeStationDistance": {
     "iconLabel": "Etäisyys",
