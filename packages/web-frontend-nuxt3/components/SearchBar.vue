@@ -11,7 +11,9 @@
             id="search-field"
             v-model="textInput"
             class="block w-full h-full pl-8 pr-3 py-2 border-transparent text-gray-900 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-0 focus:border-transparent"
-            placeholder="Search stations by name..."
+            :placeholder="$t('bikeStationSearch.textInputPlaceholder')"
+            :title="$t('bikeStationSearch.textInputHelp')"
+            :aria-label="$t('bikeStationSearch.textInputHelp')"
             type="search"
             name="search"
           >
@@ -25,7 +27,7 @@
         :class="{'bg-gray-400 text-white hover:text-gray-700': searchLocation && !isCurrentLocation, 'bg-indigo-500 text-white hover:text-white': searchLocation && isCurrentLocation}"
         @click="onLocationSearchClick"
       >
-        <span class="sr-only">Find nearby bike stations</span>
+        <span class="sr-only">{{ $t('bikeStationSearch.locationHelp') }}</span>
         <LocationMarkerIcon class="h-6 w-6" aria-hidden="true" />
       </button>
     </div>
@@ -39,6 +41,10 @@ import {
 
 import { SearchIcon } from '@heroicons/vue/solid'
 
+import { useLocalePath } from '#i18n'
+
+const localePath = useLocalePath()
+
 const searchText = useSearchText()
 
 // Initialize search input value from current search text
@@ -47,21 +53,19 @@ watch(searchText, (newSearchText) => {
   textInput.value = newSearchText
 })
 
-const router = useRouter()
-
 const onTextSearchSubmit = (event) => {
   event.preventDefault()
 
   if (textInput.value) {
-    router.push({
+    navigateTo(localePath({
       name: 'list', // TODO go back to map view if coming from there
       query: { q: textInput.value },
-    })
+    }))
   } else {
-    router.push({
+    navigateTo(localePath({
       name: 'list',
       query: { },
-    })
+    }))
   }
 }
 
@@ -81,10 +85,10 @@ const onLocationSearchClick = async () => {
   try {
     const coords = await locationRequest
 
-    router.push({
+    navigateTo(localePath({
       name: 'list',
       query: { lat: coords.latitude, lon: coords.longitude },
-    })
+    }))
 
     isCurrentLocation.value = true
   } catch (error) {
@@ -93,10 +97,10 @@ const onLocationSearchClick = async () => {
 
     // TODO show error to user
 
-    router.push({
+    navigateTo(localePath({
       name: 'list',
       query: { },
-    })
+    }))
   }
 }
 </script>

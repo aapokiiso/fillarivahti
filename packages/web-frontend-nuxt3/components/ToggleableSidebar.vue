@@ -35,7 +35,7 @@
             >
               <div class="absolute top-0 right-0 -mr-12 pt-2">
                 <button type="button" class="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" @click="isSidebarOpen = false">
-                  <span class="sr-only">Close sidebar</span>
+                  <span class="sr-only">{{ $t('sidebar.close') }}</span>
                   <XIcon class="h-6 w-6 text-white" aria-hidden="true" />
                 </button>
               </div>
@@ -45,9 +45,9 @@
             </div>
             <div class="mt-5 flex-1 h-0 overflow-y-auto">
               <nav class="px-2 space-y-1">
-                <NuxtLink v-for="item in navigation" :key="item.name" :to="{name: item.route}" :class="[item.current ? 'bg-indigo-800 text-white' : 'text-indigo-100 hover:bg-indigo-600', 'group flex items-center px-2 py-2 text-base font-medium rounded-md']" @click="isSidebarOpen = false">
+                <NuxtLink v-for="item in navigation" :key="item.route" :to="localePath({name: item.route})" :class="[item.current ? 'bg-indigo-800 text-white' : 'text-indigo-100 hover:bg-indigo-600', 'group flex items-center px-2 py-2 text-base font-medium rounded-md']" @click="isSidebarOpen = false">
                   <component :is="item.icon" class="mr-4 flex-shrink-0 h-6 w-6 text-indigo-300" aria-hidden="true" />
-                  {{ item.name }}
+                  {{ $t(item.i18nLabel) }}
                 </NuxtLink>
               </nav>
             </div>
@@ -73,5 +73,9 @@ import {
   XIcon,
 } from '@heroicons/vue/outline'
 
+import { useLocalePath } from '#i18n'
+
 const { navigation, isSidebarOpen } = useSidebar()
+
+const localePath = useLocalePath()
 </script>

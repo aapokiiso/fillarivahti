@@ -1,0 +1,52 @@
+{
+  "bikeStationSearch": {
+    "textInputPlaceholder": "Hae pyöräasemia nimellä...",
+    "textInputHelp": "Hae pyöräasemia nimellä",
+    "locationHelp": "Hae pyöräasemia läheltäsi",
+    "networkError": "Jotain meni pieleen asemien latauksessa :( Sivun päivitys voi auttaa.",
+    "noResults": "Ei hakutuloksia. Voit hakea pyöräasemia aseman nimen tai sijaintisi perusteella.",
+    "pending": "Asemia ladataan..."
+  },
+  "bikeStationCard": {
+    "viewDetails": "Katso tiedot"
+  },
+  "bikeStationDetails": {
+    "viewOnMap": "Näytä kartalla",
+    "viewOnHsl": "HSL Reittiopas",
+    "availabilityDetailsTitle": "Pyöriä asemalla",
+    "currentAvailabilityTitle": "Juuri nyt",
+    "estimatedAvailabilityTitle": "30 min kuluttua",
+    "availabilityHistoryTitle": "Pyörien saatavuus tänään"
+  },
+  "bikeStationDistance": {
+    "kilometers": "Etäisyys {distance} km"
+  },
+  "capacityGraph": {
+    "todayLegend": "Pyöriä tänään",
+    "weekdayAverageLegend": "Pyöriä keskimäärin {weekday}",
+    "stationCapacityLegend": "Aseman kapasiteetti",
+    "weekdayForLegend": {
+      "0": "sunnuntaisin",
+      "1": "maanantaisin",
+      "2": "tiistaisin",
+      "3": "keskiviikkoisin",
+      "4": "torstaisin",
+      "5": "perjantaisin",
+      "6": "lauantaisin"
+    }
+  },
+  "pagination": {
+    "previous": "Edellinen",
+    "next": "Seuraava",
+    "status": "Näytetään hakutulokset {pageStart} - {pageEnd} (yhteensä {totalCount} kpl)"
+  },
+  "sidebar": {
+    "close": "Sulje sivupalkki",
+    "open": "Avaa sivupalkki",
+    "item": {
+      "mapView": "Karttanäkymä",
+      "listView": "Listanäkymä",
+      "about": "Tietoa"
+    }
+  }
+}

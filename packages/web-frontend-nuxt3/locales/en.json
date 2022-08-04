@@ -1,0 +1,52 @@
+{
+  "bikeStationSearch": {
+    "textInputPlaceholder": "Search bike stations by name...",
+    "textInputHelp": "Search bike stations by name",
+    "locationHelp": "Search for bike stations near you",
+    "networkError": "Something went wrong while fetching stations :( Reloading the site might help.",
+    "noResults": "No results. You can search for bike stations by their name or your location.",
+    "pending": "Fetching stations..."
+  },
+  "bikeStationCard": {
+    "viewDetails": "View details"
+  },
+  "bikeStationDetails": {
+    "viewOnMap": "Show on map",
+    "viewOnHsl": "HSL Journey Planner",
+    "availabilityDetailsTitle": "Bikes on station",
+    "currentAvailabilityTitle": "Right now",
+    "estimatedAvailabilityTitle": "In 30 minutes",
+    "availabilityHistoryTitle": "Bikes availability today"
+  },
+  "bikeStationDistance": {
+    "kilometers": "{distance} km away"
+  },
+  "capacityGraph": {
+    "todayLegend": "Bikes today",
+    "weekdayAverageLegend": "Bikes on average on {weekday}",
+    "stationCapacityLegend": "Station capacity",
+    "weekdayForLegend": {
+      "0": "Sundays",
+      "1": "Mondays",
+      "2": "Tuesdays",
+      "3": "Wednesdays",
+      "4": "Thursdays",
+      "5": "Fridays",
+      "6": "Saturdays"
+    }
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "status": "Showing {pageStart} to {pageEnd} of total {totalCount} results"
+  },
+  "sidebar": {
+    "close": "Close sidebar",
+    "open": "Open sidebar",
+    "item": {
+      "mapView": "Map view",
+      "listView": "List view",
+      "about": "About"
+    }
+  }
+}

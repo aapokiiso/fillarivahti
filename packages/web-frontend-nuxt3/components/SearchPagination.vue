@@ -6,7 +6,7 @@
         class="relative inline-flex items-center px-4 py-2 border border-gray-300 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
         @click="onPrevClick"
       >
-        Previous
+        {{ $t('pagination.previous') }}
       </button>
       <button
         v-if="canHaveNextButton"
@@ -14,24 +14,12 @@
         class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 font-medium rounded-md text-gray-700 bg-white enabled:hover:bg-gray-50 disabled:opacity-50"
         @click="onNextClick"
       >
-        Next
+        {{ $t('pagination.next') }}
       </button>
     </div>
     <div class="text-center sm:order-first">
       <p class="text-gray-700">
-        Showing
-        {{ ' ' }}
-        <span class="font-medium">{{ pageStart }}</span>
-        {{ ' ' }}
-        to
-        {{ ' ' }}
-        <span class="font-medium">{{ pageEnd }}</span>
-        {{ ' ' }}
-        of
-        {{ ' ' }}
-        <span class="font-medium">{{ totalCount }}</span>
-        {{ ' ' }}
-        results
+        {{ $t('pagination.status', { pageStart, pageEnd, totalCount }) }}
       </p>
     </div>
   </nav>

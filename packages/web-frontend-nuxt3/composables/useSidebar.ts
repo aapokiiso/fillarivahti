@@ -4,21 +4,28 @@ import {
   QuestionMarkCircleIcon,
 } from '@heroicons/vue/outline'
 
+import { useLocaleRoute } from '#i18n'
+
 export const useSidebar = () => {
   const navigationItems = [
-    { name: 'Map view', route: 'index', icon: MapIcon },
-    { name: 'List view', route: 'list', icon: ViewListIcon },
-    { name: 'About', route: 'about', icon: QuestionMarkCircleIcon },
+    { i18nLabel: 'sidebar.item.mapView', route: 'index', icon: MapIcon },
+    { i18nLabel: 'sidebar.item.listView', route: 'list', icon: ViewListIcon },
+    { i18nLabel: 'sidebar.item.about', route: 'about', icon: QuestionMarkCircleIcon },
   ]
 
   const route = useRoute()
+  const localeRoute = useLocaleRoute()
 
   const navigation = computed(
     () => navigationItems
-      .map(item => ({
-        ...item,
-        current: item.route === route.name,
-      })),
+      .map((item) => {
+        const { name: routeLocaleName } = localeRoute({ name: item.route })
+
+        return {
+          ...item,
+          current: routeLocaleName === route.name,
+        }
+      }),
   )
 
   const isSidebarOpen = useState<boolean>('isSidebarOpen', () => false)

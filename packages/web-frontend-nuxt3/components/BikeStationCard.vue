@@ -20,10 +20,10 @@
     <div class="bg-gray-50 px-5 py-3">
       <div>
         <NuxtLink
-          :to="{name: 'stations-id', params: {id: station.stationId}}"
+          :to="localePath({name: 'stations-id', params: {id: station.stationId}})"
           class="font-medium text-cyan-700 hover:text-cyan-900"
         >
-          View details
+          {{ $t('bikeStationCard.viewDetails') }}
         </NuxtLink>
       </div>
     </div>
@@ -32,6 +32,9 @@
 
 <script setup lang="ts">
 import { BikeStation, BikeStationAvailability } from '~/types/BikeStation'
+import { useLocalePath } from '#i18n'
+
+const localePath = useLocalePath()
 
 const props = defineProps<{
   station: BikeStation,

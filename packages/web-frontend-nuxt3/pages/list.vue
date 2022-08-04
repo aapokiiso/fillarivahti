@@ -16,14 +16,14 @@
         />
       </div>
       <p v-else-if="hasNetworkError">
-        Failed to load stations.
+        {{ $t('bikeStationSearch.networkError') }}
       </p>
       <p v-else>
-        No stations found.
+        {{ $t('bikeStationSearch.noResults') }}
       </p>
     </div>
     <p v-else>
-      Loading...
+      {{ $t('bikeStationSearch.pending') }}
     </p>
   </div>
 </template>
@@ -54,35 +54,37 @@ pending.value = false
 const hasNetworkError = computed(() => stationIdsError.value || stationsError.value)
 
 const route = useRoute()
+const listRouteName = route.name
+
 watch([searchText, searchLocation, searchPage, searchPageSize], async ([newText, newLocation, newSearchPage, newSearchPageSize]) => {
-  // Avoid empty load when search query is removed from the URL when navigating
-  // to another page.
-  if (route.name === 'list') {
-    pending.value = true
-
-    const { data: newStationIdsResult, error: newStationIdsError } = newLocation
-      ? await useBikeStationIdsByLocation(newLocation, { page: newSearchPage, pageSize: newSearchPageSize })
-      : await useBikeStationIdsByName(newText, { page: newSearchPage, pageSize: newSearchPageSize })
-
-    stationIds.value = newStationIdsResult.value.stationIds
-    stationsTotalCount.value = newStationIdsResult.value.totalCount
-    stationIdsError.value = newStationIdsError.value
-
-    const { data: newStations, error: newStationsError } = await useBikeStationsByIds(stationIds.value)
-    stations.value = newStations.value
-    stationsError.value = newStationsError.value
-
-    const { data: newStationsEstimatedAvailability } = await useBikeStationsFurthestEstimatedAvailability(stationIds.value, {
-      lazy: true,
-      default: () => ({}),
-    })
-    stationsEstimatedAvailability.value = newStationsEstimatedAvailability.value
-
-    pending.value = false
+  // Skip empty load due to search query being removed from the URL when
+  // navigating to another page.
+  if (route.name !== listRouteName) {
+    return
   }
-})
 
-const router = useRouter()
+  pending.value = true
+
+  const { data: newStationIdsResult, error: newStationIdsError } = newLocation
+    ? await useBikeStationIdsByLocation(newLocation, { page: newSearchPage, pageSize: newSearchPageSize })
+    : await useBikeStationIdsByName(newText, { page: newSearchPage, pageSize: newSearchPageSize })
+
+  stationIds.value = newStationIdsResult.value.stationIds
+  stationsTotalCount.value = newStationIdsResult.value.totalCount
+  stationIdsError.value = newStationIdsError.value
+
+  const { data: newStations, error: newStationsError } = await useBikeStationsByIds(stationIds.value)
+  stations.value = newStations.value
+  stationsError.value = newStationsError.value
+
+  const { data: newStationsEstimatedAvailability } = await useBikeStationsFurthestEstimatedAvailability(stationIds.value, {
+    lazy: true,
+    default: () => ({}),
+  })
+  stationsEstimatedAvailability.value = newStationsEstimatedAvailability.value
+
+  pending.value = false
+})
 
 const onPaginationPrevClick = () => {
   const newPage = searchPage.value > 2 ? searchPage.value - 1 : null
@@ -94,7 +96,7 @@ const onPaginationPrevClick = () => {
     ? Object.assign({}, rest, { p: newPage })
     : rest
 
-  router.push({
+  navigateTo({
     query,
   })
 }
@@ -104,7 +106,7 @@ const onPaginationNextClick = () => {
     p: (searchPage.value || 1) + 1,
   })
 
-  router.push({
+  navigateTo({
     query,
   })
 }

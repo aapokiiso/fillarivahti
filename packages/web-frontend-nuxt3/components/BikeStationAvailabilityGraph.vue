@@ -6,8 +6,10 @@
 import { Chart } from 'chart.js'
 import annotationPlugin from 'chartjs-plugin-annotation'
 import { LineChart } from 'vue-chart-3'
-import { useWindowSize } from 'vue-window-size'
 import { gaussianSmoothen } from '@aapokiiso/fillarivahti-web-frontend-helpers'
+import { useI18n } from '#i18n'
+
+const { t: $t } = useI18n()
 
 Chart.register(annotationPlugin)
 
@@ -85,11 +87,6 @@ const props = defineProps({
     default: 768,
   },
 })
-
-// TODO: internationalization
-// const { i18n } = useContext()
-const i18n = { t: key => key }
-const { width: windowWidth } = useWindowSize()
 
 /**
  * Pads time unit to 24-hour format.
@@ -196,7 +193,7 @@ const chartData = {
   labels: getTimeLabels(),
   datasets: [
     {
-      label: i18n.t('capacityGraph.todayLegend'),
+      label: $t('capacityGraph.todayLegend'),
       data: smoothenCapacityRecords(props.todayCapacities).map(
         mapCapacityToPoint,
       ),
@@ -206,10 +203,8 @@ const chartData = {
       tension: 0.4,
     },
     {
-      label: i18n.t('capacityGraph.weekdayAverageLegend', {
-        weekday: i18n.t(
-                            `capacityGraph.weekdayForLegend.${new Date().getDay()}`,
-        ),
+      label: $t('capacityGraph.weekdayAverageLegend', {
+        weekday: $t(`capacityGraph.weekdayForLegend.${new Date().getDay()}`),
       }),
       data: smoothenCapacityRecords(
         props.weekdayAverageCapacities,
@@ -223,7 +218,7 @@ const chartData = {
       tension: 0.4,
     },
     {
-      label: i18n.t('capacityGraph.stationCapacityLegend'),
+      label: $t('capacityGraph.stationCapacityLegend'),
       data: [],
       backgroundColor: 'transparent',
       borderColor: props.stationCapacityAnnotationColor,
@@ -299,9 +294,8 @@ const options = {
       ],
     },
     legend: {
-      display: windowWidth.value >= props.minWidthLegendVisible,
       position: 'bottom',
-      align: 'end',
+      align: 'start',
       onClick: null,
       labels: {
         padding: 20,
