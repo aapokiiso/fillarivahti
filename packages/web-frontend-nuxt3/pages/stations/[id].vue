@@ -12,12 +12,6 @@
         </div>
         <div class="mt-6 flex flex-col-reverse justify-stretch space-y-4 space-y-reverse sm:flex-row-reverse sm:justify-end sm:space-x-reverse sm:space-y-0 sm:space-x-3 md:mt-0 md:flex-row md:space-x-3">
           <NuxtLink
-            :to="localePath({name: 'index'})"
-            class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-amber-500"
-          >
-            {{ $t('bikeStationDetails.viewOnMap') }}
-          </NuxtLink>
-          <NuxtLink
             :to="`https://reittiopas.hsl.fi/pyoraasemat/${station.stationId}`"
             target="_blank"
             rel="noopener noreferrer"
@@ -104,9 +98,6 @@ import {
 
 import 'vue-skeletor/dist/vue-skeletor.css'
 import { Skeletor } from 'vue-skeletor'
-import { useLocalePath } from '#i18n'
-
-const localePath = useLocalePath()
 
 const route = useRoute()
 const stationId = route.params.id
