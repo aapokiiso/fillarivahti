@@ -2,10 +2,15 @@
   <div class="bg-white overflow-hidden shadow rounded-lg">
     <div class="p-5">
       <dl>
-        <dt class="font-medium text-gray-500 truncate">
-          {{ station.name }}
+        <dt class="font-medium text-gray-500 truncate flex items-center justify-between">
+          <span class="leading-none">{{ station.name }}</span>
+          <BikeStationDistance
+            v-if="distanceInMeters !== null"
+            class="leading-none"
+            :distance-in-meters="distanceInMeters"
+          />
         </dt>
-        <dd class="flex items-center">
+        <dd class="mt-2 flex items-center">
           <BikeStationAvailabilityStatus :bikes-available="station.bikesAvailable" :capacity="station.capacity" />
           <BikeStationAvailabilityTrend
             v-if="estimatedBikesAvailable !== null"
@@ -42,4 +47,11 @@ const props = defineProps<{
 }>()
 
 const estimatedBikesAvailable = useBikeStationEstimatedBikesAvailable(props.station, props.estimatedAvailability)
+
+const searchLocation = useLastUsedSearchLocation()
+const distanceInMeters = computed(
+  () => searchLocation.value
+    ? useBikeStationDistanceInMeters(props.station, searchLocation.value)
+    : null,
+)
 </script>

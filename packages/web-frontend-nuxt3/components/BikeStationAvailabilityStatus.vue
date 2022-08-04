@@ -1,10 +1,10 @@
 <template>
-  <p class="font-medium text-gray-900">
-    <span v-if="isEstimate && bikesAvailable !== null" class="mr-1 text-gray-500 font-bold">~</span>
-    <span :class="availabilityStyle" class="text-lg">
+  <p class="font-medium text-gray-900 leading-none">
+    <span v-if="isEstimate && bikesAvailable !== null" class="mr-1 text-gray-500 font-bold leading-none">~</span>
+    <span :class="availabilityStyle" class="text-lg leading-none">
       {{ bikesAvailable !== null ? bikesAvailable : '-' }}
     </span>
-    <span v-if="capacity" class="ml-1">
+    <span v-if="capacity" class="ml-1 leading-none">
       / {{ capacity }}
     </span>
   </p>

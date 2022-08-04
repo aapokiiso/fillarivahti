@@ -5,6 +5,10 @@
     "sources": "Jos kiinnostaa tutkailla miten palvelu on rakennettu, lähdekoodi löytyy Githubista. Samassa paketissa on myös saatavuustietojen seuranta ja rajapinta josta niitä voi kysellä.",
     "githubLink": "Linkki Githubiin"
   },
+  "bikeStationAvailabilityTrend": {
+    "trendingUp": "Pyörien saatavuus selvästi nousussa",
+    "trendingDown": "Pyörien saatavuus selvästi laskussa"
+  },
   "bikeStationSearch": {
     "textInputPlaceholder": "Hae pyöräasemia nimellä...",
     "textInputHelp": "Hae pyöräasemia nimellä",
@@ -25,7 +29,8 @@
     "availabilityHistoryTitle": "Pyörien saatavuus tänään"
   },
   "bikeStationDistance": {
-    "kilometers": "Etäisyys {distance} km"
+    "iconLabel": "Etäisyys",
+    "kilometers": "{distance} km"
   },
   "capacityGraph": {
     "todayLegend": "Pyöriä tänään",

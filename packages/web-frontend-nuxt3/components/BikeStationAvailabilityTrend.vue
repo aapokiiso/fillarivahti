@@ -1,7 +1,13 @@
 <template>
   <span v-if="isTrendingUp || isTrendingDown" class="text-gray-500">
-    <TrendingUpIcon v-if="isTrendingUp" aria-hidden="true" />
-    <TrendingDownIcon v-else-if="isTrendingDown" aria-hidden="true" />
+    <span v-if="isTrendingUp">
+      <span class="sr-only">{{ $t('bikeStationAvailabilityTrend.trendingUp') }}</span>
+      <TrendingUpIcon aria-hidden="true" />
+    </span>
+    <span v-if="isTrendingDown">
+      <span class="sr-only">{{ $t('bikeStationAvailabilityTrend.trendingDown') }}</span>
+      <TrendingDownIcon aria-hidden="true" />
+    </span>
   </span>
 </template>
 

@@ -6,7 +6,7 @@
           <h1 class="text-2xl font-bold text-gray-900">
             {{ station.name }}
           </h1>
-          <BikeStationDistance v-if="distanceInMeters !== null" :distance-in-meters="distanceInMeters" />
+          <BikeStationDistance class="text-sm font-medium" v-if="distanceInMeters !== null" :distance-in-meters="distanceInMeters" />
         </div>
       </div>
       <div class="mt-6 flex flex-col-reverse justify-stretch space-y-4 space-y-reverse sm:flex-row-reverse sm:justify-end sm:space-x-reverse sm:space-y-0 sm:space-x-3 md:mt-0 md:flex-row md:space-x-3">

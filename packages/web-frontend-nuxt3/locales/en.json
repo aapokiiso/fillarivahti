@@ -5,6 +5,10 @@
     "sources": "If you're interested to check out how the site was built, the sources are available on Github. The repository includes the availability recorder and the API for reading them, as well.",
     "githubLink": "Link to Github"
   },
+  "bikeStationAvailabilityTrend": {
+    "trendingUp": "Bike availability trending up",
+    "trendingDown": "Bike availability trending down"
+  },
   "bikeStationSearch": {
     "textInputPlaceholder": "Search bike stations by name...",
     "textInputHelp": "Search bike stations by name",
@@ -25,7 +29,8 @@
     "availabilityHistoryTitle": "Bikes availability today"
   },
   "bikeStationDistance": {
-    "kilometers": "{distance} km away"
+    "iconLabel": "Distance",
+    "kilometers": "{distance} km"
   },
   "capacityGraph": {
     "todayLegend": "Bikes today",

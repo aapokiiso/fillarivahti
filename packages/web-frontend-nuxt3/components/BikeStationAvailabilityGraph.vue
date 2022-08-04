@@ -263,7 +263,6 @@ const options = {
       },
     },
     y: {
-      display: false,
       grid: {
         display: false,
         borderColor: 'transparent',
