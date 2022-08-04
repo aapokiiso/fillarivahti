@@ -7,7 +7,7 @@
       <Meta name="description" :content="$t('meta.description')" />
       <Meta name="charset" content="utf-8" />
       <Meta name="viewport" content="width=device-width, initial-scale=1" />
-      <Link rel="manifest" href="manifest.json" />
+      <Link rel="manifest" href="/manifest.json" />
     </Head>
 
     <Body class="h-full" />

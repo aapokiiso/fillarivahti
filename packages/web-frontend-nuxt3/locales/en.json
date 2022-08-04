@@ -1,4 +1,10 @@
 {
+  "about": {
+    "title": "About",
+    "summary": "Fillarivahti records the availability of each bike station in the Helsinki region. The yellow line graphs today's availability, and the gray area shows the weekday's average availability. The black, dashed line visualizes full capacity, and helps put things in perspective. The collected information is also used to estimate bike availability in the near future.",
+    "sources": "If you're interested to check out how the site was built, the sources are available on Github. The repository includes the availability recorder and the API for reading them, as well.",
+    "githubLink": "Link to Github"
+  },
   "bikeStationSearch": {
     "textInputPlaceholder": "Search bike stations by name...",
     "textInputHelp": "Search bike stations by name",
@@ -34,6 +40,13 @@
       "5": "Fridays",
       "6": "Saturdays"
     }
+  },
+  "credits": {
+      "title": "Credits",
+      "hsl": "Thanks to Helsinki Region Transport (HSL) and DigiTransit for providing such great open public transit APIs!",
+      "licensesTitle": "Licenses",
+      "fontAwesome": "Font Awesome icon library (used for icon)",
+      "heroicons": "Heroicons icon library by Tailwind Labs"
   },
   "meta": {
     "title": "Fillarivahti - HSL city bike availability and trends",

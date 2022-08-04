@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8">
+  <div class="max-w-7xl mx-auto px-4 pt-4 pb-8 sm:px-6 lg:px-8 lg:pt-8">
     <div v-if="!pending">
       <div v-if="stations.length">
         <div class="mt-2 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">

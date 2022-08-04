@@ -1,4 +1,10 @@
 {
+  "about": {
+    "title": "Tietoa",
+    "summary": "Fillarivahti seuraa taustalla Helsingin seudun kaupunkipyörien saatavuutta. Jokaisesta pyöräasemasta piirtyy kuva, jossa näkyy keltaisella tämänpäiväinen saatavuustilanne, ja harmaalla viikonpäivän keskiarvo. Musta katkoviiva kuvaa aseman täyttä kapasiteettia ja auttaa hahmottamaan saatavuustilannetta. Kerätystä tiedosta arvioidaan myös pyörien saatavuutta lähitulevaisuudessa.",
+    "sources": "Jos kiinnostaa tutkailla miten palvelu on rakennettu, lähdekoodi löytyy Githubista. Samassa paketissa on myös saatavuustietojen seuranta ja rajapinta josta niitä voi kysellä.",
+    "githubLink": "Linkki Githubiin"
+  },
   "bikeStationSearch": {
     "textInputPlaceholder": "Hae pyöräasemia nimellä...",
     "textInputHelp": "Hae pyöräasemia nimellä",
@@ -34,6 +40,13 @@
       "5": "perjantaisin",
       "6": "lauantaisin"
     }
+  },
+  "credits": {
+      "title": "Kiitokset",
+      "hsl": "Kiitokset Helsingin Seudun Liikenteelle (HSL) ja DigiTransitille loistavista julkisen liikenteen avoimista rajapinnoista!",
+      "licensesTitle": "Lisenssit",
+      "fontAwesome": "Font Awesome -ikonikirjasto (käytössä kuvakkeessa)",
+      "heroicons": "Heroicons -ikonikirjasto (Tailwind Labs)"
   },
   "meta": {
     "title": "Fillarivahti - HSL kaupunkipyörien saatavuus ja trendit",
