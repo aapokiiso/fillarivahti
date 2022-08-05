@@ -1,15 +1,5 @@
 <template>
   <div class="py-8 max-w-3xl mx-auto lg:max-w-7xl">
-    <div v-if="canGoBackToResults" class="mb-4 px-4 sm:px-6 lg:px-8">
-      <button
-        class="inline-flex items-center justify-center font-medium text-amber-700 hover:text-amber-900"
-        @click="router.back()"
-      >
-        <ArrowLeftIcon class="mr-2 flex-shrink-0 h-4 w-4" aria-hidden="true" />
-        {{ $t('bikeStationDetails.backToResults') }}
-      </button>
-    </div>
-
     <div class="px-4 sm:px-6 md:flex md:items-center md:justify-between md:space-x-5 lg:px-8">
       <div class="flex items-center space-x-5">
         <div>
@@ -96,6 +86,18 @@
         </section>
       </div>
     </div>
+
+    <ClientOnly>
+      <div v-if="canGoBackToResults" class="mt-8 px-4 sm:px-6 lg:px-8">
+        <button
+          class="inline-flex items-center justify-center font-medium text-amber-700 hover:text-amber-900"
+          @click="router.back()"
+        >
+          <ArrowLeftIcon class="mr-2 flex-shrink-0 h-4 w-4" aria-hidden="true" />
+          {{ $t('bikeStationDetails.backToResults') }}
+        </button>
+      </div>
+    </ClientOnly>
   </div>
 </template>
 
@@ -107,10 +109,6 @@ import {
 
 import 'vue-skeletor/dist/vue-skeletor.css'
 import { Skeletor } from 'vue-skeletor'
-
-import { useLocalePath } from '#i18n'
-
-const localePath = useLocalePath()
 
 const route = useRoute()
 const stationId = route.params.id

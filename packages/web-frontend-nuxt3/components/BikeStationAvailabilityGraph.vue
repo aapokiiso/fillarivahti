@@ -113,8 +113,7 @@ function getTimeLabels () {
   if (!timeLabels) {
     const hoursInDay = 24
     const minutesInHour = 60
-    const datapointsCount =
-                    (hoursInDay * minutesInHour) / props.granularityInMinutes
+    const datapointsCount = (hoursInDay * minutesInHour) / props.granularityInMinutes
 
     const labels = []
     for (let i = 0; i <= datapointsCount; i++) {
@@ -224,8 +223,7 @@ const chartData = {
       borderColor: props.stationCapacityAnnotationColor,
       borderWidth: props.lineThickness,
       borderDash: [
-        props.lineThickness *
-                            props.stationCapacityAnnotationBorderDashScale,
+        props.lineThickness * props.stationCapacityAnnotationBorderDashScale,
       ],
     },
   ],
@@ -233,7 +231,6 @@ const chartData = {
 
 const options = {
   responsive: true,
-  aspectRatio: props.aspectRatio,
   elements: {
     point: {
       radius: 0,
@@ -268,9 +265,7 @@ const options = {
         borderColor: 'transparent',
       },
       beginAtZero: true,
-      suggestedMax:
-                        props.stationCapacity +
-                        props.stationCapacity * props.topPaddingScale,
+      suggestedMax: props.stationCapacity + props.stationCapacity * props.topPaddingScale,
     },
   },
   plugins: {
@@ -286,8 +281,7 @@ const options = {
           borderColor: props.stationCapacityAnnotationColor,
           borderWidth: props.lineThickness,
           borderDash: [
-            props.lineThickness *
-                                    props.stationCapacityAnnotationBorderDashScale,
+            props.lineThickness * props.stationCapacityAnnotationBorderDashScale,
           ],
         },
       ],
