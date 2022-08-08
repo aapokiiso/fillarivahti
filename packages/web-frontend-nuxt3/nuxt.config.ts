@@ -16,6 +16,9 @@ export default defineNuxtConfig({
     availabilityEndpointUrl: process.env.AVAILABILITY_ENDPOINT_URL || 'https://http-api-dot-fillarivahti.appspot.com/',
     maxSearchTextLength: typeof process.env.MAX_SEARCH_TEXT_LENGTH !== 'undefined' ? Number(process.env.MAX_SEARCH_TEXT_LENGTH) : 32,
     maxStationsPerPage: typeof process.env.MAX_STATIONS_PER_PAGE !== 'undefined' ? Number(process.env.MAX_STATIONS_PER_PAGE) : 12,
+    public: {
+      mapboxToken: process.env.MAPBOX_TOKEN,
+    },
   },
   i18n: {
     baseUrl: 'https://fillarivahti.fi',
