@@ -41,9 +41,10 @@ import {
 
 import { SearchIcon } from '@heroicons/vue/solid'
 
-import { useLocalePath } from '#i18n'
+import { useLocalePath, useLocaleRoute } from '#i18n'
 
 const localePath = useLocalePath()
+const localeRoute = useLocaleRoute()
 
 const searchText = useSearchText()
 
@@ -82,11 +83,15 @@ const onLocationSearchClick = async () => {
     },
   )
 
+  const { name: currentRouteName } = useRoute()
+  const { name: listRouteName } = localeRoute({ name: 'list' })
+  const isListRoute = currentRouteName === listRouteName
+
   try {
     const coords = await locationRequest
 
     navigateTo(localePath({
-      name: 'list',
+      name: isListRoute ? 'list' : 'index',
       query: { lat: coords.latitude, lon: coords.longitude },
     }))
 
@@ -98,7 +103,7 @@ const onLocationSearchClick = async () => {
     // TODO show error to user
 
     navigateTo(localePath({
-      name: 'list',
+      name: isListRoute ? 'list' : 'index',
       query: { },
     }))
   }

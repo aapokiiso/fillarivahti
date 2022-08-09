@@ -11,6 +11,8 @@
 </template>
 
 <script setup lang="ts">
+import { AvailabilityStatus, getAvailabilityStatus } from '~/helpers/bikeStationAvailabilityStatus'
+
 const props = defineProps({
   bikesAvailable: {
     type: Number,
@@ -20,32 +22,24 @@ const props = defineProps({
     type: Number,
     default: null,
   },
-  maxBadAvailability: {
-    type: Number,
-    default: 0.15,
-  },
-  maxLowAvailability: {
-    type: Number,
-    default: 0.325,
-  },
   isEstimate: {
     type: Boolean,
     default: false,
   },
 })
 
-const maxBadAvailabilityCount = computed(() => Math.round(props.capacity * props.maxBadAvailability))
-const maxLowAvailabilityCount = computed(() => Math.round(props.capacity * props.maxLowAvailability))
-
 const availabilityStyle = computed(() => {
-  if (props.bikesAvailable === null) {
-    return 'text-gray-500'
-  } else if (props.bikesAvailable <= maxBadAvailabilityCount.value) {
-    return 'text-red-500'
-  } else if (props.bikesAvailable <= maxLowAvailabilityCount.value) {
-    return 'text-yellow-500'
-  }
+  const availabilityStatus = getAvailabilityStatus(props.bikesAvailable, props.capacity)
 
-  return 'text-green-500'
+  switch (availabilityStatus) {
+    case AvailabilityStatus.Good:
+      return 'text-green-500'
+    case AvailabilityStatus.Low:
+      return 'text-yellow-500'
+    case AvailabilityStatus.Bad:
+      return 'text-red-500'
+    default:
+      return 'text-gray-500'
+  }
 })
 </script>
