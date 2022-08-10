@@ -24,7 +24,7 @@
       <button
         type="button"
         class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
-        :class="{'bg-gray-400 text-white hover:text-gray-700': searchLocation && !isCurrentLocation, 'bg-amber-500 text-white hover:text-white': searchLocation && isCurrentLocation}"
+        :class="{'bg-gray-400 text-white hover:text-gray-700': searchLocation && !isLocationMarkerHighlighted, 'bg-amber-500 text-white hover:text-white': isLocationMarkerHighlighted}"
         @click="onLocationSearchClick"
       >
         <span class="sr-only">{{ $t('bikeStationSearch.locationHelp') }}</span>
@@ -42,6 +42,7 @@ import {
 import { SearchIcon } from '@heroicons/vue/solid'
 
 import { useLocalePath, useLocaleRoute } from '#i18n'
+import { useCurrentLocation } from '~~/composables/useMap'
 
 const localePath = useLocalePath()
 const localeRoute = useLocaleRoute()
@@ -59,7 +60,7 @@ const onTextSearchSubmit = (event) => {
 
   if (textInput.value) {
     navigateTo(localePath({
-      name: 'list', // TODO go back to map view if coming from there
+      name: 'list',
       query: { q: textInput.value },
     }))
   } else {
@@ -70,8 +71,14 @@ const onTextSearchSubmit = (event) => {
   }
 }
 
+const currentLocation = useCurrentLocation()
 const searchLocation = useSearchLocation()
-const isCurrentLocation = ref(false)
+
+const currentRoute = useRoute()
+const { name: mapRouteName } = localeRoute({ name: 'map' })
+const isMapRoute = computed(() => currentRoute.name === mapRouteName)
+
+const isLocationMarkerHighlighted = computed(() => (searchLocation.value || isMapRoute.value) && currentLocation.value)
 
 const onLocationSearchClick = async () => {
   const locationRequest: Promise<GeolocationCoordinates> = new Promise(
@@ -83,29 +90,29 @@ const onLocationSearchClick = async () => {
     },
   )
 
-  const { name: currentRouteName } = useRoute()
-  const { name: listRouteName } = localeRoute({ name: 'list' })
-  const isListRoute = currentRouteName === listRouteName
-
   try {
     const coords = await locationRequest
 
-    navigateTo(localePath({
-      name: isListRoute ? 'list' : 'index',
-      query: { lat: coords.latitude, lon: coords.longitude },
-    }))
+    currentLocation.value = coords
 
-    isCurrentLocation.value = true
+    if (!isMapRoute.value) {
+      navigateTo(localePath({
+        name: 'list',
+        query: { lat: coords.latitude, lon: coords.longitude },
+      }))
+    }
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error)
 
     // TODO show error to user
 
-    navigateTo(localePath({
-      name: isListRoute ? 'list' : 'index',
-      query: { },
-    }))
+    if (!isMapRoute.value) {
+      navigateTo(localePath({
+        name: 'list',
+        query: { },
+      }))
+    }
   }
 }
 </script>

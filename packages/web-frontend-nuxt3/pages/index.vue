@@ -1,3 +1,7 @@
-<template>
-  <BikeStationMap class="h-[calc(100vh_-_4rem)]" />
-</template>
+<script setup lang="ts">
+import { useLocalePath } from '#i18n'
+
+const localePath = useLocalePath()
+
+navigateTo(localePath({ name: 'map' }), { redirectCode: 301 })
+</script>

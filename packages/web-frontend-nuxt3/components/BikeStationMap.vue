@@ -14,6 +14,7 @@ import { BikeStation, BikeStationAvailability } from '~/types/BikeStation'
 import { waitForElementConnected } from '~/helpers/waitForElementConnected'
 import { isTrendingUp, isTrendingDown } from '~/helpers/bikeStationAvailabilityTrending'
 import { AvailabilityStatus, getAvailabilityStatus } from '~/helpers/bikeStationAvailabilityStatus'
+import { useCurrentLocation } from '~~/composables/useMap'
 
 const localePath = useLocalePath()
 
@@ -23,9 +24,13 @@ const visibleStationsEstimatedAvailability: Ref<Record<string, BikeStationAvaila
 
 watch(visibleStationIds, async (stationIds) => {
   const { data: stations } = await useBikeStationsByIds(stationIds)
-  const { data: stationsEstimatedAvailability } = await useBikeStationsFurthestEstimatedAvailability(stationIds)
 
   visibleStations.value = stations.value
+})
+
+watch(visibleStationIds, async (stationIds) => {
+  const { data: stationsEstimatedAvailability } = await useBikeStationsFurthestEstimatedAvailability(stationIds)
+
   visibleStationsEstimatedAvailability.value = stationsEstimatedAvailability.value
 })
 
@@ -36,27 +41,21 @@ const mapElement = ref()
 const { mapboxToken } = useRuntimeConfig()
 mapboxgl.accessToken = mapboxToken
 
-const center = useState<[number, number]>(
-  'bikeStationMapCenter',
-  () => [24.941389, 60.171944], // Helsinki central railway station
-)
-
-const hasBeenInteractedWith = useState<boolean>(
-  'bikeStationMapHasBeenInteractedWith',
-  () => false,
-)
-
-const availabilityCaseIcons = {
-  stable: {
-    url: '/images/icons/icon-map-availability-case.png',
+const mapIcons = {
+  bikeStation: {
+    url: '/images/icons/icon-map-bike-station.png',
+    name: 'icon-map-bike-station',
+  },
+  availabilityCaseStable: {
+    url: '/images/icons/icon-map-availability-case-stable.png',
     name: 'icon-map-availability-case',
   },
-  'trending-up': {
-    url: '/images/icons/icon-map-availability-trending-up-case.png',
+  availabilityCaseTrendingUp: {
+    url: '/images/icons/icon-map-availability-case-trending-up.png',
     name: 'icon-map-availability-trending-up-case',
   },
-  'trending-down': {
-    url: '/images/icons/icon-map-availability-trending-down-case.png',
+  availabilityCaseTrendingDown: {
+    url: '/images/icons/icon-map-availability-case-trending-down.png',
     name: 'icon-map-availability-trending-down-case',
   },
 }
@@ -69,10 +68,9 @@ const hslStyle = generateStyle({
   },
 })
 
-hslStyle.sprite = 'https://raw.githubusercontent.com/HSLdevcom/hsl-map-style/master/sprite@3x'
 const stationIconLayer = hslStyle.layers.find(({ id }) => id === 'citybike_icon')
-stationIconLayer.layout['icon-image'] = 'icon-citybike-station2'
-stationIconLayer.layout['icon-size'] = 2
+stationIconLayer.layout['icon-image'] = mapIcons.bikeStation.name
+stationIconLayer.layout['icon-size'] = 0.5
 stationIconLayer.layout['icon-allow-overlap'] = true
 
 const updateVisibleStationIds = (map) => {
@@ -90,36 +88,43 @@ const renderStationsAvailability = (map, stations: BikeStation[], stationsEstima
 
   const caseIconMatch = stations.length
     ? stations.reduce((acc, station) => {
-      const { stationId, bikesAvailable } = station
-      const { capacity: estimatesBikesAvailable } = stationsEstimatedAvailability[stationId]
+      const { stationId, bikesAvailable, capacity } = station
+
+      const estimatedBikesAvailable = useBikeStationEstimatedBikesAvailable(station, stationsEstimatedAvailability[stationId])
 
       let icon
-      if (isTrendingUp(estimatesBikesAvailable, bikesAvailable, station.capacity)) {
-        icon = availabilityCaseIcons['trending-up']
-      } else if (isTrendingDown(estimatesBikesAvailable, bikesAvailable, station.capacity)) {
-        icon = availabilityCaseIcons['trending-down']
+      if (estimatedBikesAvailable !== null) {
+        if (isTrendingUp(estimatedBikesAvailable, bikesAvailable, capacity)) {
+          icon = mapIcons.availabilityCaseTrendingUp
+        } else if (isTrendingDown(estimatedBikesAvailable, bikesAvailable, capacity)) {
+          icon = mapIcons.availabilityCaseTrendingDown
+        } else {
+          icon = mapIcons.availabilityCaseStable
+        }
       } else {
-        icon = availabilityCaseIcons.stable
+        icon = mapIcons.availabilityCaseStable
       }
 
       return [...acc, stationId, icon.name]
     }, [])
-    : ['', '']
+    : null
 
-  map.addLayer({
-    id: 'citybike_station_availability_case',
-    minzoom: 14,
-    source: 'citybike',
-    'source-layer': 'stations',
-    type: 'symbol',
-    layout: {
-      'icon-image': ['match', ['get', 'id'], ...caseIconMatch, ''],
-      'icon-allow-overlap': true,
-      'icon-size': 0.5,
-      'icon-anchor': 'left',
-      'icon-offset': [-35, -95],
-    },
-  })
+  if (caseIconMatch) {
+    map.addLayer({
+      id: 'citybike_station_availability_case',
+      minzoom: 14,
+      source: 'citybike',
+      'source-layer': 'stations',
+      type: 'symbol',
+      layout: {
+        'icon-image': ['match', ['get', 'id'], ...caseIconMatch, ''],
+        'icon-allow-overlap': true,
+        'icon-size': 0.5,
+        'icon-anchor': 'left',
+        'icon-offset': [-35, -80],
+      },
+    })
+  }
 
   if (map.getLayer('citybike_station_availability')) {
     map.removeLayer('citybike_station_availability')
@@ -127,7 +132,7 @@ const renderStationsAvailability = (map, stations: BikeStation[], stationsEstima
 
   const bikesAvailableMatch = stations.length
     ? stations.reduce((acc, station) => [...acc, station.stationId, String(station.bikesAvailable)], [])
-    : ['', '']
+    : null
 
   const availabilityColorMatch = stations.length
     ? stations.reduce((acc, station) => {
@@ -152,23 +157,25 @@ const renderStationsAvailability = (map, stations: BikeStation[], stationsEstima
 
       return [...acc, stationId, color]
     }, [])
-    : ['', '']
+    : null
 
-  map.addLayer({
-    id: 'citybike_station_availability',
-    minzoom: 14,
-    source: 'citybike',
-    'source-layer': 'stations',
-    type: 'symbol',
-    layout: {
-      'text-field': ['format', ['string', ['match', ['get', 'id'], ...bikesAvailableMatch, '']]],
-      'text-font': ['literal', ['Gotham Rounded Medium']], // HSL default
-      'text-offset': [0, -2.75],
-    },
-    paint: {
-      'text-color': ['match', ['get', 'id'], ...availabilityColorMatch, '#6b7280'],
-    },
-  })
+  if (bikesAvailableMatch && availabilityColorMatch) {
+    map.addLayer({
+      id: 'citybike_station_availability',
+      minzoom: 14,
+      source: 'citybike',
+      'source-layer': 'stations',
+      type: 'symbol',
+      layout: {
+        'text-field': ['format', ['string', ['match', ['get', 'id'], ...bikesAvailableMatch, '']]],
+        'text-font': ['literal', ['Gotham Rounded Medium']], // HSL default
+        'text-offset': [0, -2.25],
+      },
+      paint: {
+        'text-color': ['match', ['get', 'id'], ...availabilityColorMatch, '#6b7280'],
+      },
+    })
+  }
 }
 
 onMounted(async () => {
@@ -176,6 +183,8 @@ onMounted(async () => {
   // which causes rendering issues with Mapbox. Wait for it to connect before
   // initializing the map.
   await waitForElementConnected(mapElement.value)
+
+  const center = useMapCenter()
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const map = new mapboxgl.Map({
@@ -186,7 +195,7 @@ onMounted(async () => {
     minZoom: 10,
   })
 
-  Object.values(availabilityCaseIcons).forEach(({ url, name }) => {
+  Object.values(mapIcons).forEach(({ url, name }) => {
     map.loadImage(url, (err, image) => {
       if (err) { throw err }
       if (!map.hasImage(name)) {
@@ -195,7 +204,7 @@ onMounted(async () => {
     })
   })
 
-  const searchLocation = useSearchLocation()
+  const currentLocation = useCurrentLocation()
 
   const geolocate = new mapboxgl.GeolocateControl({
     geolocation: {
@@ -203,9 +212,9 @@ onMounted(async () => {
         success: (result: GeolocationPosition) => void,
         error: (err) => void,
       ) {
-        if (searchLocation.value) {
+        if (currentLocation.value) {
           success({
-            coords: searchLocation.value,
+            coords: currentLocation.value,
             timestamp: null,
           })
         } else {
@@ -215,33 +224,55 @@ onMounted(async () => {
         }
       },
     },
+    showAccuracyCircle: false,
+  })
+
+  geolocate.on('geolocate', (event) => {
+    const { longitude, latitude } = event.coords
+
+    map.flyTo({
+      center: [longitude, latitude],
+      zoom: 14,
+    })
   })
 
   map.addControl(geolocate)
 
-  watch(searchLocation, () => geolocate.trigger())
+  watch(currentLocation, newLocation => newLocation && geolocate.trigger())
 
-  watch(visibleStations, newStations => renderStationsAvailability(map, newStations, visibleStationsEstimatedAvailability.value))
+  watch([visibleStations, visibleStationsEstimatedAvailability], ([newStations, newStationsEstimatedAvailability]) =>
+    renderStationsAvailability(map, newStations, newStationsEstimatedAvailability))
 
   map.on('load', () => {
-    // Do not center back on geolocation if user has moved the map around (going
-    // back and forth between the map view and station views)
-    if (searchLocation.value && !hasBeenInteractedWith.value) {
+    if (currentLocation.value) {
+      const { lng: centerLng, lat: centerLat } = map.getCenter()
+      if (currentLocation.value.latitude === centerLat && currentLocation.value.longitude === centerLng) {
+        // Already centered on current location, no move event will be triggered
+        // by geolocation so visible stations must be updated manually.
+        updateVisibleStationIds(map)
+      }
       geolocate.trigger()
+    } else {
+      updateVisibleStationIds(map)
     }
 
-    updateVisibleStationIds(map)
+    map.resize()
+  })
+
+  map.on('dragstart', () => {
+    currentLocation.value = null
   })
 
   map.on('moveend', () => {
-    updateVisibleStationIds(map)
-
     const { lng, lat } = map.getCenter()
     center.value = [lng, lat]
-  })
 
-  map.on('dragend', () => {
-    hasBeenInteractedWith.value = true
+    // TODO: Figure out a more reliable way to detect new visible stations
+    // Wait just a moment before updating visible stations to ensure station
+    // markers are properly rendered.
+    setTimeout(() => {
+      updateVisibleStationIds(map)
+    }, 250)
   })
 
   map.on('click', (event) => {
@@ -257,3 +288,9 @@ onMounted(async () => {
   })
 })
 </script>
+
+<style>
+.mapboxgl-ctrl-geolocate {
+  display: none !important;
+}
+</style>

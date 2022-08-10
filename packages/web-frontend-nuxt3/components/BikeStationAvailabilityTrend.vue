@@ -13,7 +13,7 @@
 
 <script setup lang="ts">
 import { TrendingUpIcon, TrendingDownIcon } from '@heroicons/vue/solid'
-import * as trendingHelpers from '~~/helpers/bikeStationAvailabilityTrending'
+import * as trendingHelpers from '~/helpers/bikeStationAvailabilityTrending'
 
 const props = defineProps({
   estimatedBikes: {

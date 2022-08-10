@@ -10,6 +10,12 @@
         </div>
       </div>
       <div class="mt-6 flex flex-col-reverse justify-stretch space-y-4 space-y-reverse sm:flex-row-reverse sm:justify-end sm:space-x-reverse sm:space-y-0 sm:space-x-3 md:mt-0 md:flex-row md:space-x-3">
+        <button
+          class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-amber-500"
+          @click="viewOnMap"
+        >
+          {{ $t('bikeStationDetails.viewOnMap') }}
+        </button>
         <NuxtLink
           :to="`https://reittiopas.hsl.fi/pyoraasemat/${station.stationId}`"
           target="_blank"
@@ -109,6 +115,10 @@ import {
 
 import 'vue-skeletor/dist/vue-skeletor.css'
 import { Skeletor } from 'vue-skeletor'
+import { useLocalePath } from '#i18n'
+import { useCurrentLocation, useMapCenter } from '~/composables/useMap'
+
+const localePath = useLocalePath()
 
 const route = useRoute()
 const stationId = route.params.id
@@ -160,10 +170,10 @@ const estimatedBikesAvailable = computed(
   () => useBikeStationEstimatedBikesAvailable(station, estimatedAvailability.value),
 )
 
-const searchLocation = useLastUsedSearchLocation()
+const currentLocation = useCurrentLocation()
 const distanceInMeters = computed(
-  () => searchLocation.value
-    ? useBikeStationDistanceInMeters(station, searchLocation.value)
+  () => currentLocation.value
+    ? useBikeStationDistanceInMeters(station, currentLocation.value)
     : null,
 )
 
@@ -171,4 +181,12 @@ const router = useRouter()
 
 // TODO check that referer is actually a search results page
 const canGoBackToResults = process.client && window.history.state.back
+
+const mapCenter = useMapCenter()
+const viewOnMap = () => {
+  mapCenter.value = [station.lon, station.lat]
+  currentLocation.value = null
+
+  return navigateTo(localePath({ name: 'map' }))
+}
 </script>

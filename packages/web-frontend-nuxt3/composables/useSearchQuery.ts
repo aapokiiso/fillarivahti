@@ -45,22 +45,7 @@ export const useSearchLocation = () => {
     },
   )
 
-  // Actual search location is kept in sync with the URL query string, but this
-  // can be used to access the last used search location when not available via
-  // the URL.
-  const lastUsedSearchLocation = useState<GeolocationCoordinates|null>('searchLocationLastUsed', () => searchLocation.value)
-
-  watch(searchLocation, (newLocation) => {
-    if (newLocation) {
-      lastUsedSearchLocation.value = newLocation
-    }
-  })
-
   return searchLocation
-}
-
-export const useLastUsedSearchLocation = () => {
-  return useState<GeolocationCoordinates|null>('searchLocationLastUsed')
 }
 
 const parseSearchPageFromQuery = (query: LocationQuery): number =>

@@ -48,10 +48,10 @@ const props = defineProps<{
 
 const estimatedBikesAvailable = useBikeStationEstimatedBikesAvailable(props.station, props.estimatedAvailability)
 
-const searchLocation = useLastUsedSearchLocation()
+const currentLocation = useCurrentLocation()
 const distanceInMeters = computed(
-  () => searchLocation.value
-    ? useBikeStationDistanceInMeters(props.station, searchLocation.value)
+  () => currentLocation.value
+    ? useBikeStationDistanceInMeters(props.station, currentLocation.value)
     : null,
 )
 </script>
