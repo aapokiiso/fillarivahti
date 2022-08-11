@@ -2,7 +2,6 @@
   "$schema": "https://json.schemastore.org/web-manifest-combined.json",
   "name": "Fillarivahti",
   "short_name": "Fillarivahti",
-  "start_url": "/",
   "display": "minimal-ui",
   "orientation": "portrait",
   "background_color": "#fbbf24",
