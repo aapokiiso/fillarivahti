@@ -11,12 +11,12 @@ export default defineNuxtConfig({
     shim: false,
   },
   runtimeConfig: {
-    hslGraphqlEndpointUrl: process.env.HSL_GRAPHQL_ENDPOINT_URL || 'https://api.digitransit.fi/routing/v1/routers/hsl/index/graphql',
-    addressSearchEndpointUrl: process.env.ADDRESS_SEARCH_ENDPOINT_URL || 'https://api.digitransit.fi/geocoding/v1/search',
-    availabilityEndpointUrl: process.env.AVAILABILITY_ENDPOINT_URL || 'https://http-api-dot-fillarivahti.appspot.com/',
-    maxSearchTextLength: typeof process.env.MAX_SEARCH_TEXT_LENGTH !== 'undefined' ? Number(process.env.MAX_SEARCH_TEXT_LENGTH) : 32,
+    hslGraphqlEndpointUrl: 'https://api.digitransit.fi/routing/v1/routers/hsl/index/graphql',
+    addressSearchEndpointUrl: 'https://api.digitransit.fi/geocoding/v1/search',
+    availabilityEndpointUrl: 'https://http-api-dot-fillarivahti.appspot.com/',
+    maxSearchTextLength: 32,
     public: {
-      mapboxToken: process.env.MAPBOX_TOKEN,
+      mapboxToken: '',
     },
   },
   i18n: {
