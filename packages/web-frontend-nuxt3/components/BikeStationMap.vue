@@ -256,23 +256,32 @@ onMounted(async () => {
       updateVisibleStationIds(map)
     }
 
+    // Ensures map fills container element, there was some flakiness without
+    // this manual resize after load.
     map.resize()
   })
 
   map.on('dragstart', () => {
+    // Removes current location highlight from search bar when user moves map by
+    // hand, which makes it possible to re-position the map on the current
+    // location.
     currentLocation.value = null
   })
 
-  map.on('moveend', () => {
-    const { lng, lat } = map.getCenter()
-    center.value = [lng, lat]
+  // The "moveend" event is flaky, and fires before bike station icons are
+  // rendered when triggered by geolocation. Circumvent by tracking moving state
+  // manually and updating station IDs only when rendering idles after moving.
+  let moving = false
+  map.on('movestart', () => { moving = true })
+  map.on('idle', () => {
+    if (moving) {
+      moving = false
 
-    // TODO: Figure out a more reliable way to detect new visible stations
-    // Wait just a moment before updating visible stations to ensure station
-    // markers are properly rendered.
-    setTimeout(() => {
+      const { lng, lat } = map.getCenter()
+      center.value = [lng, lat]
+
       updateVisibleStationIds(map)
-    }, 250)
+    }
   })
 
   map.on('click', (event) => {
