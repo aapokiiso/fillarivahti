@@ -183,8 +183,10 @@ const router = useRouter()
 const canGoBackToResults = process.client && window.history.state.back
 
 const mapCenter = useMapCenter()
+const mapZoom = useMapZoom()
 const viewOnMap = () => {
   mapCenter.value = [station.lon, station.lat]
+  mapZoom.value = 18
   currentLocation.value = null
 
   return navigateTo(localePath({ name: 'map' }))

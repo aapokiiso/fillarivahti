@@ -185,13 +185,14 @@ onMounted(async () => {
   await waitForElementConnected(mapElement.value)
 
   const center = useMapCenter()
+  const zoom = useMapZoom()
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const map = new mapboxgl.Map({
     container: mapElement.value,
     style: hslStyle,
     center: center.value,
-    zoom: 14,
+    zoom: zoom.value,
     minZoom: 10,
   })
 

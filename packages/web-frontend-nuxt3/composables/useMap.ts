@@ -7,3 +7,5 @@ export const useMapCenter = () => useState<[number, number]>('mapCenter', () => 
     ? [currentLocation.value.longitude, currentLocation.value.latitude]
     : [24.941389, 60.171944] // Helsinki central railway station
 })
+
+export const useMapZoom = () => useState<number>('mapZoom', () => 14)
