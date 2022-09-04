@@ -3,5 +3,5 @@ import { useLocalePath } from '#i18n'
 
 const localePath = useLocalePath()
 
-navigateTo(localePath({ name: 'map' }), { redirectCode: 301 })
+navigateTo(localePath({ name: 'list' }), { redirectCode: 301 })
 </script>
