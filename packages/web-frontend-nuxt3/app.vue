@@ -8,6 +8,7 @@
       <Meta name="charset" content="utf-8" />
       <Meta name="viewport" content="width=device-width, initial-scale=1" />
       <Link rel="manifest" href="/manifest.json" />
+      <Link rel="icon" type="image/x-icon" href="/favicon.ico" />
     </Head>
 
     <Body class="h-full" />
