@@ -9,6 +9,11 @@ for the Helsinki region. It monitors the number of bikes on city bike stations
 in the background, and provides a web interface for quickly checking nearby
 bike stations' availabilities.
 
+| --- | :---: | :---: |
+List of bike stations | ![List view](/../assets/screenshots/list-view.png | width=100) | |
+Bike station view | ![Välimerenkatu bike station view](/../assets/screenshots/station-view-valimerenkatu.png | width=100) | ![Central railway station west-side bike station view](/../assets/screenshots/station-view-central-railway-station-west.png | width=100) |
+Map view with user location | ![Map view](/../assets/screenshots/map-view.png | width=100) | |
+
 The service also provides a rough availability forecast for the next 30 minutes
 for each bike station based on the last hour's trend and previous weeks' trends.
 Don't trust it too much, I don't know what I'm doing :)
