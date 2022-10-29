@@ -21,7 +21,8 @@
     "build": "npm run clean && tsc",
     "lint": "eslint src",
     "lint:fix": "eslint --fix src",
-    "test": "jest"
+    "test": "jest",
+    "prepublish": "npm run build"
   },
   "devDependencies": {
     "@types/jest": "^27.0.1",
