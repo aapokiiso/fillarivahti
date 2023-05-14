@@ -1,6 +1,6 @@
 {
   "name": "@aapokiiso/fillarivahti-http-api",
-  "version": "1.17.0",
+  "version": "1.17.1",
   "description": "Capacity HTTP API for Fillarivahti.",
   "author": "Aapo Kiiso <aapo@kii.so>",
   "license": "MIT",
@@ -25,9 +25,9 @@
     "deploy": "npm ci && npm run build && gcloud app deploy --project fillarivahti"
   },
   "dependencies": {
-    "@aapokiiso/fillarivahti-availability-estimation": "^1.17.0",
-    "@aapokiiso/fillarivahti-capacity-repository": "^1.17.0",
-    "@aapokiiso/fillarivahti-orm": "^1.17.0",
+    "@aapokiiso/fillarivahti-availability-estimation": "^1.17.1",
+    "@aapokiiso/fillarivahti-capacity-repository": "^1.17.1",
+    "@aapokiiso/fillarivahti-orm": "^1.17.1",
     "@redis/client": "^1.2.0",
     "cors": "^2.8.5",
     "date-fns": "^2.29.1",
