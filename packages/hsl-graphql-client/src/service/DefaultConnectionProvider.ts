@@ -18,6 +18,9 @@ export class DefaultConnectionProvider implements ConnectionProvider {
                 baseURL: this.configuration.getGraphqlEndpointUri(),
                 method: 'POST',
                 responseType: 'json',
+                headers: {
+                    'digitransit-subscription-key': this.configuration.getDigitransitSubscriptionKey(),
+                },
             });
         }
 
